@@ -1,0 +1,33 @@
+2025-05-22 14:28:31,881 - config_manager - INFO - 成功載入設定檔
+2025-05-22 14:28:32,100 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-22 14:28:32,124 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-22 14:28:32,145 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-22 14:28:32,145 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-22 14:28:32,184 - ui_manager - INFO - UI初始化完成
+2025-05-22 14:28:40,672 - __main__ - INFO - 程式初始化完成
+2025-05-22 14:28:57,954 - config_manager - INFO - 成功儲存設定
+2025-05-22 14:28:57,954 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-22 14:29:02,270 - config_manager - INFO - 成功儲存設定
+2025-05-22 14:29:02,270 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/VALO360_TestFlow_20250423_Function.xlsx
+2025-05-22 14:29:15,483 - config_manager - INFO - 成功儲存設定
+2025-05-22 14:29:15,483 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/VALO360_TestFlow_20250423_Function.xlsx
+2025-05-22 14:33:38,980 - config_manager - INFO - 成功載入設定檔
+2025-05-22 14:33:39,091 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-22 14:33:39,091 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-22 14:33:39,091 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-22 14:33:39,091 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-22 14:33:39,144 - ui_manager - INFO - UI初始化完成
+2025-05-22 14:33:42,556 - __main__ - INFO - 程式初始化完成
+2025-05-22 14:33:46,610 - config_manager - INFO - 成功儲存設定
+2025-05-22 14:33:46,610 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/VALO360_TestFlow_20250423_Function.xlsx
+2025-05-22 14:33:46,681 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'Funtion', 'TEMP']
+2025-05-22 14:33:51,398 - config_manager - INFO - 成功儲存設定
+2025-05-22 14:33:51,398 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-22 14:33:53,444 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-22 14:33:53,945 - excel_handler - INFO - 成功載入來源工作表: Funtion
+2025-05-22 14:33:53,961 - excel_handler - INFO - 成功完成資料比對
+2025-05-22 14:33:55,899 - ui_manager - INFO - 檔案已存在: 檔案 D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx 已存在，是否要覆蓋？ - 使用者選擇: True
+2025-05-22 14:34:00,393 - excel_handler - INFO - 成功格式化Excel檔案
+2025-05-22 14:34:00,393 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-22 14:34:01,483 - ui_manager - INFO - 成功: 比對完成，結果已儲存於： D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-22 14:34:01,483 - config_manager - INFO - 成功儲存設定

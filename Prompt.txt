@@ -1,0 +1,79 @@
+
+
+
+
+
+有兩個excel 檔案 
+excel 1:
+一個是error code 的說明文件 ，名稱一般是 Test Item Code XXX.xml ，其中一個sheet =Test Item All ，這邊的內容是包含ERROR CODE 跟對應的文字意思
+例如：
+WUIF019	,GET WLAN Version FAIL,	讀取 WLAN Version 失敗
+WUIF020,	Compare HW version FAIL,	比對 HW version 不一致
+
+excel2:
+這個是我提供的檔案 ，通常在O 行Description ， P 行 TestID 會填上error code 和對應的解釋名詞
+
+我想要做是，當我UI打開來以後，UI 可以顯示 excel 2的 所有SHEET，讓我決定是誰要去跟excel 比對
+例如 excel 2 的Function 的O 行 Description ， P 行 TestID是我要跟excel比對的
+當我按下執行 
+會產生新一個新的excel 檔案－命名的名稱是 excel 2的名稱＿compare ERRORCODE.xml
+這邊會先將O 行 Description ， P 行 TestID 先複製到excel 3的AB行
+然後
+程式就會去去找出excel 1 的檔案 名稱一般是 Test Item Code XXX.xml
+把我的excel 2 的 P行的每一個數值 例如 B7PL025 對應到 excel 1 的 CDE行就是B7PL025,Test program can not running,測試程式無反應
+我要這個UI可以把excel 1 的對應欄位的內容，全部COPY 到新的excel3的欄位CED行
+
+檔案覆蓋詢問：如果產生的檔案已經存在，會詢問是否要覆蓋，否則取消儲存。
+AB 欄位只保留 Description 和 TestID：產生的新檔案，AB 兩欄就是來源的 Description 和 TestID，和您截圖一致。
+
+幫我思考一下演算法要怎麼表達 可以讓AI理解
+ 
+
+
+＝＝＝＝
+
+我來幫您分析這個需求並設計演算法。讓我們將這個問題分解成幾個主要步驟：
+UI 部分:
+需要一個介面來選擇和顯示 Excel 2 的所有工作表
+需要一個按鈕來執行比對操作
+需要一個選擇 Excel 1 (Test Item Code XML) 的功能
+檔案處理流程:
+Apply to error_code_c...
+比對邏輯:
+Apply to error_code_c...
+具體實現步驟:
+Apply to error_code_c...
+錯誤處理:
+Apply to error_code_c...
+輸出格式:
+Apply to error_code_c...
+這個演算法的主要優點是：
+清晰的步驟劃分
+使用字典進行快速查找
+保持原始數據的完整性
+提供清晰的錯誤處理機制
+可擴展性好
+
+
+
+
+
+
+
+
+
+＝＝＝＝＝＝＝＝＝＝＝＝
+promp2
+
+將來源的excel  sheet  "Test Item All" 完整COPY到 xxxcompare.xmls 的 sheet 2 名稱保留為 "Test Item All" 
+按鈕文字設定為12
+
+＝＝＝＝＝＝＝＝＝＝＝＝
+promp3
+
+選擇測試站LABEL旁有一個按鈕改名稱為 "建議分析"的按鈕 
+當我按下時 可以選擇已經產生的compare檔案 (只能選擇compare 檔案)
+程式會去比對AB 欄位的英文 自動跟來源的XML檔案去比對 有沒有相似名稱的並且
+
+
+
