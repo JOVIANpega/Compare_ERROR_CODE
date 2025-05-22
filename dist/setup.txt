@@ -24,7 +24,7 @@ BrowseExcelTooltip=選擇來源Excel檔案
 BrowseSheetTooltip=選擇工作表 
 
 //guider popup
-ShowGuide=1
+ShowGuide=0
 ShowGuidePictureNumber=5
 
 ShowGuideContent_1=錯誤碼比對工具！本工具可協助您快速比對測試站資料與錯誤碼說明，並自動產生包含對應說明的新 Excel 檔案。請依照下列導覽步驟操作。\n步驟一：選擇 Error Code 檔案\n請點選「瀏覽」按鈕（通常為 Test Item Code XXX.xlsx）。
