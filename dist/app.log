@@ -1,0 +1,469 @@
+2025-05-23 13:58:07,087 - config_manager - INFO - 成功載入設定檔
+2025-05-23 13:58:07,384 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 13:58:07,436 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 13:58:07,453 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 13:58:07,453 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 13:58:07,497 - ui_manager - INFO - UI初始化完成
+2025-05-23 13:58:07,497 - __main__ - INFO - 程式初始化完成
+2025-05-23 13:58:43,115 - config_manager - INFO - 成功儲存設定
+2025-05-23 13:58:43,115 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 13:58:58,112 - config_manager - INFO - 成功儲存設定
+2025-05-23 13:58:58,112 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/VALO360_TestFlow_20250423_Function.xlsx
+2025-05-23 13:58:58,181 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'Funtion', 'TEMP']
+2025-05-23 13:59:03,617 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 13:59:04,121 - excel_handler - INFO - 成功載入來源工作表: Funtion
+2025-05-23 13:59:06,543 - ui_manager - INFO - 檔案已存在: 檔案 D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx 已存在，是否要覆蓋？ - 使用者選擇: True
+2025-05-23 13:59:11,275 - excel_handler - INFO - 成功格式化Excel檔案
+2025-05-23 13:59:11,275 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-23 13:59:12,888 - ui_manager - INFO - 成功: 比對完成，結果已儲存於：
+D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-23 13:59:12,890 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:04:52,810 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:04:53,133 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:04:53,183 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:04:53,203 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:04:53,203 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:04:53,247 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:04:53,251 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:05:06,649 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:05:06,649 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 14:05:13,133 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:05:13,133 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/VALO360_TestFlow_20250423_Function.xlsx
+2025-05-23 14:05:13,204 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'Funtion', 'TEMP']
+2025-05-23 14:05:17,972 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 14:05:18,467 - excel_handler - INFO - 成功載入來源工作表: Funtion
+2025-05-23 14:05:23,663 - ui_manager - INFO - 檔案已存在: 檔案 D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx 已存在，是否要覆蓋？ - 使用者選擇: True
+2025-05-23 14:05:28,468 - excel_handler - INFO - 成功格式化Excel檔案
+2025-05-23 14:05:28,468 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-23 14:19:29,759 - ui_manager - INFO - 成功: 比對完成，結果已儲存於：
+D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-23 14:19:29,762 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:20:03,546 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:20:03,895 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:20:03,936 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:20:03,952 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:20:03,952 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:20:03,991 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:20:03,994 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:20:15,382 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:20:15,382 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 14:20:18,103 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:20:18,103 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/VALO360_TestFlow_20250423_Function.xlsx
+2025-05-23 14:20:18,178 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'Funtion', 'TEMP']
+2025-05-23 14:20:21,959 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 14:20:22,431 - excel_handler - INFO - 成功載入來源工作表: Funtion
+2025-05-23 14:20:25,054 - ui_manager - INFO - 檔案已存在: 檔案 D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx 已存在，是否要覆蓋？ - 使用者選擇: True
+2025-05-23 14:20:29,742 - excel_handler - INFO - 成功格式化Excel檔案
+2025-05-23 14:20:29,742 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-23 14:20:31,069 - ui_manager - INFO - 成功: 比對完成，結果已儲存於：
+D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-23 14:20:31,069 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:32:23,699 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:32:24,154 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:32:24,196 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:32:24,218 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:32:24,218 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:32:24,268 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:32:24,269 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:32:36,170 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:32:36,173 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 14:32:39,568 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:32:39,570 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/VALO360_TestFlow_20250423_Function.xlsx
+2025-05-23 14:32:39,640 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'Funtion', 'TEMP']
+2025-05-23 14:32:43,740 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 14:32:44,232 - excel_handler - INFO - 成功載入來源工作表: Funtion
+2025-05-23 14:32:46,615 - ui_manager - INFO - 檔案已存在: 檔案 D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx 已存在，是否要覆蓋？ - 使用者選擇: True
+2025-05-23 14:32:51,413 - excel_handler - INFO - 成功格式化Excel檔案
+2025-05-23 14:32:51,413 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-23 14:32:53,109 - ui_manager - INFO - 成功: 比對完成，結果已儲存於：
+D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-23 14:32:53,109 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:33:31,455 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:33:31,727 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:33:31,768 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:33:31,788 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:33:31,788 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:33:31,827 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:33:31,829 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:43:55,607 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:43:55,874 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:43:55,922 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:43:55,934 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:43:55,934 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:43:55,989 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:43:55,991 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:48:17,147 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:48:17,514 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:48:17,565 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:48:17,583 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:48:17,583 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:48:17,655 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:48:17,655 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:48:20,479 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,480 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,500 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,502 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,517 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,519 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,535 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,537 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,558 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,558 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,580 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,582 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,598 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,598 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,654 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,654 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,675 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,675 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,700 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,702 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,723 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,723 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,741 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,741 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,765 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:20,765 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:24,241 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:24,241 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 14:48:27,263 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:48:27,263 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/VALO360_TestFlow_20250423_Function.xlsx
+2025-05-23 14:48:27,335 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'Funtion', 'TEMP']
+2025-05-23 14:48:30,957 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 14:48:31,421 - excel_handler - INFO - 成功載入來源工作表: Funtion
+2025-05-23 14:48:33,630 - ui_manager - INFO - 檔案已存在: 檔案 D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx 已存在，是否要覆蓋？ - 使用者選擇: True
+2025-05-23 14:48:38,503 - excel_handler - INFO - 成功格式化Excel檔案
+2025-05-23 14:48:38,503 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-23 14:48:56,045 - ui_manager - INFO - 成功: 比對完成，結果已儲存於：
+D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-23 14:48:56,045 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:49:03,530 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:49:03,531 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:49:08,722 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:49:08,941 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:49:08,941 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:49:08,941 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:49:08,941 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:49:08,963 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:49:08,966 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:49:24,902 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:49:24,902 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:49:46,077 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:49:46,302 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:49:46,302 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:49:46,302 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:49:46,302 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:49:46,342 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:49:58,217 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:50:01,648 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:01,648 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 14:50:03,841 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:03,841 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/VALO360_TestFlow_20250423_Function.xlsx
+2025-05-23 14:50:03,922 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'Funtion', 'TEMP']
+2025-05-23 14:50:07,112 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:07,112 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:12,555 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:50:12,777 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:50:12,777 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:50:12,779 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:50:12,779 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:50:12,816 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:50:17,483 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:50:19,737 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,745 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,775 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,775 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,791 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,791 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,806 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,806 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,823 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,826 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,838 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,838 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,858 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,858 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,871 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,871 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,889 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,889 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,898 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,908 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,929 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,929 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,944 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,944 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,961 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,961 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,977 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,980 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,993 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:19,993 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,011 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,011 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,031 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,031 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,050 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,051 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,062 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,062 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,082 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,082 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,097 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,097 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,114 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,114 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,396 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,396 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,433 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,433 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,451 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:20,451 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:22,462 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:22,462 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:27,600 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:50:27,838 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:50:27,843 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:50:27,843 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:50:27,843 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:50:27,879 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:50:33,201 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:50:35,654 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,654 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,682 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,682 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,693 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,693 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,716 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,716 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,738 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,738 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,754 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,754 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,766 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,766 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,786 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,786 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,801 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,801 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,819 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,819 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,836 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,836 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,857 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,857 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,875 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,877 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,888 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,888 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,909 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,909 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,929 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,929 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,951 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,951 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,981 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:35,981 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,092 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,094 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,488 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,488 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,508 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,508 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,523 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,523 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,538 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,538 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,560 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,560 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,579 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,579 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,766 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,766 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,783 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,783 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,804 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,804 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,824 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,824 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,844 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,844 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,865 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,865 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,885 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:36,885 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,224 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,224 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,244 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,244 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,264 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,264 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,284 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,284 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,300 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,300 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,319 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,319 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,376 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,376 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,399 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,399 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,420 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,420 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,436 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,436 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,458 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,460 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,591 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,591 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,610 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,610 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,627 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,629 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,651 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,651 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,673 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,673 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,695 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,702 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,713 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:37,713 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:38,222 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:38,222 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:38,253 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:38,259 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:38,273 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:38,273 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:38,295 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:38,298 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:38,312 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:38,312 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:38,330 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:38,330 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:38,801 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:38,801 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:40,287 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:40,287 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:45,169 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:50:45,396 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:50:45,398 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:50:45,398 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:50:45,398 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:50:45,437 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:50:48,743 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:50:53,721 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:53,721 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 14:50:56,806 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:50:56,806 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/VALO360_TestFlow_20250423_Function.xlsx
+2025-05-23 14:50:56,878 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'Funtion', 'TEMP']
+2025-05-23 14:51:01,249 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,249 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,282 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,282 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,303 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,303 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,317 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,317 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,335 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,335 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,353 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,353 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,647 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,652 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,689 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,689 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,708 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,708 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,762 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,762 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,784 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,784 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,799 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,799 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,810 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,810 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,830 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,839 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,851 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,851 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,965 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:01,965 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:02,002 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:02,002 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:02,020 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:02,020 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:02,047 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:02,047 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:02,058 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:02,058 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:02,100 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:02,100 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:02,988 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:51:02,990 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:56:35,015 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:56:35,248 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:56:35,248 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:56:35,248 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:56:35,248 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:56:35,280 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:56:43,739 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:56:44,993 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:56:44,993 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:56:50,140 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:56:50,360 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:56:50,361 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:56:50,361 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:56:50,361 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:56:50,397 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:56:56,196 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:56:57,618 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:56:57,618 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:57:25,559 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:57:25,791 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:57:25,791 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:57:25,791 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:57:25,791 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:57:25,837 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:57:30,451 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:57:31,698 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:57:31,698 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:58:46,481 - config_manager - INFO - 成功載入設定檔
+2025-05-23 14:58:46,716 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:58:46,716 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:58:46,716 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:58:46,716 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 14:58:46,753 - ui_manager - INFO - UI初始化完成
+2025-05-23 14:58:46,756 - __main__ - INFO - 程式初始化完成
+2025-05-23 14:58:49,988 - config_manager - INFO - 成功儲存設定
+2025-05-23 14:58:49,988 - config_manager - INFO - 成功儲存設定
+2025-05-23 15:02:47,885 - config_manager - INFO - 成功載入設定檔
+2025-05-23 15:02:48,191 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 15:02:48,194 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 15:02:48,194 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 15:02:48,194 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 15:02:48,232 - ui_manager - INFO - UI初始化完成
+2025-05-23 15:02:52,590 - __main__ - INFO - 程式初始化完成
+2025-05-23 15:03:04,767 - config_manager - INFO - 成功載入設定檔
+2025-05-23 15:03:04,988 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 15:03:04,988 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 15:03:04,988 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 15:03:04,988 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 15:03:05,030 - ui_manager - INFO - UI初始化完成
+2025-05-23 15:03:05,030 - __main__ - INFO - 程式初始化完成
+2025-05-23 15:03:08,564 - config_manager - INFO - 成功儲存設定
+2025-05-23 15:03:08,564 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 15:03:10,533 - config_manager - INFO - 成功儲存設定
+2025-05-23 15:03:10,533 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/VALO360_TestFlow_20250423_Function.xlsx
+2025-05-23 15:03:10,599 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'Funtion', 'TEMP']
+2025-05-23 15:03:13,743 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 15:03:13,815 - excel_handler - INFO - 成功載入來源工作表: Properties
+2025-05-23 15:03:15,896 - ui_manager - ERROR - 錯誤: 找不到 Description 或 TestID 欄位，實際欄位: ['Name', 'Value']
+2025-05-23 15:03:21,590 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 15:03:22,071 - excel_handler - INFO - 成功載入來源工作表: Funtion
+2025-05-23 15:03:24,699 - ui_manager - INFO - 檔案已存在: 檔案 D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx 已存在，是否要覆蓋？ - 使用者選擇: True
+2025-05-23 15:03:29,311 - excel_handler - INFO - 成功格式化Excel檔案
+2025-05-23 15:03:29,311 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-23 15:03:30,347 - ui_manager - INFO - 成功: 比對完成，結果已儲存於：
+D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-23 15:03:30,347 - config_manager - INFO - 成功儲存設定

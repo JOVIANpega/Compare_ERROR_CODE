@@ -1,7 +1,14 @@
 還原到最新斷點
 
 
-pyinstaller --onedir --console --name=ErrorCodeComparer --add-data "guide_popup;guide_popup" --add-data "setup.txt;." --add-data "pal.ico;." --hidden-import=pandas --hidden-import=openpyxl --hidden-import=tkinter --hidden-import=tkinter.ttk --hidden-import=tkinter.filedialog --hidden-import=tkinter.messagebox --collect-all=pandas --collect-all=openpyxl --hidden-import=numpy --hidden-import=PIL --hidden-import=PIL.ImageDraw --icon=pal.ico error_code_compare.py
+pyinstaller --noconfirm --onefile --windowed --name=ErrorCodeComparer --add-data "guide_popup;guide_popup" --add-data "setup.txt;." --add-data "pal.ico;." --icon=pal.ico main.py
+
+
+pyinstaller --noconfirm --onefile --windowed --name=ErrorCodeComparer ^
+  --add-data "guide_popup;guide_popup" ^
+  --add-data "setup.txt;." ^
+  --add-data "pal.ico;." ^
+  --icon=pal.ico main.py
 
 
 

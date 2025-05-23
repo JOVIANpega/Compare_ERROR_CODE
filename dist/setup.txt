@@ -1,5 +1,3 @@
-
-//UI 
 ErrorCodeXMLLabel=ERRORＣＯＤＥ的 那份文件
 SourceExcelLabel=比對測試站的 Excel 檔案，例如MB站
 SelectSheetLabel=選擇測試站SHEET表：
@@ -16,19 +14,19 @@ SheetLoadError=載入工作表時發生錯誤：{error}
 CompareError=比對時發生錯誤：{error}
 NotFound=查無說明
 NotFoundCN=查無中文說明
-WindowWidth=950
-WindowHeight=350
+WindowWidth=1061
+WindowHeight=378
 FontSize=12
 BrowseXMLTooltip=選擇Error code Excel檔案
 BrowseExcelTooltip=選擇來源Excel檔案
-BrowseSheetTooltip=選擇工作表 
-
-//guider popup
+BrowseSheetTooltip=選擇工作表
 ShowGuide=0
 ShowGuidePictureNumber=5
-
 ShowGuideContent_1=錯誤碼比對工具！本工具可協助您快速比對測試站資料與錯誤碼說明，並自動產生包含對應說明的新 Excel 檔案。請依照下列導覽步驟操作。\n步驟一：選擇 Error Code 檔案\n請點選「瀏覽」按鈕（通常為 Test Item Code XXX.xlsx）。
 ShowGuideContent_2=步驟二：選擇待比對的測試站 Excel 檔案\n請點選第二個「瀏覽」按鈕，選擇您要比對的測試站 Excel 檔案（例如 MB 站資料）。\n接著，從下拉選單中選擇來源 Excel 檔案中的工作表，確認後點擊「比對」按鈕開始比對。
 ShowGuideContent_3=步驟三：若檔案已存在，系統會跳出警示視窗，請依指示操作。
 ShowGuideContent_4=步驟四：比對完成！\n系統會自動產生新的 Excel 檔案，並將比對結果與說明補齊。
 ShowGuideContent_5=您也可以在「Test Item All」分頁查看完整備份。\n新檔案名稱會附加上 _compare_ERROR_CODE.xlsx。\n如需再次查看導覽，可於 setup.txt 將 ShowGuide 設為 1。
+LastExcelPath=D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL
+LastXMLPath=D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL
+LastOutputDir=D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL

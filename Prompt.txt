@@ -1,8 +1,17 @@
 
 
 
+寫一個UI
+第一個按鈕 可以找到excel檔案，並載入sheet 名稱為Test Item All 的所有內容
+這個UI有一個輸入欄位 可以讓我填我想找的字串，例如 BT 例如電壓 不分中英文
+第二個按鈕 執行，可以把這個字串拿去找Test Item All的所有內容
+當找到時 列出所有跟字串有關的 error code 那一整行，全部列出 
+例如
+WUIF014,	Write_NV_To_Phone FAIL	,Write_NV_To_Phone 失敗,	Rev.2.00,	E00IF002049,	R2.00_Sam1 Hsu(許祐銓_Pegatron) add
+你覺得應該用哪一種方式顯示 對於USER來說最清楚呢
+我只是要確認這個字串 該用哪一個error code (ex:WUIF014 ,Write_NV_To_Phone FAIL)
 
-
+===========================
 有兩個excel 檔案 
 excel 1:
 一個是error code 的說明文件 ，名稱一般是 Test Item Code XXX.xml ，其中一個sheet =Test Item All ，這邊的內容是包含ERROR CODE 跟對應的文字意思

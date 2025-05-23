@@ -5,16 +5,12 @@ import os
 import sys
 
 def get_resource_path(relative_path, for_write=False):
-    # 寫入時一律寫到執行目錄
-    if for_write:
-        return os.path.join(os.path.abspath("."), relative_path)
-    # 讀取時，優先用執行目錄
-    exec_path = os.path.join(os.path.abspath("."), relative_path)
-    if os.path.exists(exec_path):
-        return exec_path
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return exec_path
+    # 永遠用 EXE 目錄（py模式用__file__目錄）
+    if getattr(sys, 'frozen', False):
+        base_dir = os.path.dirname(sys.executable)
+    else:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_dir, relative_path)
 
 def show_guide(root, setup_file, guide_title="新手導覽"):
     print(f"[DEBUG] show_guide: start with setup_file={setup_file}")
@@ -157,6 +153,7 @@ def show_guide(root, setup_file, guide_title="新手導覽"):
         if var.get():
             # 設定 ShowGuide=0
             lines = []
+            # 強制用 setup_path（主程式實際用的 setup.txt 路徑）
             if os.path.exists(setup_path):
                 with open(setup_path, 'r', encoding='utf-8') as f:
                     lines = f.readlines()
@@ -167,8 +164,8 @@ def show_guide(root, setup_file, guide_title="新手導覽"):
                     found = True
             if not found:
                 lines.append('ShowGuide=0\n')
-            # 寫入執行目錄
-            with open(get_resource_path(setup_file, for_write=True), 'w', encoding='utf-8') as f:
+            # 寫入主程式實際用的 setup.txt
+            with open(setup_path, 'w', encoding='utf-8') as f:
                 f.writelines(lines)
         guide_win.destroy()
 

@@ -18,8 +18,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class ConfigManager:
+    """設定管理類別，負責讀取、寫入、更新 setup.txt"""
     def __init__(self, setup_file: str = 'setup.txt'):
         self.setup_file = setup_file
+        # 預設設定內容
         self.default_text = {
             'ErrorCodeXMLLabel': '錯誤碼 XML 檔案：',
             'SourceExcelLabel': '來源 Excel 檔案：',
@@ -50,28 +52,24 @@ class ConfigManager:
         self.config = self.load_config()
 
     def load_config(self) -> Dict[str, Any]:
-        """載入設定檔"""
+        """載入設定檔，若不存在則建立預設設定"""
         try:
             if not os.path.exists(self.setup_file):
                 logger.info(f"設定檔不存在，創建新的設定檔: {self.setup_file}")
                 self._create_default_config()
                 return self.default_text.copy()
-
             config = {}
             with open(self.setup_file, 'r', encoding='utf-8') as f:
                 for line in f:
                     if '=' in line:
                         k, v = line.strip().split('=', 1)
                         config[k] = v
-
             # 確保所有預設值都存在
             for k, v in self.default_text.items():
                 if k not in config:
                     config[k] = v
-
             logger.info("成功載入設定檔")
             return config
-
         except Exception as e:
             logger.error(f"載入設定檔時發生錯誤: {str(e)}")
             return self.default_text.copy()
@@ -87,7 +85,7 @@ class ConfigManager:
             logger.error(f"創建預設設定檔時發生錯誤: {str(e)}")
 
     def save_config(self, config: Dict[str, Any]):
-        """儲存設定"""
+        """儲存設定到檔案"""
         try:
             with open(self.setup_file, 'w', encoding='utf-8') as f:
                 for k, v in config.items():
@@ -98,11 +96,11 @@ class ConfigManager:
             logger.error(f"儲存設定時發生錯誤: {str(e)}")
 
     def get(self, key: str, default: Any = None) -> Any:
-        """獲取設定值"""
+        """取得指定設定值"""
         return self.config.get(key, default)
 
     def set(self, key: str, value: Any):
-        """設定值"""
+        """設定指定設定值並儲存"""
         self.config[key] = value
         self.save_config(self.config)
 
@@ -112,7 +110,7 @@ class ConfigManager:
         self.set('WindowHeight', str(height))
 
     def update_last_paths(self, excel_path: str = None, xml_path: str = None, output_dir: str = None):
-        """更新最後使用的路徑"""
+        """更新最後使用的路徑設定"""
         if excel_path:
             self.set('LastExcelPath', excel_path)
         if xml_path:

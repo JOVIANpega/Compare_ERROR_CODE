@@ -25,6 +25,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class ErrorCodeComparer:
+    """主流程控制類別，負責整合UI、Excel處理、設定管理等"""
     def __init__(self):
         # 初始化設定管理器
         self.config_manager = ConfigManager()
@@ -50,7 +51,7 @@ class ErrorCodeComparer:
         logger.info("程式初始化完成")
 
     def compare_files(self):
-        """比對檔案（改為背景執行緒）"""
+        """比對檔案（在背景執行緒執行，避免UI卡住）"""
         def do_compare():
             try:
                 # 檢查必要檔案是否已選擇
@@ -125,7 +126,7 @@ class ErrorCodeComparer:
                             self.config_manager.get('CancelMsg')
                         )
                         return
-                # 儲存結果
+                # 儲存結果（含反白）
                 if self.excel_handler.save_result(
                     df_merge,
                     pd.read_excel(self.ui_manager.excel1_path, sheet_name="Test Item All"),
@@ -134,7 +135,7 @@ class ErrorCodeComparer:
                 ):
                     self.ui_manager.show_info(
                         self.config_manager.get('SuccessTitle'),
-                        f"{self.config_manager.get('SuccessMsg')} {output_path}"
+                        f"{self.config_manager.get('SuccessMsg')}\n{output_path}"
                     )
                     # 更新最後使用的輸出目錄
                     self.config_manager.update_last_paths(
@@ -153,7 +154,7 @@ class ErrorCodeComparer:
                 )
             finally:
                 self.root.config(cursor="")
-        # 執行時顯示處理中
+        # 執行時顯示處理中游標
         self.root.config(cursor="wait")
         threading.Thread(target=do_compare, daemon=True).start()
 
@@ -163,7 +164,7 @@ class ErrorCodeComparer:
         self.ui_manager.update_sheet_list(sheets)
 
     def run(self):
-        """執行程式"""
+        """啟動主視窗事件迴圈"""
         try:
             self.root.mainloop()
         except Exception as e:
@@ -171,5 +172,6 @@ class ErrorCodeComparer:
             raise
 
 if __name__ == "__main__":
+    # 程式進入點
     app = ErrorCodeComparer()
     app.run() 
