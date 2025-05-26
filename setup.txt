@@ -1,5 +1,5 @@
 # =========================
-# ErrorCodeComparer（比對工具）專用設定
+# Error Code Comparer（比對工具）專用設定
 # =========================
 ErrorCodeXMLLabel=ERRORＣＯＤＥ的 那份文件
 SourceExcelLabel=比對測試站的 Excel 檔案，例如MB站
@@ -17,13 +17,13 @@ SheetLoadError=載入工作表時發生錯誤：{error}
 CompareError=比對時發生錯誤：{error}
 NotFound=查無說明
 NotFoundCN=查無中文說明
-WindowWidth=946
+WindowWidth=927
 WindowHeight=425
-FontSize=11
+FontSize=10
 BrowseXMLTooltip=選擇Error code Excel檔案
 BrowseExcelTooltip=選擇來源Excel檔案
 BrowseSheetTooltip=選擇工作表
-ShowGuide=1
+ShowGuide=0
 ShowGuidePictureNumber=5
 ShowGuideContent_1=錯誤碼比對工具！本工具可協助您快速比對測試站資料與錯誤碼說明，並自動產生對應說明的新 Excel 檔案。請依照導覽步驟操作。\n步驟一：選擇error code 檔案\n請點選「瀏覽」按鈕（通常為 Test Item Code XXX.xlsx）。
 ShowGuideContent_2=選擇待比對的測試站 Excel 檔案\n請點選第二個「瀏覽」按鈕，選擇您要比對的測試站 Excel 檔案（例如 MB 站資料）。\n選擇要比對的工作表\n從下拉選單中選擇來源 Excel 檔案中的工作表，確認後點擊「比對」按鈕開始比對。

@@ -1,18 +1,28 @@
-   # Python
-   __pycache__/
-   *.pyc
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
 
-   # Build
-   build/
-   dist/
-   *.spec
+# pyinstaller build
+build/
+dist/
+*.spec
 
-   # Excel臨時檔
-   ~$*.xlsx
+# log files
+app.log
 
-   # 日誌
-   *.log
+# IDE/編輯器暫存
+.cursor/
+.idea/
+.vscode/
 
-   # 其他
-   *.bak
+# 其他暫存或壓縮檔
+__pycache__.7z
+
+# 不需進 git 的 EXE、暫存、測試檔
+*.exe
+*.bak
+*.tmp
+
+# 你可以根據實際需求再補充
 
