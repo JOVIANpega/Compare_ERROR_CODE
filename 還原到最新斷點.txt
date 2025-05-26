@@ -1,13 +1,3 @@
-還原到最新斷點
-
-
-$   git log --oneline
-499d336 (HEAD -> master) 【UI優化】新增errorcode_search_ui
-c768649 【斷點】完成 Excel 比對功能，已通過測試
-c7d3876 優化 Excel 比對效能，改為非同步執行
-a36fbfb 新增 .gitignore，排除不必要的檔案
-0f0b165 首次提交：初始化專案
-
 
 pyinstaller --noconfirm --onefile --windowed --name=ErrorCodeComparer --add-data "guide_popup;guide_popup" --add-data "setup.txt;." --add-data "pal.ico;." --icon=pal.ico main.py
 
@@ -18,3 +8,137 @@ pyinstaller --noconfirm --onefile --windowed --name=ExcelErrorCodeSearch --add-d
 
 
 pyinstaller --onefile --windowed --name=ErrorCodeComparer --add-data "guide_popup;guide_popup" --add-data "setup.txt;." --add-data "pal.ico;." --hidden-import=pandas --hidden-import=openpyxl --hidden-import=tkinter --hidden-import=tkinter.ttk --hidden-import=tkinter.filedialog --hidden-import=tkinter.messagebox --collect-all=pandas --collect-all=openpyxl --hidden-import=numpy --icon=pal.ico error_code_compare.py
+
+
+
+
+git add .
+git commit -m "【斷點】當前穩定版本"
+
+
+還原到最新斷點
+
+
+git add .
+git commit -m  "【斷點】2024-05-26 將 error code 查詢整合到主UI上了＿穩定版"
+  
+
+
+
+$   git log --oneline
+499d336 (HEAD -> master) 【UI優化】新增errorcode_search_ui
+c768649 【斷點】完成 Excel 比對功能，已通過測試
+c7d3876 優化 Excel 比對效能，改為非同步執行
+a36fbfb 新增 .gitignore，排除不必要的檔案
+0f0b165 首次提交：初始化專案
+
+ 如果你只是想「暫時回去看」某個斷點，不想讓後面的 commit 消失？
+建議用 git checkout <commit>（Git 2.23+ 可用 git switch --detach <commit>），這樣只是「暫時切換」到那個 commit，不會影響分支歷史。
+例如：
+Apply to excel_handle...
+Run
+這時你會進入「detached HEAD」狀態，之後可以隨時切回 master。
+
+
+
+1. 還原到某個 commit（回到舊版本）
+如果你想讓整個專案回到某個 commit 狀態（例如回到「【斷點】」那一筆）：
+git reset --hard c9b1389
+Apply to excel_handle...
+Run
+這會讓你的專案完全回到那個 commit 狀態，之後的 commit 會消失（慎用！）。
+
+
+
+2. 只還原單一檔案到某個 commit 狀態
+如果你只想還原某個檔案（例如 excel_errorcode_search_ui.py）：
+Apply to excel_handle...
+Run
+這樣只會還原這個檔案，其他檔案不變。
+
+
+
+步驟總結
+確認你要回去的 commit hash（如 c9b1389）
+執行還原指令：
+Apply to excel_handle...
+Run
+完成！你的專案就回到那個「斷點」狀態了。
+
+
+
+
+這是一個很常見的 Git 版本管理問題，以下是詳細說明：
+
+---
+
+## 1. **分支（branch）與 `git reset --hard` 的用途差異**
+
+### **分支（branch）**
+- 分支是用來**並行開發**不同功能、修正或實驗的最佳方式。
+- 你可以在主分支（如 main/master）之外，建立新分支（如 feature/xxx），在新分支上隨意修改、提交，不會影響主分支的穩定性。
+- 分支之間可以隨時切換、合併，保留所有 commit 歷史，**安全且彈性高**。
+- 適合「多路開發」、「保留歷史」、「避免資料遺失」。
+
+### **`git reset --hard`**
+- 這個指令會**強制將目前分支的 HEAD、index（暫存區）、工作目錄**全部回到指定 commit 狀態。
+- **所有未 commit 的修改、暫存都會被清除**，無法復原（除非用 git reflog）。
+- 適合「我要回到某個乾淨狀態，丟棄所有之後的變更」。
+- 風險高，**不建議在多人協作或重要分支上頻繁使用**。
+
+---
+
+## 2. **什麼情境下用分支？什麼情境下用 `reset --hard`？**
+
+### **建議用分支的情境**
+- 你要嘗試新功能、修 bug、做大改動，但又想保留主線穩定。
+- 你想保留所有開發歷史，方便日後查詢、回溯。
+- 你和他人協作，避免互相影響。
+- 你想隨時切換不同開發路徑。
+
+### **`reset --hard` 適用情境**
+- 你在本地分支做了一堆實驗，發現全都不要了，想「一鍵回到」某個舊狀態。
+- 你不需要保留這些 commit，也不會影響到他人（**本地操作**）。
+- 你確定這些變更都不重要，或已經備份。
+
+---
+
+## 3. **為什麼推薦用分支而不是 `reset --hard`？**
+
+- 分支**安全、彈性、可回溯**，不會丟失資料。
+- `reset --hard` 會**永久刪除**未備份的變更，容易造成損失。
+- 分支可以隨時合併、刪除、切換，**不會影響主線**。
+- 只有在「確定要丟棄所有變更」時，才用 `reset --hard`。
+
+---
+
+## 4. **實務建議**
+
+- **日常開發：** 用分支管理不同功能、修正。
+- **大改動前：** commit 並打上「【斷點】」訊息，方便回溯。
+- **需要丟棄所有變更時：** 才用 `git reset --hard`，但建議先備份或確認沒重要資料。
+
+---
+
+## 5. **常用指令對比**
+
+```bash
+# 建立新分支並切換
+git checkout -b feature/your-feature
+
+# 回到某個 commit，丟棄所有之後的變更（危險！）
+git reset --hard <commit_hash>
+```
+
+---
+
+**總結：**  
+分支是安全、彈性的開發方式，適合日常與多人協作；`git reset --hard` 是「最後手段」，只在確定要丟棄所有變更時使用。  
+**能用分支就用分支，盡量避免 reset --hard！**
+
+如需更詳細的 git 分支與 reset 實戰教學，歡迎再詢問！  
+也建議你每次大改動都 commit 一次，方便回溯與還原。
+
+
+
+

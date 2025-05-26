@@ -619,3 +619,67 @@ D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Fun
 2025-05-26 15:27:42,074 - config_manager - INFO - 成功儲存設定
 2025-05-26 15:31:54,902 - config_manager - INFO - 成功儲存設定
 2025-05-26 15:31:55,680 - config_manager - INFO - 成功儲存設定
+2025-05-26 17:02:09,278 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:02:09,280 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:02:09,293 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:02:09,334 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:02:09,343 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:02:09,343 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:02:09,394 - ui_manager - INFO - UI初始化完成
+2025-05-26 17:02:11,794 - __main__ - INFO - 程式初始化完成
+2025-05-26 17:02:11,794 - __main__ - ERROR - 程式執行時發生錯誤: 'UIManager' object has no attribute 'show'
+2025-05-26 17:08:33,431 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:08:33,431 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:08:33,434 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:08:33,434 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:08:33,434 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:08:33,434 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:08:33,480 - ui_manager - INFO - UI初始化完成
+2025-05-26 17:08:36,454 - __main__ - INFO - 程式初始化完成
+2025-05-26 17:10:47,804 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:10:47,804 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:10:47,804 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:10:47,804 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:10:47,804 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:10:47,804 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:10:47,845 - ui_manager - INFO - UI初始化完成
+2025-05-26 17:10:50,285 - __main__ - INFO - 程式初始化完成
+2025-05-26 17:23:55,527 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:23:55,527 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:23:55,527 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:23:55,527 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:23:55,532 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:23:55,605 - ui_manager - INFO - UI初始化完成
+2025-05-26 17:23:58,868 - __main__ - INFO - 程式初始化完成
+2025-05-26 17:23:58,868 - __main__ - ERROR - 程式執行時發生錯誤: 'ErrorCodeTool' object has no attribute 'show_compare_ui'
+2025-05-26 17:29:31,736 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:29:31,736 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:29:31,737 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:29:31,737 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:29:31,737 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 17:29:31,797 - ui_manager - INFO - UI初始化完成
+2025-05-26 17:29:34,272 - __main__ - INFO - 程式初始化完成
+2025-05-26 17:29:34,272 - __main__ - ERROR - 程式執行時發生錯誤: 'ErrorCodeTool' object has no attribute 'show_compare_ui'
+2025-05-26 18:03:30,297 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 18:03:30,335 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 18:03:30,415 - ui_manager - INFO - UI初始化完成
+2025-05-26 18:03:39,548 - __main__ - INFO - 程式初始化完成
+2025-05-26 18:04:25,133 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-26 18:04:28,945 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/VALO360_TestFlow_20250423_Function.xlsx
+2025-05-26 18:04:29,019 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'Funtion', 'TEMP']
+2025-05-26 18:04:32,741 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-26 18:04:33,278 - excel_handler - INFO - 成功載入來源工作表: Funtion
+2025-05-26 18:04:35,839 - ui_manager - INFO - 檔案已存在: 檔案 D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx 已存在，是否要覆蓋？ - 使用者選擇: False
+2025-05-26 18:04:41,770 - ui_manager - INFO - 取消: 已取消操作。
+2025-05-26 18:04:45,111 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-26 18:04:45,657 - excel_handler - INFO - 成功載入來源工作表: Funtion
+2025-05-26 18:04:47,862 - ui_manager - INFO - 檔案已存在: 檔案 D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx 已存在，是否要覆蓋？ - 使用者選擇: False
+2025-05-26 18:04:48,982 - ui_manager - INFO - 取消: 已取消操作。
+2025-05-26 18:04:59,666 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 18:04:59,666 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 18:04:59,724 - ui_manager - INFO - UI初始化完成
+2025-05-26 18:05:06,447 - __main__ - INFO - 程式初始化完成
+2025-05-26 18:05:12,197 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 18:05:12,197 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-26 18:05:12,254 - ui_manager - INFO - UI初始化完成
+2025-05-26 18:05:21,035 - __main__ - INFO - 程式初始化完成

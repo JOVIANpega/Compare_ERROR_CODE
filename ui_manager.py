@@ -151,21 +151,30 @@ class UIManager:
         lbl.grid(row=row, column=0, sticky=W, pady=10)
         self.sheet_combobox = tb.Combobox(self.main_frame, width=42)
         self.sheet_combobox.grid(row=row, column=1, padx=5, pady=10)
-        self.browse3_btn = tb.Button(self.main_frame,
-                                   text=self.config_manager.get('BrowseButton'),
-                                   bootstyle="outline-primary",
-                                   state='disabled',
-                                   style="Big.TButton")
-        self.browse3_btn.grid(row=row, column=2, padx=5, pady=10)
-        ToolTip(self.browse3_btn, self.config_manager.get('BrowseSheetTooltip'))
 
     def _create_compare_button(self, row: int):
-        """建立比對按鈕"""
-        self.compare_btn = tb.Button(self.main_frame,
-                                   text=self.config_manager.get('CompareButton'),
-                                   bootstyle="outline-success",
-                                   style="Big.TButton")
-        self.compare_btn.grid(row=row, column=0, columnspan=3, pady=25, sticky='ew')
+        """建立比對按鈕和查詢按鈕（左右分割）"""
+        btn_frame = tb.Frame(self.main_frame)
+        btn_frame.grid(row=row, column=0, columnspan=3, pady=25, sticky='ew')
+        btn_frame.columnconfigure(0, weight=1)
+        btn_frame.columnconfigure(1, weight=1)
+
+        self.compare_btn = tb.Button(
+            btn_frame,
+            text=self.config_manager.get('CompareButton'),
+            bootstyle="outline-success",
+            style="Big.TButton"
+        )
+        self.compare_btn.grid(row=0, column=0, sticky='ew', padx=(0, 5))
+
+        self.search_btn = tb.Button(
+            btn_frame,
+            text="錯誤碼查詢",
+            bootstyle="outline-primary",
+            style="Big.TButton",
+            command=getattr(self, 'search_callback', None)
+        )
+        self.search_btn.grid(row=0, column=1, sticky='ew', padx=(5, 0))
 
     def set_all_font_size(self, size: int):
         """設定所有元件的字體大小"""
@@ -218,7 +227,6 @@ class UIManager:
             self.excel2_entry.delete(0, 'end')
             self.excel2_entry.insert(0, filename)
             self.config_manager.update_last_paths(excel_path=os.path.dirname(filename))
-            self.browse3_btn.config(state='normal')
             logger.info(f"選擇來源Excel檔案: {filename}")
             if self.sheet_load_callback:
                 self.sheet_load_callback(filename)
@@ -256,4 +264,17 @@ class UIManager:
 
     def set_sheet_load_callback(self, callback: Callable):
         """設定 sheet 載入 callback"""
-        self.sheet_load_callback = callback 
+        self.sheet_load_callback = callback
+
+    def show(self):
+        """顯示主UI（比對UI）"""
+        self.root.deiconify()
+
+    def hide(self):
+        """隱藏主UI（比對UI）"""
+        self.root.withdraw()
+
+    def set_search_callback(self, callback):
+        self.search_callback = callback
+        if hasattr(self, 'search_btn'):
+            self.search_btn.config(command=callback) 

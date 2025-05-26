@@ -1,8 +1,10 @@
 """
 主程式檔案
 整合所有模組，提供程式的主要入口點
+包含錯誤碼比對和錯誤碼查詢兩個功能
 """
 import tkinter as tk
+from tkinter import ttk
 import ttkbootstrap as tb
 import logging
 from pathlib import Path
@@ -10,6 +12,7 @@ from config_manager import ConfigManager
 from ui_manager import UIManager
 from excel_handler import ExcelHandler
 from guide_popup.guide import show_guide
+from excel_errorcode_search_ui import ExcelErrorCodeSearchUI
 import pandas as pd
 import threading
 
@@ -24,20 +27,30 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-class ErrorCodeComparer:
-    """主流程控制類別，負責整合UI、Excel處理、設定管理等"""
+class ErrorCodeTool:
+    """主流程控制類別，整合錯誤碼比對和查詢功能"""
     def __init__(self):
         # 初始化設定管理器
         self.config_manager = ConfigManager()
         
         # 初始化主視窗
         self.root = tb.Window(themename="cosmo")
+        self.root.title("錯誤碼工具集")
+        self.root.geometry("1200x700")
         
-        # 初始化UI管理器
+        # 初始化UI管理器（錯誤碼比對功能）
         self.ui_manager = UIManager(self.root, self.config_manager)
+        self.ui_manager.set_search_callback(self.toggle_search_ui)
         
         # 初始化Excel處理器
         self.excel_handler = ExcelHandler()
+        
+        # 初始化錯誤碼查詢UI
+        self.search_ui = ExcelErrorCodeSearchUI(parent=self.root, offset_x=100, offset_y=80)
+        self.search_ui.root.withdraw()
+        self.search_ui_visible = False
+        # 設定查詢視窗的關閉事件
+        self.search_ui.root.protocol("WM_DELETE_WINDOW", self.hide_search_ui)
         
         # 設定比對按鈕的命令
         self.ui_manager.set_compare_command(self.compare_files)
@@ -46,9 +59,37 @@ class ErrorCodeComparer:
         self.ui_manager.set_sheet_load_callback(self.load_sheets)
         
         # 顯示導覽
-        show_guide(self.root, 'setup.txt', "錯誤碼比對工具導覽")
+        show_guide(self.root, 'setup.txt', "錯誤碼工具集導覽")
         
         logger.info("程式初始化完成")
+
+    def toggle_search_ui(self):
+        """切換查詢 UI 浮動視窗顯示/隱藏，若視窗已被關閉則重建"""
+        try:
+            if not self.search_ui.root.winfo_exists():
+                self.search_ui = ExcelErrorCodeSearchUI(parent=self.root, offset_x=100, offset_y=80)
+                self.search_ui.root.withdraw()
+                self.search_ui.root.protocol("WM_DELETE_WINDOW", self.hide_search_ui)
+                self.search_ui_visible = False
+        except Exception:
+            self.search_ui = ExcelErrorCodeSearchUI(parent=self.root, offset_x=100, offset_y=80)
+            self.search_ui.root.withdraw()
+            self.search_ui.root.protocol("WM_DELETE_WINDOW", self.hide_search_ui)
+            self.search_ui_visible = False
+
+        if self.search_ui_visible:
+            self.search_ui.root.withdraw()
+            self.search_ui_visible = False
+        else:
+            self.search_ui.center_window(offset_x=100, offset_y=80)
+            self.search_ui.root.deiconify()
+            self.search_ui.root.lift()
+            self.search_ui.root.focus_force()
+            self.search_ui_visible = True
+
+    def hide_search_ui(self):
+        self.search_ui.root.withdraw()
+        self.search_ui_visible = False
 
     def compare_files(self):
         """比對檔案（在背景執行緒執行，避免UI卡住）"""
@@ -166,6 +207,7 @@ class ErrorCodeComparer:
     def run(self):
         """啟動主視窗事件迴圈"""
         try:
+            # self.show_compare_ui()  # 已無此方法，移除
             self.root.mainloop()
         except Exception as e:
             logger.error(f"程式執行時發生錯誤: {str(e)}")
@@ -173,5 +215,5 @@ class ErrorCodeComparer:
 
 if __name__ == "__main__":
     # 程式進入點
-    app = ErrorCodeComparer()
+    app = ErrorCodeTool()
     app.run() 

@@ -167,7 +167,9 @@ def show_guide(root, setup_file, guide_title="新手導覽"):
             # 寫入主程式實際用的 setup.txt
             with open(setup_path, 'w', encoding='utf-8') as f:
                 f.writelines(lines)
-        guide_win.destroy()
+        # 只關閉 guide_win，不呼叫 root.destroy()
+        if guide_win.winfo_exists():
+            guide_win.destroy()
 
     btn_prev.config(command=go_prev)
     btn_next.config(command=go_next)

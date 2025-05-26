@@ -16,8 +16,15 @@ import os
 from config_manager import ConfigManager
 
 class ExcelErrorCodeSearchUI:
-    def __init__(self, root):
-        self.root = root
+    def __init__(self, parent=None, offset_x=0, offset_y=0):
+        # 若有 parent 則用 Toplevel，否則用 Tk
+        if parent is not None:
+            self.root = tk.Toplevel(parent)
+            self.root.transient(parent)
+            self.root.lift()
+            self.root.focus_force()
+        else:
+            self.root = tk.Tk()
         self.root.title("Excel Error Code 查詢工具")
         self.root.geometry("1100x650")
         self.root.minsize(900, 400)
@@ -42,6 +49,18 @@ class ExcelErrorCodeSearchUI:
         self.font_size = int(self.config_manager.get('FontSize', 12))
         self.last_excel_path = self.config_manager.get('LastExcelPath', os.getcwd())
         self._setup_ui()
+        self.tip_window = None  # 用於 toggle 說明視窗
+        self.center_window(offset_x, offset_y)
+
+    def center_window(self, offset_x=0, offset_y=0):
+        self.root.update_idletasks()
+        w = self.root.winfo_width()
+        h = self.root.winfo_height()
+        sw = self.root.winfo_screenwidth()
+        sh = self.root.winfo_screenheight()
+        x = (sw - w) // 2 + offset_x
+        y = (sh - h) // 2 + offset_y
+        self.root.geometry(f"{w}x{h}+{x}+{y}")
 
     def _setup_ui(self):
         # 主分割區
@@ -280,18 +299,29 @@ class ExcelErrorCodeSearchUI:
             self.decrease_fontsize()
 
     def show_tip(self):
-        # 顯示使用說明，內容來自 setup.txt 的 ExcelErrorCodeSearch_TIP，\n 轉換為換行
+        # toggle 說明視窗
+        if self.tip_window and self.tip_window.winfo_exists():
+            self.tip_window.destroy()
+            self.tip_window = None
+            return
         tip = self.config_manager.get('ExcelErrorCodeSearch_TIP', '請洽管理員補充說明')
         tip = tip.replace('\\n', '\n').replace('\r\n', '\n').replace('\n', '\n')
         win = tk.Toplevel(self.root)
         win.title("使用說明")
         win.geometry("540x340")
+        # 置中於查詢UI
+        self.root.update_idletasks()
+        x = self.root.winfo_x() + (self.root.winfo_width() - 540) // 2
+        y = self.root.winfo_y() + (self.root.winfo_height() - 340) // 2
+        win.geometry(f"540x340+{x}+{y}")
         label = tk.Label(win, text=tip, font=("Microsoft JhengHei", 12), justify="left", anchor="nw", wraplength=500)
         label.pack(fill="both", expand=True, padx=20, pady=20)
         btn = ttk.Button(win, text="確定", command=win.destroy)
         btn.pack(pady=10)
+        self.tip_window = win
+        win.protocol("WM_DELETE_WINDOW", lambda: (win.destroy(), setattr(self, 'tip_window', None)))
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = ExcelErrorCodeSearchUI(root)
-    root.mainloop() 
+# if __name__ == "__main__":
+#     root = tk.Tk()
+#     app = ExcelErrorCodeSearchUI(root)
+#     root.mainloop() 
