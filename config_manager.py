@@ -18,7 +18,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class ConfigManager:
-    """設定管理類別，負責讀取、寫入、更新 setup.txt"""
+    """設定管理類別，負責讀取、寫入、更新 setup.txt，保留註解與分隔線"""
     def __init__(self, setup_file: str = 'setup.txt'):
         self.setup_file = setup_file
         # 預設設定內容
@@ -49,30 +49,30 @@ class ConfigManager:
             'LastXMLPath': '',
             'LastOutputDir': '',
         }
-        self.config = self.load_config()
+        self.config = {}
+        self.lines = []  # 保留原始所有行
+        self._load_config_and_lines()
 
-    def load_config(self) -> Dict[str, Any]:
-        """載入設定檔，若不存在則建立預設設定"""
+    def _load_config_and_lines(self):
+        """同時載入設定檔內容與所有原始行"""
+        self.config = {}
+        self.lines = []
+        if not os.path.exists(self.setup_file):
+            self._create_default_config()
         try:
-            if not os.path.exists(self.setup_file):
-                logger.info(f"設定檔不存在，創建新的設定檔: {self.setup_file}")
-                self._create_default_config()
-                return self.default_text.copy()
-            config = {}
             with open(self.setup_file, 'r', encoding='utf-8') as f:
                 for line in f:
-                    if '=' in line:
+                    self.lines.append(line.rstrip('\n'))
+                    if '=' in line and not line.strip().startswith('#'):
                         k, v = line.strip().split('=', 1)
-                        config[k] = v
+                        self.config[k] = v
             # 確保所有預設值都存在
             for k, v in self.default_text.items():
-                if k not in config:
-                    config[k] = v
-            logger.info("成功載入設定檔")
-            return config
+                if k not in self.config:
+                    self.config[k] = v
         except Exception as e:
             logger.error(f"載入設定檔時發生錯誤: {str(e)}")
-            return self.default_text.copy()
+            self.config = self.default_text.copy()
 
     def _create_default_config(self):
         """創建預設設定檔"""
@@ -85,13 +85,31 @@ class ConfigManager:
             logger.error(f"創建預設設定檔時發生錯誤: {str(e)}")
 
     def save_config(self, config: Dict[str, Any]):
-        """儲存設定到檔案"""
+        """儲存設定到檔案，保留註解、分隔線、空行"""
+        # 先建立 key->value 的最新對照
+        new_config = config.copy()
+        written_keys = set()
+        new_lines = []
+        for line in self.lines:
+            if '=' in line and not line.strip().startswith('#'):
+                k, _ = line.strip().split('=', 1)
+                if k in new_config:
+                    new_lines.append(f'{k}={new_config[k]}')
+                    written_keys.add(k)
+                else:
+                    new_lines.append(line)
+            else:
+                new_lines.append(line)
+        # 新增還沒出現過的 key
+        for k, v in new_config.items():
+            if k not in written_keys:
+                new_lines.append(f'{k}={v}')
         try:
             with open(self.setup_file, 'w', encoding='utf-8') as f:
-                for k, v in config.items():
-                    f.write(f'{k}={v}\n')
-            self.config = config
-            logger.info("成功儲存設定")
+                for line in new_lines:
+                    f.write(line + '\n')
+            self.lines = new_lines
+            self.config = new_config
         except Exception as e:
             logger.error(f"儲存設定時發生錯誤: {str(e)}")
 

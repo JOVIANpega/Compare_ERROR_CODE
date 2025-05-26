@@ -1,14 +1,18 @@
 還原到最新斷點
 
 
+$   git log --oneline
+499d336 (HEAD -> master) 【UI優化】新增errorcode_search_ui
+c768649 【斷點】完成 Excel 比對功能，已通過測試
+c7d3876 優化 Excel 比對效能，改為非同步執行
+a36fbfb 新增 .gitignore，排除不必要的檔案
+0f0b165 首次提交：初始化專案
+
+
 pyinstaller --noconfirm --onefile --windowed --name=ErrorCodeComparer --add-data "guide_popup;guide_popup" --add-data "setup.txt;." --add-data "pal.ico;." --icon=pal.ico main.py
 
 
-pyinstaller --noconfirm --onefile --windowed --name=ErrorCodeComparer ^
-  --add-data "guide_popup;guide_popup" ^
-  --add-data "setup.txt;." ^
-  --add-data "pal.ico;." ^
-  --icon=pal.ico main.py
+pyinstaller --noconfirm --onefile --windowed --name=ExcelErrorCodeSearch --add-data "setup.txt;." --icon=pal.ico excel_errorcode_search_ui.py
 
 
 

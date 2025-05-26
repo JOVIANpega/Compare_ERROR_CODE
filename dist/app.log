@@ -467,3 +467,155 @@ D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Fun
 2025-05-23 15:03:30,347 - ui_manager - INFO - 成功: 比對完成，結果已儲存於：
 D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
 2025-05-23 15:03:30,347 - config_manager - INFO - 成功儲存設定
+2025-05-23 15:13:09,939 - config_manager - INFO - 成功儲存設定
+2025-05-23 15:13:09,939 - config_manager - INFO - 成功儲存設定
+2025-05-23 15:13:10,823 - config_manager - INFO - 成功儲存設定
+2025-05-23 15:13:10,824 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:20:57,896 - config_manager - INFO - 成功載入設定檔
+2025-05-23 16:20:58,263 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 16:20:58,318 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 16:20:58,342 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 16:20:58,342 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 16:20:58,392 - ui_manager - INFO - UI初始化完成
+2025-05-23 16:21:03,041 - __main__ - INFO - 程式初始化完成
+2025-05-23 16:21:07,615 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:07,617 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 16:21:09,490 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:09,490 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/VALO360_TestFlow_20250423_Function.xlsx
+2025-05-23 16:21:09,575 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'Funtion', 'TEMP']
+2025-05-23 16:21:17,118 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-23 16:21:17,613 - excel_handler - INFO - 成功載入來源工作表: Funtion
+2025-05-23 16:21:19,750 - ui_manager - INFO - 檔案已存在: 檔案 D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx 已存在，是否要覆蓋？ - 使用者選擇: True
+2025-05-23 16:21:24,429 - excel_handler - INFO - 成功格式化Excel檔案
+2025-05-23 16:21:24,429 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-23 16:21:25,420 - ui_manager - INFO - 成功: 比對完成，結果已儲存於：
+D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-23 16:21:25,420 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:27,853 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:27,853 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:37,298 - config_manager - INFO - 成功載入設定檔
+2025-05-23 16:21:37,528 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 16:21:37,528 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 16:21:37,528 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 16:21:37,528 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 16:21:37,565 - ui_manager - INFO - UI初始化完成
+2025-05-23 16:21:39,887 - __main__ - INFO - 程式初始化完成
+2025-05-23 16:21:44,066 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,069 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,090 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,090 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,103 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,106 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,120 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,120 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,130 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,130 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,153 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,153 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,376 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,383 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,408 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,408 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,439 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,439 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,455 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,455 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,475 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,475 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,694 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:44,694 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:45,695 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:45,697 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:21:50,729 - config_manager - INFO - 成功載入設定檔
+2025-05-23 16:21:50,971 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 16:21:50,971 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 16:21:50,971 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 16:21:50,971 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-23 16:21:51,009 - ui_manager - INFO - UI初始化完成
+2025-05-23 16:21:54,473 - __main__ - INFO - 程式初始化完成
+2025-05-23 16:22:04,467 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:22:04,467 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:41:54,591 - config_manager - INFO - 成功載入設定檔
+2025-05-23 16:42:06,613 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:42:06,613 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:42:16,606 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:42:17,174 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:42:29,671 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:42:51,038 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:45:07,953 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:45:08,218 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:45:08,402 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:45:08,598 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:45:08,796 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:45:09,754 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:45:09,947 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:45:10,143 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:45:10,314 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:45:16,334 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:51:03,324 - config_manager - INFO - 成功載入設定檔
+2025-05-23 16:51:05,579 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:51:23,734 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:51:23,737 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:51:50,380 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:51:50,380 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:51:59,085 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:52:04,482 - config_manager - INFO - 成功儲存設定
+2025-05-23 16:54:20,970 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:25:04,432 - config_manager - INFO - 成功載入設定檔
+2025-05-23 17:25:06,117 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:31:03,732 - config_manager - INFO - 成功載入設定檔
+2025-05-23 17:31:05,909 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:31:14,398 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:31:14,398 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:31:30,032 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:31:48,167 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:31:55,486 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:31:59,576 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:32:00,097 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:32:01,555 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:32:25,852 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:32:26,288 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:32:27,523 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:32:28,552 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:32:42,943 - config_manager - INFO - 成功儲存設定
+2025-05-23 17:32:59,439 - config_manager - INFO - 成功儲存設定
+2025-05-26 11:10:56,226 - config_manager - INFO - 成功載入設定檔
+2025-05-26 11:10:57,829 - config_manager - INFO - 成功儲存設定
+2025-05-26 11:11:11,011 - config_manager - INFO - 成功儲存設定
+2025-05-26 11:11:11,012 - config_manager - INFO - 成功儲存設定
+2025-05-26 11:11:28,776 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:34:51,712 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:34:51,723 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:34:59,314 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:34:59,507 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:34:59,690 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:34:59,898 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:35:00,119 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:35:00,891 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:35:01,081 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:35:01,264 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:35:01,450 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:35:01,636 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:39:31,397 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:51:42,689 - config_manager - INFO - 成功載入設定檔
+2025-05-26 14:51:44,369 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:51:55,989 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:52:06,935 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:53:36,009 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:54:20,909 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:54:21,399 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:54:33,094 - config_manager - INFO - 成功載入設定檔
+2025-05-26 14:54:34,669 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:54:42,351 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:54:42,351 - config_manager - INFO - 成功儲存設定
+2025-05-26 14:54:55,925 - config_manager - INFO - 成功儲存設定
+2025-05-26 15:24:58,753 - config_manager - INFO - 成功載入設定檔
+2025-05-26 15:25:01,859 - config_manager - INFO - 成功儲存設定
+2025-05-26 15:25:13,059 - config_manager - INFO - 成功儲存設定
+2025-05-26 15:26:03,205 - config_manager - INFO - 成功載入設定檔
+2025-05-26 15:26:06,079 - config_manager - INFO - 成功儲存設定
+2025-05-26 15:27:05,835 - config_manager - INFO - 成功儲存設定
+2025-05-26 15:27:40,735 - config_manager - INFO - 成功儲存設定
+2025-05-26 15:27:42,074 - config_manager - INFO - 成功儲存設定
+2025-05-26 15:31:54,902 - config_manager - INFO - 成功儲存設定
+2025-05-26 15:31:55,680 - config_manager - INFO - 成功儲存設定

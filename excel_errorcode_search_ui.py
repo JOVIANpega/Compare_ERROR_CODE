@@ -24,6 +24,19 @@ class ExcelErrorCodeSearchUI:
         self.root.resizable(True, True)
         # 初始化設定管理
         self.config_manager = ConfigManager()
+        # 檢查 setup.txt 是否有 ExcelErrorCodeSearch_TIP，若無則自動寫入
+        tip_key = 'ExcelErrorCodeSearch_TIP'
+        default_tip = (
+            "1. 點選「選擇 Excel 檔案」載入包含 Test Item All 的 Excel。\n"
+            "2. 在查詢欄位輸入關鍵字（可同時輸入多個，支援中英文模糊搜尋）。\n"
+            "3. 按下「搜尋」或直接按 Enter 鍵，即可查詢並顯示相關資料。\n"
+            "4. 點選結果可用右鍵複製 Error Code。\n"
+            "5. 可用 + - 按鈕調整字體大小。\n"
+            "6. 「總計」顯示目前資料筆數。\n"
+            "7. 搜尋結果以藍色字體顯示，方便辨識。"
+        )
+        if not self.config_manager.get(tip_key):
+            self.config_manager.set(tip_key, default_tip)
         self.df = None  # 儲存 Test Item All sheet 的 DataFrame
         # 讀取字體大小與上次檔案路徑
         self.font_size = int(self.config_manager.get('FontSize', 12))
@@ -49,11 +62,9 @@ class ExcelErrorCodeSearchUI:
         self.file_btn.pack(fill=tk.X, pady=5)
         self._add_hand_over(self.file_btn)
 
-        # 顯示檔案路徑
-        self.file_label = ttk.Label(control_frame, text="尚未選擇檔案", anchor="w")
+        # 顯示檔案路徑（初始顯示提示文字）
+        self.file_label = ttk.Label(control_frame, text="請選擇 Excel 檔案", anchor="w", foreground="gray")
         self.file_label.pack(fill=tk.X, pady=5)
-        if self.last_excel_path and os.path.exists(self.last_excel_path):
-            self.file_label.config(text=os.path.basename(self.last_excel_path))
 
         # 查詢欄位（最多三個）
         self.query_entries = []
@@ -77,21 +88,36 @@ class ExcelErrorCodeSearchUI:
         self.minus_btn = ttk.Button(fontsize_frame, text="－", width=2, command=self.decrease_fontsize)
         self.minus_btn.pack(side=tk.LEFT, padx=2)
 
+        # 資料筆數計數器（移到 + - 按鈕下方，置中顯示）
+        total_label = self.config_manager.get('TotalCountLabel', '總計')
+        count_unit = self.config_manager.get('CountUnit', '筆資料')
+        self.count_label = ttk.Label(control_frame, text=f"{total_label}：0 {count_unit}", anchor="center", font=("Microsoft JhengHei", 14, "bold"))
+        self.count_label.pack(fill=tk.X, pady=16)
+
+        # 使用說明按鈕（移到總計下方）
+        self.tip_btn = ttk.Button(control_frame, text="使用說明", command=self.show_tip, style="Custom.TButton")
+        self.tip_btn.pack(fill=tk.X, pady=5)
+        self._add_hand_over(self.tip_btn)
+
         # ===== 右側：顯示區 =====
-        # 結果表格
+        # 用 grid 方式排版，讓卷軸緊貼表格右側
+        display_frame.grid_rowconfigure(0, weight=1)
+        display_frame.grid_columnconfigure(0, weight=1)
         self.tree = ttk.Treeview(display_frame, columns=[], show="headings", height=20, style="Custom.Treeview")
-        self.tree.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
-        self.tree.tag_configure("highlight", background="#FFFACD")  # error code 高亮
+        self.tree.grid(row=0, column=0, sticky="nsew", padx=(5,0), pady=5)
+        self.tree.tag_configure("highlight", background="#FFFACD", foreground="#000000")  # error code 高亮，黑色文字
+        self.tree.tag_configure("search_blue", background="", foreground="#0070C0")  # 搜尋關鍵字 row 文字藍色
         self.tree.bind("<Button-3>", self.copy_row_popup)  # 右鍵複製
         self.tree.bind("<Key>", self.on_tree_key)
         self.tree.bind("<Double-1>", self.copy_row_popup)  # 雙擊也可複製
 
-        # 捲軸
-        yscroll = ttk.Scrollbar(display_frame, orient="vertical", command=self.tree.yview)
-        yscroll.pack(side=tk.RIGHT, fill=tk.Y)
+        # 垂直捲軸（加大寬度，緊貼表格右側）
+        yscroll = ttk.Scrollbar(display_frame, orient="vertical", command=self.tree.yview, style="Vertical.TScrollbar")
+        yscroll.grid(row=0, column=1, sticky="ns", pady=5)
         self.tree.configure(yscrollcommand=yscroll.set)
-        xscroll = ttk.Scrollbar(display_frame, orient="horizontal", command=self.tree.xview)
-        xscroll.pack(side=tk.BOTTOM, fill=tk.X)
+        # 水平捲軸
+        xscroll = ttk.Scrollbar(display_frame, orient="horizontal", command=self.tree.xview, style="Horizontal.TScrollbar")
+        xscroll.grid(row=1, column=0, sticky="ew", padx=(5,0))
         self.tree.configure(xscrollcommand=xscroll.set)
 
         # 美化表格格線
@@ -102,6 +128,9 @@ class ExcelErrorCodeSearchUI:
         ])
         style.map("Custom.Treeview", background=[('selected', '#3399FF')])
         style.configure("Custom.Treeview.Heading", borderwidth=1, relief="solid")
+        # 設定捲軸樣式
+        style.configure("Vertical.TScrollbar", width=24)  # 加大垂直捲軸寬度
+        style.configure("Horizontal.TScrollbar", height=20)  # 加大水平捲軸高度
 
         # 若有上次檔案路徑自動載入
         if self.last_excel_path and os.path.exists(self.last_excel_path):
@@ -123,7 +152,7 @@ class ExcelErrorCodeSearchUI:
                   foreground=[("active", "#fff"), ("!active", "#000")])
 
     def select_file(self):
-        # 選擇 Excel 檔案，讀取 Test Item All sheet，只取 C-G 欄
+        # 選擇 Excel 檔案，讀取 Test Item All sheet，只取 C-G 欄，header=0
         file_path = filedialog.askopenfilename(
             title="選擇 Excel 檔案",
             filetypes=[("Excel files", "*.xlsx *.xls")],
@@ -132,7 +161,7 @@ class ExcelErrorCodeSearchUI:
         if not file_path:
             return
         try:
-            df = pd.read_excel(file_path, sheet_name="Test Item All")
+            df = pd.read_excel(file_path, sheet_name="Test Item All", header=0)
             # 只取 C-G 欄（index 2~6）
             if df.shape[1] >= 7:
                 df = df.iloc[:, 2:7]
@@ -171,6 +200,9 @@ class ExcelErrorCodeSearchUI:
         self.tree.delete(*self.tree.get_children())
         if df is None or df.empty:
             self.tree["columns"] = []
+            total_label = self.config_manager.get('TotalCountLabel', '總計')
+            count_unit = self.config_manager.get('CountUnit', '筆資料')
+            self.count_label.config(text=f"{total_label}：0 {count_unit}")
             return
         # 只顯示 C-G 欄
         if df.shape[1] >= 7:
@@ -186,23 +218,36 @@ class ExcelErrorCodeSearchUI:
             columns.remove(first_col)
             columns = [first_col] + columns
         self.tree["columns"] = columns
+        # 計算每一欄最大寬度
+        col_widths = {col: max([len(str(col))] + [len(str(row[col])) for _, row in df.iterrows()]) for col in columns}
+        # 取得搜尋關鍵字
+        queries = [e.get().strip() for e in self.query_entries if e.get().strip()]
         for col in columns:
             self.tree.heading(col, text=col)
-            self.tree.column(col, width=180, anchor="w")
-        # 插入資料，error code 欄位高亮，內容自動換行
+            width = min(max(col_widths[col]*18, 120), 500)
+            self.tree.column(col, width=width, anchor="w")
+        # 插入資料，error code 欄位高亮，搜尋關鍵字 row 文字顯示藍色
         for _, row in df.iterrows():
             values = [str(row[col]).replace("\\n", "\n") for col in columns]
             tag = "highlight" if error_code_candidates and str(row[error_code_candidates[0]]).strip() else ""
+            # 若有搜尋關鍵字，且該 row 有任一 cell 包含關鍵字，則加上 search_blue tag
+            if queries and any(any(q in str(cell) for q in queries) for cell in row):
+                tag = "search_blue"
             self.tree.insert("", "end", values=values, tags=(tag,))
         self._set_tree_fontsize()
+        # 更新資料筆數
+        total_label = self.config_manager.get('TotalCountLabel', '總計')
+        count_unit = self.config_manager.get('CountUnit', '筆資料')
+        self.count_label.config(text=f"{total_label}：{len(df)} {count_unit}")
 
     def _set_tree_fontsize(self):
         # 用 ttk.Style 設定整個 Treeview 字體
         font = ("Microsoft JhengHei", self.font_size)
         style = ttk.Style()
         style.configure("Treeview", font=font)
-        style.configure("Treeview.Heading", font=font)
+        style.configure("Treeview.Heading", font=("Microsoft JhengHei", 11, "bold"))  # 標題固定 11 號粗體
         self.tree.tag_configure("highlight", font=font)
+        self.tree.tag_configure("search_blue", font=font)
         # 更新設定檔
         self.config_manager.set('FontSize', str(self.font_size))
 
@@ -233,6 +278,18 @@ class ExcelErrorCodeSearchUI:
             self.increase_fontsize()
         elif event.keysym == "minus" or event.char == '-':
             self.decrease_fontsize()
+
+    def show_tip(self):
+        # 顯示使用說明，內容來自 setup.txt 的 ExcelErrorCodeSearch_TIP，\n 轉換為換行
+        tip = self.config_manager.get('ExcelErrorCodeSearch_TIP', '請洽管理員補充說明')
+        tip = tip.replace('\\n', '\n').replace('\r\n', '\n').replace('\n', '\n')
+        win = tk.Toplevel(self.root)
+        win.title("使用說明")
+        win.geometry("540x340")
+        label = tk.Label(win, text=tip, font=("Microsoft JhengHei", 12), justify="left", anchor="nw", wraplength=500)
+        label.pack(fill="both", expand=True, padx=20, pady=20)
+        btn = ttk.Button(win, text="確定", command=win.destroy)
+        btn.pack(pady=10)
 
 if __name__ == "__main__":
     root = tk.Tk()

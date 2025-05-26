@@ -1,3 +1,6 @@
+# =========================
+# ErrorCodeComparer（比對工具）專用設定
+# =========================
 ErrorCodeXMLLabel=ERRORＣＯＤＥ的 那份文件
 SourceExcelLabel=比對測試站的 Excel 檔案，例如MB站
 SelectSheetLabel=選擇測試站SHEET表：
@@ -16,7 +19,7 @@ NotFound=查無說明
 NotFoundCN=查無中文說明
 WindowWidth=950
 WindowHeight=350
-FontSize=10
+FontSize=9
 BrowseXMLTooltip=選擇Error code Excel檔案
 BrowseExcelTooltip=選擇來源Excel檔案
 BrowseSheetTooltip=選擇工作表
@@ -27,6 +30,14 @@ ShowGuideContent_2=選擇待比對的測試站 Excel 檔案\n請點選第二個�
 ShowGuideContent_3=步驟二：若已經有檔案會跳出警示視窗
 ShowGuideContent_4=步驟三：比對完成！\n系統會自動產生新 Excel 檔案，並將比對結果與說明補齊。
 ShowGuideContent_5=您也可以在「Test Item All」分頁查看完整備份。檔名會附加上compare_ERROR_CODE.xlsx\n如需再次查看導覽，可於 setup.txt 設定 ShowGuide=1。
-LastExcelPath=D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL
+
+
+# =========================
+# Excel Error Code Search（查詢工具）專用設定
+# =========================
+ExcelErrorCodeSearch_TIP=1. 點選「選擇 Excel 檔案」載入包含 Test Item All 的 Excel。\n2. 在查詢欄位輸入關鍵字（可同時輸入多個，支援中英文模糊搜尋）。\n3. 按下「搜尋」或直接按 Enter 鍵，即可查詢並顯示相關資料。\n4. 點選結果可用右鍵複製 Error Code。\n5. 可用 + - 按鈕調整字體大小。\n6. 「總計」顯示目前資料筆數。\n7. 搜尋結果以藍色字體顯示，方便辨識。
+TotalCountLabel=總計
+CountUnit=筆資料
+LastExcelPath=D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
 LastXMLPath=D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL
 LastOutputDir=D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL

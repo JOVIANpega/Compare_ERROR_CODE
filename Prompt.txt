@@ -11,6 +11,66 @@ WUIF014,	Write_NV_To_Phone FAIL	,Write_NV_To_Phone 失敗,	Rev.2.00,	E00IF002049
 你覺得應該用哪一種方式顯示 對於USER來說最清楚呢
 我只是要確認這個字串 該用哪一個error code (ex:WUIF014 ,Write_NV_To_Phone FAIL)
 
+幫我規劃演算法
+
+
+Excel Error Code 查詢工具 — UI 與搜尋演算法
+1. UI 初始化
+建立主視窗（可調整大小）。
+加入三個主要元件：
+「選擇 Excel 檔案」按鈕
+查詢字串輸入欄位
+「搜尋」按鈕
+結果顯示表格（Treeview）
+2. 選擇 Excel 檔案
+按下「選擇 Excel 檔案」按鈕，開啟檔案選擇器。
+取得檔案路徑，讀取 Excel 檔案。
+用 pandas 讀取 sheet 名稱為 Test Item All 的內容，存成 DataFrame。
+3. 輸入查詢字串
+使用者在輸入欄位輸入要查找的字串（支援中英文、模糊搜尋）。
+4. 搜尋流程
+按下「搜尋」按鈕時：
+取得輸入的查詢字串。
+對 DataFrame 的所有欄位做「模糊搜尋」：
+用 str.contains(查詢字串, case=False, na=False)，忽略大小寫。
+對每一 row 檢查是否有任一 cell 包含查詢字串。
+收集所有符合條件的 row。
+5. 顯示搜尋結果
+清空原本的表格內容。
+將所有符合條件的 row 逐行插入 Treeview 表格。
+將 error code 欄位放在最前面，並用 tag 高亮整行（如淡黃色底色）。
+若無結果，顯示「查無資料」。
+6. 進階功能（可選）
+支援複製 error code 或整行內容。
+支援多關鍵字搜尋（如有需要）。
+記憶上次開啟的檔案路徑。
+演算法流程圖（文字版）
+UI 初始化
+[按鈕] 選擇 Excel 檔案 → 讀取 Test Item All → DataFrame
+[輸入] 查詢字串
+[按鈕] 搜尋
+取得查詢字串
+DataFrame 每一 row 是否有 cell 包含查詢字串？
+是 → 收集 row
+顯示所有符合 row（表格，error code 欄位高亮）
+若無結果，顯示「查無資料」
+關鍵函式/步驟
+pandas.read_excel(file_path, sheet_name='Test Item All')
+df.apply(lambda row: row.astype(str).str.contains(query, case=False, na=False).any(), axis=1)
+ttk.Treeview 插入 row，tag 設定高亮
+
+
+同時整合新功能（excel_errorcode_search_ui.py）到 main.py，設計按鍵去啟動工具！再按一下就關閉
+查詢字串提供3個 ，比對的時候不需要三個都填寫 只要針對填寫的內容去做搜尋
+搜尋可以用ENTER去啟動
+例如 我可以輸入 電壓 失敗
+那UI就可以去查詢同時有這兩個字串的ROW 並提供給我
+需要有下拉BAR可以方便下拉
+鍵盤的上下左右要能夠控制UI
+文字大小可以讓USER去控制使用+-的方式
+點選字串 按屬標右鍵 產生備份字串 方便我貼到其他文件上
+做成左右視窗，左邊是控制 右邊是顯示
+
 ===========================
 有兩個excel 檔案 
 excel 1:
