@@ -46,7 +46,7 @@ class ExcelErrorCodeSearchUI:
             self.config_manager.set(tip_key, default_tip)
         self.df = None  # 儲存 Test Item All sheet 的 DataFrame
         # 讀取字體大小與上次檔案路徑
-        self.font_size = int(self.config_manager.get('FontSize', 12))
+        self.font_size = int(self.config_manager.get('SearchUIFontSize', self.config_manager.get('FontSize', 12)))
         self.last_excel_path = self.config_manager.get('LastExcelPath', os.getcwd())
         self._setup_ui()
         self.tip_window = None  # 用於 toggle 說明視窗
@@ -253,31 +253,38 @@ class ExcelErrorCodeSearchUI:
             if queries and any(any(q in str(cell) for q in queries) for cell in row):
                 tag = "search_blue"
             self.tree.insert("", "end", values=values, tags=(tag,))
-        self._set_tree_fontsize()
+        self._set_all_fontsize()
         # 更新資料筆數
         total_label = self.config_manager.get('TotalCountLabel', '總計')
         count_unit = self.config_manager.get('CountUnit', '筆資料')
         self.count_label.config(text=f"{total_label}：{len(df)} {count_unit}")
 
-    def _set_tree_fontsize(self):
-        # 用 ttk.Style 設定整個 Treeview 字體
+    def _set_all_fontsize(self):
+        # 設定所有元件（左側控制區、表格等）的字體
         font = ("Microsoft JhengHei", self.font_size)
         style = ttk.Style()
         style.configure("Treeview", font=font)
-        style.configure("Treeview.Heading", font=("Microsoft JhengHei", 11, "bold"))  # 標題固定 11 號粗體
+        style.configure("Treeview.Heading", font=("Microsoft JhengHei", 11, "bold"))
         self.tree.tag_configure("highlight", font=font)
         self.tree.tag_configure("search_blue", font=font)
-        # 更新設定檔
-        self.config_manager.set('FontSize', str(self.font_size))
+        # 左側所有元件
+        for widget in self.root.winfo_children():
+            for child in widget.winfo_children():
+                try:
+                    child.configure(font=font)
+                except Exception:
+                    pass
+        # 更新設定檔（SearchUIFontSize）
+        self.config_manager.set('SearchUIFontSize', str(self.font_size))
 
     def increase_fontsize(self):
         self.font_size += 1
-        self._set_tree_fontsize()
+        self._set_all_fontsize()
 
     def decrease_fontsize(self):
         if self.font_size > 8:
             self.font_size -= 1
-            self._set_tree_fontsize()
+            self._set_all_fontsize()
 
     def copy_row_popup(self, event):
         # 右鍵選單複製 error code 欄位

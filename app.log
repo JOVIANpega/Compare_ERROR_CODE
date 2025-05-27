@@ -236,3 +236,11 @@ D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\VALO360_TestFlow_20250423_Fun
 2025-05-27 10:35:36,066 - ui_manager - INFO - UI初始化完成
 2025-05-27 10:35:39,728 - __main__ - INFO - 程式初始化完成
 2025-05-27 10:36:24,084 - ui_manager - ERROR - 錯誤: 請選擇所有必要的檔案和工作表
+2025-05-27 15:49:40,860 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-27 15:49:40,860 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-27 15:49:40,903 - ui_manager - INFO - UI初始化完成
+2025-05-27 15:50:01,476 - __main__ - INFO - 程式初始化完成
+2025-05-27 15:50:07,720 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-27 15:50:07,720 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-27 15:50:07,760 - ui_manager - INFO - UI初始化完成
+2025-05-27 15:50:11,699 - __main__ - INFO - 程式初始化完成

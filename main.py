@@ -62,8 +62,11 @@ class ErrorCodeTool:
         # 綁定 sheet 載入 callback
         self.ui_manager.set_sheet_load_callback(self.load_sheets)
         
-        # 顯示導覽
+        # 先顯示主UI，再顯示導覽，避免閃爍
+        self.root.deiconify()
         show_guide(self.root, 'setup.txt', "錯誤碼工具集導覽")
+        
+        self.root.protocol("WM_DELETE_WINDOW", self.root.destroy)
         
         logger.info("程式初始化完成")
 

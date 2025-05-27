@@ -3,6 +3,7 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 import os
 import sys
+import platform
 
 def get_resource_path(relative_path, for_write=False):
     # 永遠用 EXE 目錄（py模式用__file__目錄）
@@ -58,50 +59,67 @@ def show_guide(root, setup_file, guide_title="新手導覽"):
     print("[DEBUG] Creating guide window")
     guide_win = tk.Toplevel(root)
     guide_win.title(guide_title)
-    
-    # 設定較小的視窗大小
-    guide_win.geometry("800x600")  # 設定視窗大小
-    guide_win.resizable(True, True)
-    
-    # 置中
+    # 自動最大化為螢幕90%
     ws = guide_win.winfo_screenwidth()
     hs = guide_win.winfo_screenheight()
-    x = (ws // 2) - (800 // 2)
-    y = (hs // 2) - (600 // 2)
-    guide_win.geometry(f"800x600+{x}+{y}")
+    win_w = int(ws * 0.9)
+    win_h = int(hs * 0.9)
+    guide_win.geometry(f"{win_w}x{win_h}+{(ws-win_w)//2}+{(hs-win_h)//2}")
+    guide_win.resizable(True, True)
+    guide_win.attributes('-toolwindow', False)
+    if platform.system() == 'Windows':
+        try:
+            import ctypes
+            guide_win.update_idletasks()
+            hwnd = guide_win.winfo_id()
+            GWL_STYLE = -16
+            WS_MAXIMIZEBOX = 0x00010000
+            WS_THICKFRAME = 0x00040000
+            style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_STYLE)
+            style |= WS_MAXIMIZEBOX | WS_THICKFRAME
+            ctypes.windll.user32.SetWindowLongW(hwnd, GWL_STYLE, style)
+            guide_win.state('zoomed')  # 一開啟就最大化
+        except Exception as e:
+            print(f"[DEBUG] 強制最大化失敗: {e}")
     guide_win.grab_set()
     guide_win.transient(root)
 
-    frame = ttk.Frame(guide_win, padding=20)
-    frame.pack(fill=tk.BOTH, expand=True)
-
-    # 圖片顯示區
+    # ====== 新增 Canvas + Scrollbar 包住全部內容 ======
+    canvas = tk.Canvas(guide_win, borderwidth=0, highlightthickness=0)
+    vscroll = ttk.Scrollbar(guide_win, orient="vertical", command=canvas.yview)
+    canvas.configure(yscrollcommand=vscroll.set)
+    canvas.pack(side="left", fill="both", expand=True)
+    vscroll.pack(side="right", fill="y")
+    # 內容 frame
+    frame = ttk.Frame(canvas, padding=20)
+    frame_id = canvas.create_window((0, 0), window=frame, anchor="nw")
+    def _on_frame_configure(event):
+        canvas.configure(scrollregion=canvas.bbox("all"))
+    frame.bind("<Configure>", _on_frame_configure)
+    def _on_canvas_configure(event):
+        canvas.itemconfig(frame_id, width=event.width)
+    canvas.bind("<Configure>", _on_canvas_configure)
+    # 滾輪支援
+    def _on_mousewheel(event):
+        canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+    canvas.bind_all("<MouseWheel>", _on_mousewheel)
+    # ====== 原本 frame 內容照常放進 frame ======
     img_label = ttk.Label(frame, anchor="center")
     img_label.pack(pady=10, fill=tk.BOTH, expand=True)
-
     text_label = ttk.Label(frame, text="", font=("Microsoft JhengHei", 12), wraplength=700, justify="left")
     text_label.pack(pady=(0, 20))
-
-    # 頁數顯示
     page_label = ttk.Label(frame, text="", font=("Microsoft JhengHei", 10))
     page_label.pack()
-
-    # 下方控制區
-    bottom = ttk.Frame(guide_win, padding=(20, 0, 20, 20))
+    bottom = ttk.Frame(frame, padding=(20, 0, 20, 20))
     bottom.pack(side="bottom", fill="x")
-
     var = tk.IntVar()
     chk = ttk.Checkbutton(bottom, text="下次不再顯示此導覽", variable=var)
     chk.pack(side="left")
-
-    # 建立大字體 style
     style = ttk.Style()
     style.configure("Big.TButton", font=("Microsoft JhengHei", 16), padding=10)
-
     btn_prev = ttk.Button(bottom, text="上一步", width=16, style="Big.TButton")
     btn_next = ttk.Button(bottom, text="下一步", width=16, style="Big.TButton")
     btn_finish = ttk.Button(bottom, text="我知道了", width=16, style="Big.TButton")
-
     btn_prev.pack(side="right", padx=5)
     btn_next.pack(side="right", padx=5)
 
@@ -113,14 +131,14 @@ def show_guide(root, setup_file, guide_title="新手導覽"):
             img_path = get_resource_path(os.path.join("guide_popup", f"guide{i}.jpg"))
         if os.path.exists(img_path):
             img = Image.open(img_path)
-            # 依螢幕大小縮放，保留比例
-            img.thumbnail((700, 400), Image.LANCZOS)
+            # 依視窗大小縮放，保留比例
+            img.thumbnail((win_w-100, win_h-200), Image.LANCZOS)
             images.append(ImageTk.PhotoImage(img))
         else:
             from PIL import ImageDraw
-            blank = Image.new("RGB", (700, 400), (240, 240, 240))
+            blank = Image.new("RGB", (win_w-100, win_h-200), (240, 240, 240))
             d = ImageDraw.Draw(blank)
-            d.text((int(700/2-80), int(400/2)), f"No guide{i}.png", fill=(128, 128, 128))
+            d.text((int((win_w-100)/2-80), int((win_h-200)/2)), f"No guide{i}.png", fill=(128, 128, 128))
             images.append(ImageTk.PhotoImage(blank))
 
     current_page = [0]
