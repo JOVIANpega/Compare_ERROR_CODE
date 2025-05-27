@@ -36,9 +36,13 @@ class ErrorCodeTool:
         # 初始化主視窗
         self.root = tb.Window(themename="cosmo")
         self.root.title("錯誤碼工具集")
-        self.root.geometry("1200x700")
+        # 優先讀取 setup.txt 的視窗大小
+        width = int(self.config_manager.get('WindowWidth', 927))
+        height = int(self.config_manager.get('WindowHeight', 425))
+        self.root.geometry(f"{width}x{height}")
         
-        # 初始化UI管理器（錯誤碼比對功能）
+        # 初始化UI管理器（錯誤碼比對功能），傳遞字體大小
+        # font_size = int(self.config_manager.get('FontSize', 10))
         self.ui_manager = UIManager(self.root, self.config_manager)
         self.ui_manager.set_search_callback(self.toggle_search_ui)
         

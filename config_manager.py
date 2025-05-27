@@ -2,6 +2,7 @@
 設定管理模組
 負責處理所有設定相關的操作，包括讀取、寫入和更新設定
 """
+import sys
 import os
 import logging
 from typing import Dict, Any
@@ -20,7 +21,12 @@ logger = logging.getLogger(__name__)
 class ConfigManager:
     """設定管理類別，負責讀取、寫入、更新 setup.txt，保留註解與分隔線"""
     def __init__(self, setup_file: str = 'setup.txt'):
-        self.setup_file = setup_file
+        # 自動偵測 EXE 或 py 路徑，確保 setup.txt 路徑正確
+        if hasattr(sys, '_MEIPASS'):
+            base_dir = sys._MEIPASS
+        else:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+        self.setup_file = os.path.join(base_dir, setup_file)
         # 預設設定內容
         self.default_text = {
             'ErrorCodeXMLLabel': '錯誤碼 XML 檔案：',
