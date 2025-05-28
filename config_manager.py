@@ -21,9 +21,9 @@ logger = logging.getLogger(__name__)
 class ConfigManager:
     """設定管理類別，負責讀取、寫入、更新 setup.txt，保留註解與分隔線"""
     def __init__(self, setup_file: str = 'setup.txt'):
-        # 自動偵測 EXE 或 py 路徑，確保 setup.txt 路徑正確
-        if hasattr(sys, '_MEIPASS'):
-            base_dir = sys._MEIPASS
+        # 統一用 EXE 目錄（py模式用__file__目錄，EXE模式用 sys.executable 目錄）
+        if getattr(sys, 'frozen', False):
+            base_dir = os.path.dirname(sys.executable)
         else:
             base_dir = os.path.dirname(os.path.abspath(__file__))
         self.setup_file = os.path.join(base_dir, setup_file)

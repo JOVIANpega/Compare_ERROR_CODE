@@ -183,7 +183,8 @@ class ErrorCodeTool:
                 ):
                     self.ui_manager.show_info(
                         self.config_manager.get('SuccessTitle'),
-                        f"{self.config_manager.get('SuccessMsg')}\n{output_path}"
+                        self.config_manager.get('SuccessMsg'),
+                        path=output_path
                     )
                     # 更新最後使用的輸出目錄
                     self.config_manager.update_last_paths(

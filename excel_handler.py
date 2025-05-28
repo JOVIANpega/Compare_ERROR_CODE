@@ -113,17 +113,21 @@ class ExcelHandler:
                         cell.font = calibri_font
                         cell.border = border
                         cell.alignment = Alignment(vertical='center')
-                # 自動調整欄寬
+                # 自動調整欄寬（優化：考慮中文字、英文、數字）
                 for column in ws.columns:
                     max_length = 0
                     column_letter = column[0].column_letter
                     for cell in column:
                         try:
-                            if len(str(cell.value)) > max_length:
-                                max_length = len(str(cell.value))
+                            cell_len = len(str(cell.value)) if cell.value else 0
+                            # 若有中文字，寬度再加倍
+                            if any('\u4e00' <= ch <= '\u9fff' for ch in str(cell.value)):
+                                cell_len = int(cell_len * 1.7)
+                            if cell_len > max_length:
+                                max_length = cell_len
                         except:
                             pass
-                    adjusted_width = (max_length + 2)
+                    adjusted_width = max(max_length + 2, 12)  # 最小寬度12
                     ws.column_dimensions[column_letter].width = adjusted_width
             # 反白 Test Item All sheet 對應 TestID 行
             if highlight_testids:

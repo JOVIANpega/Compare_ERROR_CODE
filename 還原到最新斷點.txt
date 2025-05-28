@@ -1,11 +1,9 @@
 
+pyinstaller --onefile --windowed --name=ErrorCodeComparer --add-data "guide_popup;guide_popup" --add-data "setup.txt;." --add-data "pal.ico;." --hidden-import=pandas --hidden-import=openpyxl --hidden-import=tkinter --hidden-import=tkinter.ttk --hidden-import=tkinter.filedialog --hidden-import=tkinter.messagebox --collect-all=pandas --collect-all=openpyxl --hidden-import=numpy --icon=pal.ico main.py
 
 
 
-
-
-pyinstaller --onefile --windowed --name=ErrorCodeComparer --add-data "guide_popup;guide_popup" --add-data "setup.txt;." --add-data "pal.ico;." --hidden-import=pandas --hidden-import=openpyxl --hidden-import=tkinter --hidden-import=tkinter.ttk --hidden-import=tkinter.filedialog --hidden-import=tkinter.messagebox --collect-all=pandas --collect-all=openpyxl --hidden-import=numpy --icon=pal.ico error_code_compare.py
-
+pyinstaller --onefile --windowed --name=ErrorCodeComparer --add-data "guide_popup;guide_popup" --add-data "setup.txt;." --add-data "pal.ico;." --hidden-import=pandas --hidden-import=openpyxl --hidden-import=tkinter --hidden-import=tkinter.ttk --hidden-import=tkinter.filedialog --hidden-import=tkinter.messagebox --collect-all=pandas --collect-all=openpyxl --hidden-import=numpy --icon=pal.ico main.py
 
 git log --oneline --graph --decorate --all
 

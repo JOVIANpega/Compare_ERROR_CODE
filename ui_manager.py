@@ -246,21 +246,16 @@ class UIManager:
         """設定比對按鈕的 callback"""
         self.compare_btn.config(command=command)
 
-    def show_error(self, title: str, message: str):
-        """顯示錯誤訊息視窗"""
-        messagebox.showerror(title, message)
-        logger.error(f"{title}: {message}")
+    def show_info(self, title, message, path=None, font_size=11, info=True, parent=None):
+        # 恢復為原生 messagebox
+        messagebox.showinfo(title, message, parent=parent or self.root)
 
-    def show_info(self, title: str, message: str):
-        """顯示資訊訊息視窗"""
-        messagebox.showinfo(title, message)
-        logger.info(f"{title}: {message}")
+    def show_error(self, title, message, path=None, font_size=11, info=True, parent=None):
+        # 恢復為原生 messagebox
+        messagebox.showerror(title, message, parent=parent or self.root)
 
-    def ask_yes_no(self, title: str, message: str) -> bool:
-        """顯示是/否對話框，回傳布林值"""
-        result = messagebox.askyesno(title, message)
-        logger.info(f"{title}: {message} - 使用者選擇: {result}")
-        return result
+    def ask_yes_no(self, title, message, parent=None):
+        return messagebox.askyesno(title, message, parent=parent or self.root)
 
     def set_sheet_load_callback(self, callback: Callable):
         """設定 sheet 載入 callback"""
