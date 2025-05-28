@@ -147,18 +147,18 @@ class ErrorCodeTool:
                     )
                     return
                 df_result = df_source[[desc_col, testid_col]].copy()
-                df_result.columns = ['AB', 'AC']
+                df_result.columns = ['你的 description', '你寫的 Error Code']
                 # merge
                 df_merge = pd.merge(
                     df_result,
                     df_error_codes,
                     how='left',
-                    left_on='AC',
+                    left_on='你寫的 Error Code',
                     right_on='TestID'
                 )
-                df_merge['CD'] = df_merge['Description'].fillna(self.config_manager.get('NotFound'))
-                df_merge['CE'] = df_merge['ChineseDesc'].fillna(self.config_manager.get('NotFoundCN'))
-                df_merge = df_merge[['AB', 'AC', 'CD', 'CE']]
+                df_merge['Test Item 文件的 description'] = df_merge['Description'].fillna(self.config_manager.get('NotFound'))
+                df_merge['Test Item 的 Error Code'] = df_merge['ChineseDesc'].fillna(self.config_manager.get('NotFoundCN'))
+                df_merge = df_merge[['你的 description', '你寫的 Error Code', 'Test Item 文件的 description', 'Test Item 的 Error Code']]
                 # 準備輸出路徑
                 output_path = str(Path(self.ui_manager.excel2_path).with_name(
                     f"{Path(self.ui_manager.excel2_path).stem}_compare_ERRORCODE.xlsx"
@@ -183,8 +183,7 @@ class ErrorCodeTool:
                 ):
                     self.ui_manager.show_info(
                         self.config_manager.get('SuccessTitle'),
-                        self.config_manager.get('SuccessMsg'),
-                        path=output_path
+                        f"{self.config_manager.get('SuccessMsg')}\n{output_path}"
                     )
                     # 更新最後使用的輸出目錄
                     self.config_manager.update_last_paths(

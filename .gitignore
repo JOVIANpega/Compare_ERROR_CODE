@@ -1,12 +1,12 @@
 # Python 編譯檔案
-__pycache__/
+   __pycache__/
 *.py[cod]
 *$py.class
 
 # 打包相關
 *.spec
-build/
-dist/
+   build/
+   dist/
 *.exe
 
 # 虛擬環境
@@ -21,7 +21,7 @@ ENV/
 *.swo
 
 # 日誌檔案
-*.log
+   *.log
 
 # 系統檔案
 .DS_Store
@@ -37,7 +37,7 @@ __pycache__.7z
 .cursor/
 
 # 不需進 git 的 EXE、暫存、測試檔
-*.bak
+   *.bak
 *.tmp
 
 # 你可以根據實際需求再補充

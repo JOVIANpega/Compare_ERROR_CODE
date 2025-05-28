@@ -59,17 +59,22 @@ class ExcelHandler:
                 logger.error(f"找不到必要欄位，實際欄位: {df_source.columns.tolist()}")
                 return None
             df_result = df_source[[desc_col, testid_col]].copy()
-            df_result.columns = ['AB', 'AC']
+            # 修改 header 名稱
+            df_result.columns = ['你的 description', '你寫的 Error Code']
             # merge 或 for 迴圈比對
+            cd_list = []
+            ce_list = []
             for idx, row in df_result.iterrows():
-                test_id = str(row['AC']).strip()
+                test_id = str(row['你寫的 Error Code']).strip()
                 if test_id in self.error_code_map:
                     description, chinese_desc = self.error_code_map[test_id]
-                    df_result.at[idx, 'CD'] = description
-                    df_result.at[idx, 'CE'] = chinese_desc
+                    cd_list.append(description)
+                    ce_list.append(chinese_desc)
                 else:
-                    df_result.at[idx, 'CD'] = not_found_text
-                    df_result.at[idx, 'CE'] = not_found_cn_text
+                    cd_list.append(not_found_text)
+                    ce_list.append(not_found_cn_text)
+            df_result['Test Item 文件的 description'] = cd_list
+            df_result['Test Item 的 Error Code'] = ce_list
             logger.info("成功完成資料比對")
             return df_result
         except Exception as e:
@@ -84,7 +89,7 @@ class ExcelHandler:
                 df_result.to_excel(writer, index=False, sheet_name=sheet_name)
                 df_error_codes.to_excel(writer, index=False, sheet_name='Test Item All')
             # highlight_testids: 來源TestID
-            highlight_testids = [str(tid).strip() for tid in df_result['AC']]
+            highlight_testids = [str(tid).strip() for tid in df_result['你寫的 Error Code']]
             self._format_excel(output_path, highlight_testids=highlight_testids)
             logger.info(f"成功儲存比對結果: {output_path}")
             return True
@@ -100,13 +105,14 @@ class ExcelHandler:
             bold_font = Font(name='Calibri', size=11, bold=True)
             thin = Side(border_style="thin", color="000000")
             border = Border(left=thin, right=thin, top=thin, bottom=thin)
-            highlight_fill = PatternFill("solid", fgColor="00BFFF")  # 藍色
+            green_fill = PatternFill("solid", fgColor="00C853")  # 綠色
             for ws in wb.worksheets:
                 # 設定標題列樣式
                 for cell in ws[1]:
                     cell.font = bold_font
                     cell.border = border
                     cell.alignment = Alignment(horizontal='center', vertical='center')
+                    cell.fill = green_fill
                 # 設定資料列樣式
                 for row in ws.iter_rows(min_row=2):
                     for cell in row:
@@ -129,6 +135,8 @@ class ExcelHandler:
                             pass
                     adjusted_width = max(max_length + 2, 12)  # 最小寬度12
                     ws.column_dimensions[column_letter].width = adjusted_width
+                # 凍結第一列
+                ws.freeze_panes = ws["A2"]
             # 反白 Test Item All sheet 對應 TestID 行
             if highlight_testids:
                 try:
@@ -137,7 +145,7 @@ class ExcelHandler:
                         testid_cell = row[2]  # C欄
                         if str(testid_cell.value).strip() in highlight_testids:
                             for cell in row:
-                                cell.fill = highlight_fill
+                                cell.fill = green_fill
                 except Exception as e:
                     pass  # 若 sheet 名稱或格式異常不影響主流程
             wb.save(file_path)

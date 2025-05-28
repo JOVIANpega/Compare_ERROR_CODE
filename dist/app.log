@@ -1,0 +1,28 @@
+2025-05-28 18:34:26,692 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-28 18:34:26,692 - ui_manager - WARNING - 設定字體大小時發生錯誤: unknown option "-font"
+2025-05-28 18:34:26,754 - ui_manager - INFO - UI初始化完成
+2025-05-28 18:34:26,979 - __main__ - INFO - 程式初始化完成
+2025-05-28 18:34:32,214 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-28 18:34:34,620 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER2/EXCEL/VALO360_TestFlow_20250326_Final.xlsx
+2025-05-28 18:34:34,691 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'Final', 'TEMP']
+2025-05-28 18:34:38,414 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-28 18:34:38,535 - excel_handler - INFO - 成功載入來源工作表: Final
+2025-05-28 18:34:46,270 - excel_handler - INFO - 成功格式化Excel檔案
+2025-05-28 18:34:46,270 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER2\EXCEL\VALO360_TestFlow_20250326_Final_compare_ERRORCODE.xlsx
+2025-05-28 18:35:18,028 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER2/EXCEL/VALO360_TestFlow_20250423_Function.xlsx
+2025-05-28 18:35:18,095 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'Funtion', 'TEMP']
+2025-05-28 18:35:21,035 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-28 18:35:21,113 - excel_handler - INFO - 成功載入來源工作表: Properties
+2025-05-28 18:35:30,648 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-28 18:35:31,152 - excel_handler - INFO - 成功載入來源工作表: Funtion
+2025-05-28 18:35:36,952 - excel_handler - INFO - 成功格式化Excel檔案
+2025-05-28 18:35:36,952 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER2\EXCEL\VALO360_TestFlow_20250423_Function_compare_ERRORCODE.xlsx
+2025-05-28 18:44:08,469 - ui_manager - INFO - UI初始化完成
+2025-05-28 18:44:08,661 - __main__ - INFO - 程式初始化完成
+2025-05-28 18:44:16,459 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-28 18:44:18,990 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER2/EXCEL/VALO360_TestFlow_20250326_Final.xlsx
+2025-05-28 18:44:19,030 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'Final', 'TEMP']
+2025-05-28 18:44:22,334 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-05-28 18:44:22,446 - excel_handler - INFO - 成功載入來源工作表: Final
+2025-05-28 18:44:30,328 - excel_handler - INFO - 成功格式化Excel檔案
+2025-05-28 18:44:30,328 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER2\EXCEL\VALO360_TestFlow_20250326_Final_compare_ERRORCODE.xlsx

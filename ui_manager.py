@@ -179,13 +179,19 @@ class UIManager:
     def set_all_font_size(self, size: int):
         """設定所有元件的字體大小"""
         font = tkfont.Font(size=size, family='Microsoft JhengHei')
-        for widget in self.root.winfo_children():
+        def safe_set_font(widget):
+            # 只對支援 font 屬性的元件設字體
+            try:
+                if hasattr(widget, 'configure') and 'font' in widget.configure():
+                    widget.configure(font=font)
+            except Exception as e:
+                logger.debug(f"跳過不支援 font 的元件: {widget} - {e}")
+        # 遞迴設定所有子元件
+        def recursive_set_font(widget):
+            safe_set_font(widget)
             for child in widget.winfo_children():
-                if isinstance(child, (tk.Label, tk.Entry, tk.Button, tb.Label, tb.Entry, tb.Button, tb.Combobox)):
-                    try:
-                        child.configure(font=font)
-                    except Exception as e:
-                        logger.warning(f"設定字體大小時發生錯誤: {str(e)}")
+                recursive_set_font(child)
+        recursive_set_font(self.root)
 
     def center_window(self):
         """將視窗置中"""

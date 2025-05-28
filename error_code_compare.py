@@ -149,14 +149,17 @@ class ErrorCodeComparer:
 
     def set_all_font_size(self, size):
         font = tkfont.Font(size=size, family='Microsoft JhengHei')
-        widgets = [w for w in self.root.winfo_children()]
-        for w in widgets:
-            for child in w.winfo_children():
-                if isinstance(child, (tk.Label, tk.Entry, tk.Button, ttk.Combobox, tb.Label, tb.Entry, tb.Button, tb.Combobox)):
-                    try:
-                        child.configure(font=font)
-                    except Exception:
-                        pass
+        def safe_set_font(widget):
+            try:
+                if hasattr(widget, 'configure') and 'font' in widget.configure():
+                    widget.configure(font=font)
+            except Exception:
+                pass
+        def recursive_set_font(widget):
+            safe_set_font(widget)
+            for child in widget.winfo_children():
+                recursive_set_font(child)
+        recursive_set_font(self.root)
 
     def browse_excel1(self):
         filename = filedialog.askopenfilename(
@@ -222,23 +225,28 @@ class ErrorCodeComparer:
                     return
             # 只保留 Description 和 TestID 兩欄到 AB
             df_result = df_result[[desc_col, testid_col]].copy()
-            df_result.columns = ['AB', 'AC']
+            df_result.columns = ['你的 description', '你寫的 Error Code']
             # 建立 ErrorCode map（C欄為 TestID，D欄為英文，E欄為中文）
             error_code_map = {str(k).strip(): (str(v1).strip(), str(v2).strip())
                               for k, v1, v2 in zip(df_error_codes.iloc[:, 2], df_error_codes.iloc[:, 3], df_error_codes.iloc[:, 4])}
+            cd_list = []
+            ce_list = []
             for idx, row in df_result.iterrows():
-                test_id = str(row['AC']).strip()
+                test_id = str(row['你寫的 Error Code']).strip()
                 if test_id in error_code_map:
                     description, chinese_desc = error_code_map[test_id]
-                    df_result.at[idx, 'CD'] = description
-                    df_result.at[idx, 'CE'] = chinese_desc
+                    cd_list.append(description)
+                    ce_list.append(chinese_desc)
                 else:
-                    df_result.at[idx, 'CD'] = ui_text['NotFound']
-                    df_result.at[idx, 'CE'] = ui_text['NotFoundCN']
-            # 將結果寫入第一個 sheet，來源 Test Item All 寫入第二個 sheet
+                    cd_list.append(ui_text['NotFound'])
+                    ce_list.append(ui_text['NotFoundCN'])
+            df_result['Test Item 文件的 description'] = cd_list
+            df_result['Test Item 的 Error Code'] = ce_list
+            # 明確指定欄位順序
+            df_result = df_result[['你的 description', '你寫的 Error Code', 'Test Item 文件的 description', 'Test Item 的 Error Code']]
+            # 將結果寫入第一個 sheet，來源 Test Item All 完整複製到 sheet2
             with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
                 df_result.to_excel(writer, index=False, sheet_name=self.sheet_combobox.get())
-                # 來源的 Test Item All 完整複製到 sheet2
                 df_error_codes.to_excel(writer, index=False, sheet_name='Test Item All')
             # 用 openpyxl 美化 Excel：字型 Calibri、標題加粗、加框線、自動欄寬
             wb = load_workbook(output_path)
@@ -284,7 +292,7 @@ class ErrorCodeComparer:
             except Exception as e:
                 pass  # 若 sheet 名稱或格式異常不影響主流程
             wb.save(output_path)
-            messagebox.showinfo(ui_text['SuccessTitle'], f"{ui_text['SuccessMsg']}{output_path}")
+            messagebox.showinfo(ui_text['SuccessTitle'], f"{ui_text['SuccessMsg']}\n{output_path}")
         except Exception as e:
             messagebox.showerror(ui_text['ErrorTitle'], ui_text['CompareError'].format(error=str(e)))
 
