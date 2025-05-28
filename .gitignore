@@ -1,26 +1,42 @@
-# Python cache
+# Python 編譯檔案
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
 
-# pyinstaller build
+# 打包相關
+*.spec
 build/
 dist/
-*.spec
+*.exe
 
-# log files
-app.log
+# 虛擬環境
+venv/
+env/
+ENV/
 
-# IDE/編輯器暫存
-.cursor/
-.idea/
+# IDE 相關
 .vscode/
+.idea/
+*.swp
+*.swo
+
+# 日誌檔案
+*.log
+
+# 系統檔案
+.DS_Store
+Thumbs.db
+
+# 專案特定檔案
+setup.txt
 
 # 其他暫存或壓縮檔
 __pycache__.7z
 
+# IDE/編輯器暫存
+.cursor/
+
 # 不需進 git 的 EXE、暫存、測試檔
-*.exe
 *.bak
 *.tmp
 
