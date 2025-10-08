@@ -25,28 +25,41 @@ class ExcelErrorCodeSearchUI:
             self.root.focus_force()
         else:
             self.root = tk.Tk()
-        self.root.title("Excel Error Code 查詢工具")
-        self.root.geometry("1100x650")
-        self.root.minsize(900, 400)
+        self.root.title("錯誤碼查詢工具 v1.5.0")
+        self.root.geometry("1200x700")
+        self.root.minsize(1000, 500)
         self.root.resizable(True, True)
         # 初始化設定管理
         self.config_manager = ConfigManager()
         # 檢查 setup.txt 是否有 ExcelErrorCodeSearch_TIP，若無則自動寫入
         tip_key = 'ExcelErrorCodeSearch_TIP'
         default_tip = (
-            "1. 點選「選擇 Excel 檔案」載入包含 Test Item All 的 Excel。\n"
-            "2. 在查詢欄位輸入關鍵字（可同時輸入多個，支援中英文模糊搜尋）。\n"
-            "3. 按下「搜尋」或直接按 Enter 鍵，即可查詢並顯示相關資料。\n"
-            "4. 點選結果可用右鍵複製 Error Code。\n"
-            "5. 可用 + - 按鈕調整字體大小。\n"
-            "6. 「總計」顯示目前資料筆數。\n"
-            "7. 搜尋結果以藍色字體顯示，方便辨識。"
+            "錯誤碼查詢工具使用說明：\n\n"
+            "1. 檔案載入：\n"
+            "   • 點選「選擇 Excel 檔案」載入包含 Test Item All 工作表的 Excel 檔案\n"
+            "   • 系統會自動讀取 C-G 欄位的資料（內部錯誤代碼、描述、中文描述等）\n\n"
+            "2. 關鍵字搜尋：\n"
+            "   • 可同時輸入 1-3 個關鍵字進行搜尋\n"
+            "   • 支援中英文模糊搜尋，不區分大小寫\n"
+            "   • 多個關鍵字會以 AND 條件搜尋（必須同時包含所有關鍵字）\n"
+            "   • 按 Enter 鍵或點選「搜尋」按鈕執行搜尋\n\n"
+            "3. 結果操作：\n"
+            "   • 右鍵點選或雙擊表格行可複製 Error Code\n"
+            "   • 搜尋結果以藍色字體顯示，方便辨識\n"
+            "   • 支援鍵盤上下左右移動瀏覽結果\n\n"
+            "4. 字體調整：\n"
+            "   • 使用 + - 按鈕調整字體大小（8-20）\n"
+            "   • 字體大小會自動儲存，下次開啟時保持設定\n\n"
+            "5. 其他功能：\n"
+            "   • 「總計」顯示目前資料筆數\n"
+            "   • 視窗可調整大小，支援最大化\n"
+            "   • 表格支援水平和垂直捲軸"
         )
         if not self.config_manager.get(tip_key):
             self.config_manager.set(tip_key, default_tip)
         self.df = None  # 儲存 Test Item All sheet 的 DataFrame
         # 讀取字體大小與上次檔案路徑
-        self.font_size = int(self.config_manager.get('SearchUIFontSize', self.config_manager.get('FontSize', 12)))
+        self.font_size = int(self.config_manager.get('SearchUIFontSize', self.config_manager.get('FontSize', 11)))
         self.last_excel_path = self.config_manager.get('LastExcelPath', os.getcwd())
         self._setup_ui()
         self.tip_window = None  # 用於 toggle 說明視窗
@@ -68,7 +81,7 @@ class ExcelErrorCodeSearchUI:
         main_pane.pack(fill=tk.BOTH, expand=True)
 
         # 左側控制區（無捲軸，內容由上往下）
-        control_frame = ttk.Frame(main_pane, width=320)
+        control_frame = ttk.Frame(main_pane, width=350)
         main_pane.add(control_frame, weight=0)
 
         # 右側顯示區
@@ -85,14 +98,23 @@ class ExcelErrorCodeSearchUI:
         self.file_label = ttk.Label(control_frame, text="請選擇 Excel 檔案", anchor="w", foreground="gray")
         self.file_label.pack(fill=tk.X, pady=5)
 
+        # 查詢欄位標題
+        ttk.Label(control_frame, text="關鍵字搜尋", font=("Microsoft JhengHei", self.font_size, "bold")).pack(pady=(10, 5))
+        
         # 查詢欄位（最多三個）
         self.query_entries = []
         for i in range(3):
-            entry = ttk.Entry(control_frame, width=18, font=("Microsoft JhengHei", self.font_size))
-            entry.pack(fill=tk.X, pady=2)
+            entry_frame = ttk.Frame(control_frame)
+            entry_frame.pack(fill=tk.X, pady=2)
+            
+            ttk.Label(entry_frame, text=f"關鍵字 {i+1}:", font=("Microsoft JhengHei", self.font_size)).pack(side=tk.LEFT, padx=(0, 5))
+            entry = ttk.Entry(entry_frame, font=("Microsoft JhengHei", self.font_size))
+            entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
             entry.bind("<Return>", lambda e: self.search())
             self.query_entries.append(entry)
-        ttk.Label(control_frame, text="(可輸入1~3個關鍵字)").pack(pady=2)
+        
+        ttk.Label(control_frame, text="(支援中英文模糊搜尋，可同時使用多個關鍵字)", 
+                 font=("Microsoft JhengHei", self.font_size-1), foreground="gray").pack(pady=2)
 
         # 搜尋按鈕
         self.search_btn = ttk.Button(control_frame, text="搜尋", command=self.search, style="Custom.TButton")
@@ -102,15 +124,21 @@ class ExcelErrorCodeSearchUI:
         # 字體大小調整
         fontsize_frame = ttk.Frame(control_frame)
         fontsize_frame.pack(pady=8)
-        self.plus_btn = ttk.Button(fontsize_frame, text="＋", width=2, command=self.increase_fontsize)
-        self.plus_btn.pack(side=tk.LEFT, padx=2)
-        self.minus_btn = ttk.Button(fontsize_frame, text="－", width=2, command=self.decrease_fontsize)
+        
+        ttk.Label(fontsize_frame, text="字體大小:", font=("Microsoft JhengHei", self.font_size)).pack(side=tk.LEFT, padx=(0, 5))
+        self.minus_btn = ttk.Button(fontsize_frame, text="－", width=3, command=self.decrease_fontsize)
         self.minus_btn.pack(side=tk.LEFT, padx=2)
+        
+        self.font_label = ttk.Label(fontsize_frame, text=str(self.font_size), font=("Microsoft JhengHei", self.font_size, "bold"))
+        self.font_label.pack(side=tk.LEFT, padx=5)
+        
+        self.plus_btn = ttk.Button(fontsize_frame, text="＋", width=3, command=self.increase_fontsize)
+        self.plus_btn.pack(side=tk.LEFT, padx=2)
 
         # 資料筆數計數器（移到 + - 按鈕下方，置中顯示）
         total_label = self.config_manager.get('TotalCountLabel', '總計')
         count_unit = self.config_manager.get('CountUnit', '筆資料')
-        self.count_label = ttk.Label(control_frame, text=f"{total_label}：0 {count_unit}", anchor="center", font=("Microsoft JhengHei", 14, "bold"))
+        self.count_label = ttk.Label(control_frame, text=f"{total_label}：0 {count_unit}", anchor="center", font=("Microsoft JhengHei", self.font_size+2, "bold"))
         self.count_label.pack(fill=tk.X, pady=16)
 
         # 使用說明按鈕（移到總計下方）
@@ -141,12 +169,12 @@ class ExcelErrorCodeSearchUI:
 
         # 美化表格格線
         style = ttk.Style()
-        style.configure("Custom.Treeview", rowheight=28, borderwidth=1, relief="solid")
+        style.configure("Custom.Treeview", rowheight=30, borderwidth=1, relief="solid")
         style.layout("Custom.Treeview", [
             ("Treeview.treearea", {'sticky': 'nswe'})
         ])
         style.map("Custom.Treeview", background=[('selected', '#3399FF')])
-        style.configure("Custom.Treeview.Heading", borderwidth=1, relief="solid")
+        style.configure("Custom.Treeview.Heading", borderwidth=1, relief="solid", font=("Microsoft JhengHei", self.font_size, "bold"))
         # 設定捲軸樣式
         style.configure("Vertical.TScrollbar", width=24)  # 加大垂直捲軸寬度
         style.configure("Horizontal.TScrollbar", height=20)  # 加大水平捲軸高度
@@ -264,9 +292,17 @@ class ExcelErrorCodeSearchUI:
         font = ("Microsoft JhengHei", self.font_size)
         style = ttk.Style()
         style.configure("Treeview", font=font)
-        style.configure("Treeview.Heading", font=("Microsoft JhengHei", 11, "bold"))
+        style.configure("Treeview.Heading", font=("Microsoft JhengHei", self.font_size, "bold"))
+        style.configure("Custom.Treeview.Heading", font=("Microsoft JhengHei", self.font_size, "bold"))
         self.tree.tag_configure("highlight", font=font)
         self.tree.tag_configure("search_blue", font=font)
+        
+        # 更新字體大小顯示
+        self.font_label.config(text=str(self.font_size))
+        
+        # 更新總計標籤字體
+        self.count_label.config(font=("Microsoft JhengHei", self.font_size+2, "bold"))
+        
         # 左側所有元件
         for widget in self.root.winfo_children():
             for child in widget.winfo_children():
@@ -278,11 +314,12 @@ class ExcelErrorCodeSearchUI:
         self.config_manager.set('SearchUIFontSize', str(self.font_size))
 
     def increase_fontsize(self):
-        self.font_size += 1
-        self._set_all_fontsize()
+        if self.font_size < 20:  # 限制最大字體大小
+            self.font_size += 1
+            self._set_all_fontsize()
 
     def decrease_fontsize(self):
-        if self.font_size > 8:
+        if self.font_size > 8:  # 限制最小字體大小
             self.font_size -= 1
             self._set_all_fontsize()
 
@@ -314,17 +351,37 @@ class ExcelErrorCodeSearchUI:
         tip = self.config_manager.get('ExcelErrorCodeSearch_TIP', '請洽管理員補充說明')
         tip = tip.replace('\\n', '\n').replace('\r\n', '\n').replace('\n', '\n')
         win = tk.Toplevel(self.root)
-        win.title("使用說明")
-        win.geometry("540x340")
+        win.title("錯誤碼查詢工具 - 使用說明")
+        win.geometry("600x500")
+        win.resizable(False, False)
         # 置中於查詢UI
         self.root.update_idletasks()
-        x = self.root.winfo_x() + (self.root.winfo_width() - 540) // 2
-        y = self.root.winfo_y() + (self.root.winfo_height() - 340) // 2
-        win.geometry(f"540x340+{x}+{y}")
-        label = tk.Label(win, text=tip, font=("Microsoft JhengHei", 12), justify="left", anchor="nw", wraplength=500)
-        label.pack(fill="both", expand=True, padx=20, pady=20)
-        btn = ttk.Button(win, text="確定", command=win.destroy)
-        btn.pack(pady=10)
+        x = self.root.winfo_x() + (self.root.winfo_width() - 600) // 2
+        y = self.root.winfo_y() + (self.root.winfo_height() - 500) // 2
+        win.geometry(f"600x500+{x}+{y}")
+        
+        # 創建文字區域和捲軸
+        text_frame = tk.Frame(win)
+        text_frame.pack(fill="both", expand=True, padx=20, pady=20)
+        
+        text_widget = tk.Text(text_frame, font=("Microsoft JhengHei", 11), 
+                             wrap=tk.WORD, state=tk.DISABLED, bg="#f8f9fa")
+        text_widget.pack(side=tk.LEFT, fill="both", expand=True)
+        
+        scrollbar = tk.Scrollbar(text_frame, orient="vertical", command=text_widget.yview)
+        scrollbar.pack(side=tk.RIGHT, fill="y")
+        text_widget.configure(yscrollcommand=scrollbar.set)
+        
+        # 插入文字
+        text_widget.config(state=tk.NORMAL)
+        text_widget.insert(tk.END, tip)
+        text_widget.config(state=tk.DISABLED)
+        
+        # 按鈕框架
+        btn_frame = tk.Frame(win)
+        btn_frame.pack(pady=10)
+        btn = ttk.Button(btn_frame, text="確定", command=win.destroy, style="Custom.TButton")
+        btn.pack()
         self.tip_window = win
         win.protocol("WM_DELETE_WINDOW", lambda: (win.destroy(), setattr(self, 'tip_window', None)))
 
