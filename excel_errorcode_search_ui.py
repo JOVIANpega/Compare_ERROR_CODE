@@ -39,7 +39,7 @@ class ExcelErrorCodeSearchUI:
             "錯誤碼查詢工具使用說明：\n\n"
             "1. 檔案載入：\n"
             "   • 點選「選擇 Excel 檔案」載入包含 Test Item All 工作表的 Excel 檔案\n"
-            "   • 系統會自動讀取 C-G 欄位的資料（內部錯誤代碼、描述、中文描述等）\n\n"
+            "   • 系統會自動讀取 BCDE 欄位的資料（介面、內部錯誤代碼、描述、中文描述）\n\n"
             "2. 關鍵字搜尋：\n"
             "   • 可同時輸入 1-3 個關鍵字進行搜尋\n"
             "   • 支援中英文模糊搜尋，不區分大小寫\n"
@@ -186,8 +186,8 @@ class ExcelErrorCodeSearchUI:
         if self.last_excel_path and os.path.exists(self.last_excel_path):
             try:
                 df = pd.read_excel(self.last_excel_path, sheet_name="Test Item All")
-                if df.shape[1] >= 7:
-                    df = df.iloc[:, 2:7]
+                if df.shape[1] >= 5:
+                    df = df.iloc[:, 1:5]
                 self.df = df
                 self._show_table(self.df)
             except Exception:
@@ -212,9 +212,9 @@ class ExcelErrorCodeSearchUI:
             return
         try:
             df = pd.read_excel(file_path, sheet_name="Test Item All", header=0)
-            # 只取 C-G 欄（index 2~6）
-            if df.shape[1] >= 7:
-                df = df.iloc[:, 2:7]
+            # 只取 BCDE 欄（index 1~4）
+            if df.shape[1] >= 5:
+                df = df.iloc[:, 1:5]
             self.df = df
             self.file_label.config(text=os.path.basename(file_path))
             self._show_table(self.df)
@@ -254,9 +254,9 @@ class ExcelErrorCodeSearchUI:
             count_unit = self.config_manager.get('CountUnit', '筆資料')
             self.count_label.config(text=f"{total_label}：0 {count_unit}")
             return
-        # 只顯示 C-G 欄
-        if df.shape[1] >= 7:
-            df = df.iloc[:, 0:5]
+        # 只顯示 BCDE 欄
+        if df.shape[1] >= 4:
+            df = df.iloc[:, 0:4]
         # 將 nan 轉成空字串，並過濾全空 row
         df = df.fillna("")
         df = df.loc[~df.apply(lambda row: all(str(cell).strip() == "" for cell in row), axis=1)]
@@ -359,7 +359,8 @@ class ExcelErrorCodeSearchUI:
         win = tk.Toplevel(self.root)
         win.title("錯誤碼查詢工具 - 使用說明")
         win.geometry("600x500")
-        win.resizable(False, False)
+        win.resizable(True, True)  # 允許調整大小
+        win.minsize(500, 400)  # 設定最小尺寸
         # 置中於查詢UI
         self.root.update_idletasks()
         x = self.root.winfo_x() + (self.root.winfo_width() - 600) // 2
