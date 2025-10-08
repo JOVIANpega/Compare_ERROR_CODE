@@ -123,6 +123,10 @@ dist/
 *.spec
 __pycache__/
 
+# Large files that shouldn't be in git
+*.pkg
+ErrorCodeComparer.exe
+
 # Temporary files
 *.tmp
 *.temp
