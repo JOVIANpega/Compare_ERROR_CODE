@@ -48,8 +48,8 @@ class ExcelErrorCodeSearchUI:
             "   • 多個關鍵字會以 AND 條件搜尋（必須同時包含所有關鍵字）\n"
             "   • 按 Enter 鍵或點選「搜尋」按鈕執行搜尋\n\n"
             "3. 結果操作：\n"
-            "   • 右鍵點選、雙擊或按 Ctrl+C 可複製 Interenal Error Code\n"
-            "   • 只複製內部錯誤代碼（第三欄位）\n"
+            "   • 右鍵點選、雙擊或按 Ctrl+C 可複製 Interface\n"
+            "   • 只複製介面欄位（第一欄位）\n"
             "   • 選中的行會以藍色高亮顯示\n"
             "   • 搜尋結果以藍色字體顯示，方便辨識\n"
             "   • 支援鍵盤上下左右移動瀏覽結果\n\n"
@@ -357,19 +357,19 @@ class ExcelErrorCodeSearchUI:
             self._set_all_fontsize()
 
     def copy_row_popup(self, event):
-        # 右鍵選單複製 Interenal Error Code 欄位
+        # 右鍵選單複製 Interface 欄位
         iid = self.tree.identify_row(event.y)
         if iid:
             row_values = self.tree.item(iid, "values")
-            # 複製第三個欄位（Interenal Error Code）
-            error_code = row_values[2] if len(row_values) > 2 else ""
-            if error_code and error_code.strip():
+            # 複製第一個欄位（Interface）
+            interface = row_values[0] if len(row_values) > 0 else ""
+            if interface and interface.strip():
                 self.root.clipboard_clear()
-                self.root.clipboard_append(str(error_code))
+                self.root.clipboard_append(str(interface))
                 # 顯示複製成功的提示
-                self._show_copy_tooltip(event.x_root, event.y_root, f"已複製: {error_code}")
+                self._show_copy_tooltip(event.x_root, event.y_root, f"已複製: {interface}")
             else:
-                self._show_copy_tooltip(event.x_root, event.y_root, "無 Error Code 可複製")
+                self._show_copy_tooltip(event.x_root, event.y_root, "無 Interface 可複製")
     
     def _show_copy_tooltip(self, x, y, message):
         """顯示複製提示"""
