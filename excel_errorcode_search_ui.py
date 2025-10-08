@@ -26,9 +26,11 @@ class ExcelErrorCodeSearchUI:
         else:
             self.root = tk.Tk()
         self.root.title("錯誤碼查詢工具 v1.5.0")
-        self.root.geometry("1200x700")
-        self.root.minsize(1000, 500)
+        self.root.geometry("1400x800")
+        self.root.minsize(1200, 600)
         self.root.resizable(True, True)
+        # 預設最大化視窗
+        self.root.state('zoomed')  # Windows 最大化
         # 初始化設定管理
         self.config_manager = ConfigManager()
         # 檢查 setup.txt 是否有 ExcelErrorCodeSearch_TIP，若無則自動寫入
@@ -59,7 +61,7 @@ class ExcelErrorCodeSearchUI:
             self.config_manager.set(tip_key, default_tip)
         self.df = None  # 儲存 Test Item All sheet 的 DataFrame
         # 讀取字體大小與上次檔案路徑
-        self.font_size = int(self.config_manager.get('SearchUIFontSize', self.config_manager.get('FontSize', 11)))
+        self.font_size = int(self.config_manager.get('SearchUIFontSize', self.config_manager.get('FontSize', 12)))
         self.last_excel_path = self.config_manager.get('LastExcelPath', os.getcwd())
         self._setup_ui()
         self.tip_window = None  # 用於 toggle 說明視窗
@@ -81,7 +83,7 @@ class ExcelErrorCodeSearchUI:
         main_pane.pack(fill=tk.BOTH, expand=True)
 
         # 左側控制區（無捲軸，內容由上往下）
-        control_frame = ttk.Frame(main_pane, width=350)
+        control_frame = ttk.Frame(main_pane, width=400)
         main_pane.add(control_frame, weight=0)
 
         # 右側顯示區
@@ -169,7 +171,8 @@ class ExcelErrorCodeSearchUI:
 
         # 美化表格格線
         style = ttk.Style()
-        style.configure("Custom.Treeview", rowheight=30, borderwidth=1, relief="solid")
+        # 增加行高，讓文字不會太擠
+        style.configure("Custom.Treeview", rowheight=40, borderwidth=1, relief="solid")
         style.layout("Custom.Treeview", [
             ("Treeview.treearea", {'sticky': 'nswe'})
         ])
@@ -271,11 +274,14 @@ class ExcelErrorCodeSearchUI:
         queries = [e.get().strip() for e in self.query_entries if e.get().strip()]
         for col in columns:
             self.tree.heading(col, text=col)
-            width = min(max(col_widths[col]*18, 120), 500)
+            # 增加欄位寬度，讓文字不會太擠
+            width = min(max(col_widths[col]*20, 150), 600)
             self.tree.column(col, width=width, anchor="w")
         # 插入資料，error code 欄位高亮，搜尋關鍵字 row 文字顯示藍色
         for _, row in df.iterrows():
+            # 處理資料，保持原始格式但增加適當的間距
             values = [str(row[col]).replace("\\n", "\n") for col in columns]
+            
             tag = "highlight" if error_code_candidates and str(row[error_code_candidates[0]]).strip() else ""
             # 若有搜尋關鍵字，且該 row 有任一 cell 包含關鍵字，則加上 search_blue tag
             if queries and any(any(q in str(cell) for q in queries) for cell in row):
