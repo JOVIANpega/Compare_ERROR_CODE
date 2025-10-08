@@ -82,9 +82,13 @@ class ExcelHandler:
             return None
 
     def save_result(self, df_result: pd.DataFrame, df_error_codes: pd.DataFrame, 
-                   output_path: str, sheet_name: str) -> bool:
+                   output_path: str, sheet_name: str, ai_recommendations: list = None) -> bool:
         """儲存比對結果，並反白來源TestID對應Test Item All行"""
         try:
+            # 如果有 AI 推薦，新增 E、F 欄位
+            if ai_recommendations and len(ai_recommendations) > 0:
+                df_result = self._add_ai_recommendations(df_result, ai_recommendations)
+            
             with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
                 df_result.to_excel(writer, index=False, sheet_name=sheet_name)
                 df_error_codes.to_excel(writer, index=False, sheet_name='Test Item All')
@@ -95,6 +99,80 @@ class ExcelHandler:
             return True
         except Exception as e:
             logger.error(f"儲存比對結果時發生錯誤: {str(e)}")
+            return False
+
+    def _add_ai_recommendations(self, df_result: pd.DataFrame, ai_recommendations: list) -> pd.DataFrame:
+        """
+        為 DataFrame 新增 AI 推薦的 E、F 欄位
+        
+        Args:
+            df_result: 原始結果 DataFrame
+            ai_recommendations: AI 推薦列表，格式為 [(test_id_1, test_id_2), ...]
+            
+        Returns:
+            pd.DataFrame: 新增 E、F 欄位後的 DataFrame
+        """
+        try:
+            # 確保 ai_recommendations 長度與 DataFrame 行數一致
+            if len(ai_recommendations) != len(df_result):
+                logger.warning(f"AI 推薦數量 ({len(ai_recommendations)}) 與 DataFrame 行數 ({len(df_result)}) 不一致")
+                # 補齊不足的推薦
+                while len(ai_recommendations) < len(df_result):
+                    ai_recommendations.append(("", ""))
+                # 截斷多餘的推薦
+                ai_recommendations = ai_recommendations[:len(df_result)]
+            
+            # 新增 E、F 欄位
+            df_result = df_result.copy()
+            df_result['AI推薦 test ID 1'] = [rec[0] for rec in ai_recommendations]
+            df_result['AI推薦 test ID 2'] = [rec[1] for rec in ai_recommendations]
+            
+            logger.info(f"成功新增 AI 推薦欄位，共 {len(ai_recommendations)} 個推薦")
+            return df_result
+        except Exception as e:
+            logger.error(f"新增 AI 推薦欄位時發生錯誤: {str(e)}")
+            return df_result
+
+    def add_ai_recommendations_to_existing_file(self, file_path: str, ai_recommendations: list) -> bool:
+        """
+        為現有的比對結果檔案新增 AI 推薦欄位
+        
+        Args:
+            file_path: 現有檔案路徑
+            ai_recommendations: AI 推薦列表
+            
+        Returns:
+            bool: 是否成功
+        """
+        try:
+            # 讀取現有檔案
+            df_existing = pd.read_excel(file_path, sheet_name=0)  # 讀取第一個工作表
+            
+            # 檢查是否已經有 AI 推薦欄位
+            if 'AI推薦 test ID 1' in df_existing.columns and 'AI推薦 test ID 2' in df_existing.columns:
+                logger.info("檔案已包含 AI 推薦欄位，將更新現有欄位")
+                df_existing['AI推薦 test ID 1'] = [rec[0] for rec in ai_recommendations[:len(df_existing)]]
+                df_existing['AI推薦 test ID 2'] = [rec[1] for rec in ai_recommendations[:len(df_existing)]]
+            else:
+                # 新增 AI 推薦欄位
+                df_existing = self._add_ai_recommendations(df_existing, ai_recommendations)
+            
+            # 讀取 Test Item All 工作表
+            df_error_codes = pd.read_excel(file_path, sheet_name='Test Item All')
+            
+            # 儲存更新後的檔案
+            with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+                df_existing.to_excel(writer, index=False, sheet_name=0)
+                df_error_codes.to_excel(writer, index=False, sheet_name='Test Item All')
+            
+            # 重新格式化檔案
+            highlight_testids = [str(tid).strip() for tid in df_existing['你寫的 Error Code']]
+            self._format_excel(file_path, highlight_testids=highlight_testids)
+            
+            logger.info(f"成功為現有檔案新增 AI 推薦欄位: {file_path}")
+            return True
+        except Exception as e:
+            logger.error(f"為現有檔案新增 AI 推薦欄位時發生錯誤: {str(e)}")
             return False
 
     def _format_excel(self, file_path: str, highlight_testids: list = None):

@@ -17,7 +17,7 @@ git commit -m "【斷點】當前穩定版本"
 
 
 git add .
-git commit -m  "【斷點】2024-05-26 將 error code 查詢整合到主UI上了＿穩定版"
+git commit -m  "【斷點】2024-05-28 將 error code 查詢整合到主UI上了＿穩定版2"
   
 
 

@@ -57,6 +57,8 @@ class UIManager:
         # 初始化UI
         self._init_ui()
         self._setup_window()
+        # 自動選擇 Error Code 檔案
+        self._auto_select_error_code_file()
         logger.info("UI初始化完成")
 
     def get_exe_dir(self):
@@ -65,6 +67,51 @@ class UIManager:
             return os.path.dirname(sys.executable)
         else:
             return os.path.dirname(os.path.abspath(__file__))
+
+    def _auto_select_error_code_file(self):
+        """自動選擇 Error Code 檔案"""
+        try:
+            # 搜尋 Test Item Code 檔案
+            error_code_files = self._find_error_code_files()
+            
+            if error_code_files:
+                # 選擇第一個找到的檔案
+                selected_file = error_code_files[0]
+                self.excel1_path = selected_file
+                # 更新標籤文字（如果標籤已存在）
+                if hasattr(self, 'excel1_label'):
+                    self.excel1_label.config(text=f"已選擇: {os.path.basename(selected_file)}")
+                logger.info(f"自動選擇 Error Code 檔案: {selected_file}")
+            else:
+                logger.info("未找到 Test Item Code 檔案")
+                
+        except Exception as e:
+            logger.error(f"自動選擇 Error Code 檔案時發生錯誤: {str(e)}")
+
+    def _find_error_code_files(self):
+        """搜尋 Test Item Code 檔案"""
+        error_code_files = []
+        
+        # 搜尋目錄列表
+        search_dirs = [
+            self.exe_dir,
+            os.path.join(self.exe_dir, "EXCEL"),
+            os.path.join(self.exe_dir, "dist"),
+            os.path.join(self.exe_dir, "dist", "EXCEL"),
+        ]
+        
+        for search_dir in search_dirs:
+            if not os.path.exists(search_dir):
+                continue
+                
+            # 搜尋 Test Item Code 開頭的 Excel 檔案
+            for file in os.listdir(search_dir):
+                if file.startswith("Test Item Code") and file.endswith((".xlsx", ".xls")):
+                    file_path = os.path.join(search_dir, file)
+                    if os.path.isfile(file_path):
+                        error_code_files.append(file_path)
+        
+        return error_code_files
 
     def _init_ui(self):
         """初始化UI元件與樣式"""
@@ -153,11 +200,13 @@ class UIManager:
         self.sheet_combobox.grid(row=row, column=1, padx=5, pady=10)
 
     def _create_compare_button(self, row: int):
-        """建立比對按鈕和查詢按鈕（左右分割）"""
+        """建立比對按鈕、查詢按鈕、AI推薦按鈕和開啟結果按鈕（四欄分割）"""
         btn_frame = tb.Frame(self.main_frame)
         btn_frame.grid(row=row, column=0, columnspan=3, pady=25, sticky='ew')
         btn_frame.columnconfigure(0, weight=1)
         btn_frame.columnconfigure(1, weight=1)
+        btn_frame.columnconfigure(2, weight=1)
+        btn_frame.columnconfigure(3, weight=1)
 
         self.compare_btn = tb.Button(
             btn_frame,
@@ -165,7 +214,7 @@ class UIManager:
             bootstyle="outline-success",
             style="Big.TButton"
         )
-        self.compare_btn.grid(row=0, column=0, sticky='ew', padx=(0, 5))
+        self.compare_btn.grid(row=0, column=0, sticky='ew', padx=(0, 2))
 
         self.search_btn = tb.Button(
             btn_frame,
@@ -174,7 +223,25 @@ class UIManager:
             style="Big.TButton",
             command=getattr(self, 'search_callback', None)
         )
-        self.search_btn.grid(row=0, column=1, sticky='ew', padx=(5, 0))
+        self.search_btn.grid(row=0, column=1, sticky='ew', padx=(2, 2))
+
+        self.ai_recommend_btn = tb.Button(
+            btn_frame,
+            text="AI推薦分析",
+            bootstyle="outline-warning",
+            style="Big.TButton",
+            command=getattr(self, 'ai_recommend_callback', None)
+        )
+        self.ai_recommend_btn.grid(row=0, column=2, sticky='ew', padx=(2, 2))
+
+        self.open_result_btn = tb.Button(
+            btn_frame,
+            text="開啟結果檔案",
+            bootstyle="outline-info",
+            style="Big.TButton",
+            command=getattr(self, 'open_result_callback', None)
+        )
+        self.open_result_btn.grid(row=0, column=3, sticky='ew', padx=(2, 0))
 
     def set_all_font_size(self, size: int):
         """設定所有元件的字體大小"""
@@ -238,11 +305,26 @@ class UIManager:
                 self.sheet_load_callback(filename)
 
     def update_sheet_list(self, sheets: list):
-        """更新下拉選單的工作表列表"""
-        self.sheet_combobox['values'] = sheets
-        if sheets:
-            self.sheet_combobox.set(sheets[0])
-            logger.info(f"更新工作表列表: {sheets}")
+        """更新下拉選單的工作表列表，自動排除不需要的 Sheet"""
+        # 要排除的 Sheet 名稱（不區分大小寫）
+        excluded_sheets = ['properties', 'duts', 'switch', 'instrument']
+        
+        # 過濾掉不需要的 Sheet
+        filtered_sheets = []
+        for sheet in sheets:
+            if sheet.lower() not in excluded_sheets:
+                filtered_sheets.append(sheet)
+        
+        # 更新下拉選單
+        self.sheet_combobox['values'] = filtered_sheets
+        if filtered_sheets:
+            # 自動選擇第一個有效的 Sheet
+            self.sheet_combobox.set(filtered_sheets[0])
+            self.selected_sheet = filtered_sheets[0]
+            logger.info(f"更新工作表列表: {filtered_sheets}")
+            logger.info(f"自動選擇第一個工作表: {filtered_sheets[0]}")
+        else:
+            logger.warning("沒有找到有效的工作表")
 
     def get_selected_sheet(self) -> str:
         """取得目前選擇的工作表名稱"""
@@ -251,6 +333,16 @@ class UIManager:
     def set_compare_command(self, command: Callable):
         """設定比對按鈕的 callback"""
         self.compare_btn.config(command=command)
+
+    def set_ai_recommend_callback(self, command: Callable):
+        """設定 AI 推薦按鈕的 callback"""
+        self.ai_recommend_callback = command
+        self.ai_recommend_btn.config(command=command)
+
+    def set_open_result_callback(self, command: Callable):
+        """設定開啟結果檔案按鈕的 callback"""
+        self.open_result_callback = command
+        self.open_result_btn.config(command=command)
 
     def show_info(self, title, message, path=None, font_size=11, info=True, parent=None):
         # 恢復為原生 messagebox
