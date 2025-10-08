@@ -125,19 +125,13 @@ class ErrorCodeTool:
                 if not all([self.ui_manager.excel1_path, 
                            self.ui_manager.excel2_path, 
                            self.ui_manager.get_selected_sheet()]):
-                    self.ui_manager.show_error(
-                        self.config_manager.get('ErrorTitle'),
-                        "請選擇所有必要的檔案和工作表"
-                    )
-                    return
+                    self.ui_manager.update_status("請選擇所有必要的檔案和工作表", "red")
+                    return False
 
                 # 載入錯誤碼檔案
                 if not self.excel_handler.load_error_codes(self.ui_manager.excel1_path):
-                    self.ui_manager.show_error(
-                        self.config_manager.get('ErrorTitle'),
-                        "載入錯誤碼檔案失敗"
-                    )
-                    return
+                    self.ui_manager.update_status("載入錯誤碼檔案失敗", "red")
+                    return False
 
                 # 載入來源工作表
                 df_source = self.excel_handler.load_source_sheet(
@@ -145,11 +139,8 @@ class ErrorCodeTool:
                     self.ui_manager.get_selected_sheet()
                 )
                 if df_source is None:
-                    self.ui_manager.show_error(
-                        self.config_manager.get('ErrorTitle'),
-                        "載入來源工作表失敗"
-                    )
-                    return
+                    self.ui_manager.update_status("載入來源工作表失敗", "red")
+                    return False
 
                 # 優化比對：用 merge 取代 for 迴圈
                 df_error_codes = pd.read_excel(self.ui_manager.excel1_path, sheet_name="Test Item All")
@@ -160,11 +151,8 @@ class ErrorCodeTool:
                 desc_col = self.excel_handler.find_column(df_source, 'Description')
                 testid_col = self.excel_handler.find_column(df_source, 'TestID')
                 if not desc_col or not testid_col:
-                    self.ui_manager.show_error(
-                        self.config_manager.get('ErrorTitle'),
-                        f"找不到 Description 或 TestID 欄位，實際欄位: {df_source.columns.tolist()}"
-                    )
-                    return
+                    self.ui_manager.update_status(f"找不到 Description 或 TestID 欄位，實際欄位: {df_source.columns.tolist()[:5]}", "red")
+                    return False
                 df_result = df_source[[desc_col, testid_col]].copy()
                 df_result.columns = ['你的 description', '你寫的 Error Code']
                 # merge
@@ -192,7 +180,7 @@ class ErrorCodeTool:
                             self.config_manager.get('CancelTitle'),
                             self.config_manager.get('CancelMsg')
                         )
-                        return
+                        return False
                 # 儲存結果（含反白）
                 if self.excel_handler.save_result(
                     df_merge,
@@ -201,27 +189,18 @@ class ErrorCodeTool:
                     self.ui_manager.get_selected_sheet()
                 ):
                     self.ui_manager.update_status(f"比對完成！結果已儲存於：{os.path.basename(output_path)}", "green")
-                    self.ui_manager.show_info(
-                        self.config_manager.get('SuccessTitle'),
-                        f"{self.config_manager.get('SuccessMsg')}\n{output_path}"
-                    )
                     # 更新最後使用的輸出目錄
                     self.config_manager.update_last_paths(
                         output_dir=str(Path(output_path).parent)
                     )
+                    return True
                 else:
                     self.ui_manager.update_status("儲存結果失敗", "red")
-                    self.ui_manager.show_error(
-                        self.config_manager.get('ErrorTitle'),
-                        "儲存結果失敗"
-                    )
+                    return False
             except Exception as e:
                 logger.error(f"比對檔案時發生錯誤: {str(e)}")
                 self.ui_manager.update_status(f"比對失敗: {str(e)[:100]}", "red")
-                self.ui_manager.show_error(
-                    self.config_manager.get('ErrorTitle'),
-                    f"{self.config_manager.get('CompareError').format(error=str(e))}"
-                )
+                return False
             finally:
                 self.root.config(cursor="")
         # 執行時顯示處理中游標
@@ -237,16 +216,10 @@ class ErrorCodeTool:
                 logger.info(f"成功載入 {len(sheets)} 個工作表")
             else:
                 logger.warning(f"無法從 {excel_path} 載入工作表")
-                self.ui_manager.show_error(
-                    "載入工作表失敗",
-                    f"無法從檔案載入工作表：\n{os.path.basename(excel_path)}"
-                )
+                self.ui_manager.update_status(f"無法從檔案載入工作表：{os.path.basename(excel_path)}", "red")
         except Exception as e:
             logger.error(f"載入工作表時發生錯誤: {str(e)}")
-            self.ui_manager.show_error(
-                "載入工作表失敗",
-                f"載入工作表時發生錯誤：{str(e)}"
-            )
+            self.ui_manager.update_status(f"載入工作表失敗: {str(e)[:100]}", "red")
 
     def ai_recommend_analysis(self):
         """AI 推薦分析功能 - 自動檢查並執行比對"""
@@ -254,14 +227,16 @@ class ErrorCodeTool:
             try:
                 # 更新狀態列
                 self.ui_manager.update_status("正在進行 AI 推薦分析，請稍候...", "orange")
+                self.ui_manager.show_progress(True)
+                self.ui_manager.update_progress(0, 100)
                 
                 # 檢查檔案設定
                 if not self.ui_manager.excel1_path or not os.path.exists(self.ui_manager.excel1_path):
-                    self.ui_manager.show_error("檔案錯誤", "請先選擇 Error Code 參考檔案")
+                    self.ui_manager.update_status("請先選擇 Error Code 參考檔案", "red")
                     return
                 
                 if not self.ui_manager.excel2_path or not os.path.exists(self.ui_manager.excel2_path):
-                    self.ui_manager.show_error("檔案錯誤", "請先選擇要分析的 Excel 檔案")
+                    self.ui_manager.update_status("請先選擇要分析的 Excel 檔案", "red")
                     return
                 
                 # 檢查是否已有比對結果檔案
@@ -275,7 +250,6 @@ class ErrorCodeTool:
                     success = self._perform_comparison()
                     if not success:
                         self.ui_manager.update_status("自動比對失敗，無法進行 AI 推薦分析", "red")
-                        self.ui_manager.show_error("比對失敗", "自動比對失敗，無法進行 AI 推薦分析")
                         return
                 
                 # 現在進行 AI 推薦分析
@@ -284,7 +258,7 @@ class ErrorCodeTool:
             except Exception as e:
                 logger.error(f"AI 推薦分析時發生錯誤: {str(e)}")
                 self.ui_manager.update_status(f"AI 推薦分析失敗: {str(e)[:100]}", "red")
-                self.ui_manager.show_error("分析失敗", f"AI 推薦分析時發生錯誤：{str(e)}")
+                self.ui_manager.show_progress(False)
             finally:
                 self.root.config(cursor="")
         
@@ -297,12 +271,91 @@ class ErrorCodeTool:
         return os.path.join("EXCEL", f"{base_name}_compare_ERRORCODE.xlsx")
 
     def _perform_comparison(self):
-        """執行比對功能"""
+        """執行比對功能（同步版本）"""
         try:
-            # 使用現有的比對邏輯
-            return self.compare_files()
+            # 更新狀態列
+            self.ui_manager.update_status("正在進行檔案比對...", "orange")
+            
+            # 檢查必要檔案是否已選擇
+            if not all([self.ui_manager.excel1_path, 
+                       self.ui_manager.excel2_path, 
+                       self.ui_manager.get_selected_sheet()]):
+                self.ui_manager.update_status("請選擇所有必要的檔案和工作表", "red")
+                return False
+
+            # 載入錯誤碼檔案
+            if not self.excel_handler.load_error_codes(self.ui_manager.excel1_path):
+                self.ui_manager.update_status("載入錯誤碼檔案失敗", "red")
+                return False
+
+            # 載入來源工作表
+            df_source = self.excel_handler.load_source_sheet(
+                self.ui_manager.excel2_path,
+                self.ui_manager.get_selected_sheet()
+            )
+            if df_source is None:
+                self.ui_manager.update_status("載入來源工作表失敗", "red")
+                return False
+
+            # 優化比對：用 merge 取代 for 迴圈
+            df_error_codes = pd.read_excel(self.ui_manager.excel1_path, sheet_name="Test Item All")
+            # 取 C欄(TestID)、D欄(Description)、E欄(ChineseDesc)
+            df_error_codes = df_error_codes.iloc[:, [2, 3, 4]]
+            df_error_codes.columns = ['TestID', 'Description', 'ChineseDesc']
+            # 找來源的 Description, TestID 欄位
+            desc_col = self.excel_handler.find_column(df_source, 'Description')
+            testid_col = self.excel_handler.find_column(df_source, 'TestID')
+            if not desc_col or not testid_col:
+                self.ui_manager.update_status(f"找不到 Description 或 TestID 欄位，實際欄位: {df_source.columns.tolist()[:5]}", "red")
+                return False
+            df_result = df_source[[desc_col, testid_col]].copy()
+            df_result.columns = ['你的 description', '你寫的 Error Code']
+            # merge
+            df_merge = pd.merge(
+                df_result,
+                df_error_codes,
+                how='left',
+                left_on='你寫的 Error Code',
+                right_on='TestID'
+            )
+            df_merge['Test Item 文件的 description'] = df_merge['Description'].fillna(self.config_manager.get('NotFound'))
+            df_merge['Test Item 的 Error Code'] = df_merge['ChineseDesc'].fillna(self.config_manager.get('NotFoundCN'))
+            df_merge = df_merge[['你的 description', '你寫的 Error Code', 'Test Item 文件的 description', 'Test Item 的 Error Code']]
+            # 準備輸出路徑
+            output_dir = self.config_manager.get('LastOutputDir', str(Path(self.ui_manager.excel2_path).parent))
+            output_filename = f"{Path(self.ui_manager.excel2_path).stem}_compare_ERRORCODE.xlsx"
+            output_path = Path(output_dir) / output_filename
+            
+            # 檢查檔案是否已存在
+            if os.path.exists(output_path):
+                if not self.ui_manager.ask_yes_no(
+                    self.config_manager.get('FileExistsTitle'),
+                    self.config_manager.get('FileExistsMsg').format(output_path=output_path)
+                ):
+                    self.ui_manager.show_info(
+                        self.config_manager.get('CancelTitle'),
+                        self.config_manager.get('CancelMsg')
+                    )
+                    return False
+            # 儲存結果（含反白）
+            if self.excel_handler.save_result(
+                df_merge,
+                pd.read_excel(self.ui_manager.excel1_path, sheet_name="Test Item All"),
+                output_path,
+                self.ui_manager.get_selected_sheet()
+            ):
+                self.ui_manager.update_status(f"比對完成！結果已儲存於：{os.path.basename(output_path)}", "green")
+                # 更新最後使用的輸出目錄
+                self.config_manager.update_last_paths(
+                    output_dir=str(Path(output_path).parent)
+                )
+                return True
+            else:
+                self.ui_manager.update_status("儲存結果失敗", "red")
+                return False
         except Exception as e:
             logger.error(f"執行比對時發生錯誤: {str(e)}")
+            self.ui_manager.update_status(f"比對失敗: {str(e)[:100]}", "red")
             return False
 
     def _perform_ai_recommendation(self, output_file):
@@ -310,7 +363,7 @@ class ErrorCodeTool:
         try:
             # 載入參考資料
             if not self.ai_engine.load_reference_data(self.ui_manager.excel1_path):
-                self.ui_manager.show_error("載入失敗", "無法載入 Error Code 參考資料")
+                self.ui_manager.update_status("無法載入 Error Code 參考資料", "red")
                 return
             
             # 讀取比對結果檔案
@@ -327,7 +380,7 @@ class ErrorCodeTool:
                     sheet_name = available_sheets[0] if available_sheets else None
                 
                 if not sheet_name:
-                    self.ui_manager.show_error("檔案錯誤", "比對結果檔案沒有可用的工作表")
+                    self.ui_manager.update_status("比對結果檔案沒有可用的工作表", "red")
                     return
                 
                 df_result = pd.read_excel(output_file, sheet_name=sheet_name)
@@ -335,7 +388,7 @@ class ErrorCodeTool:
                 
             except Exception as e:
                 logger.error(f"讀取比對結果檔案時發生錯誤: {str(e)}")
-                self.ui_manager.show_error("讀取失敗", f"讀取比對結果檔案時發生錯誤：{str(e)}")
+                self.ui_manager.update_status(f"讀取比對結果檔案失敗: {str(e)[:100]}", "red")
                 return
             
             if 'Description' not in df_result.columns:
@@ -354,10 +407,7 @@ class ErrorCodeTool:
                 if not desc_column:
                     # 顯示實際的欄位名稱
                     actual_columns = list(df_result.columns)
-                    self.ui_manager.show_error("欄位錯誤", 
-                        f"比對結果檔案沒有 Description 欄位\n"
-                        f"實際欄位: {actual_columns}\n"
-                        f"請檢查比對結果檔案是否正確")
+                    self.ui_manager.update_status(f"比對結果檔案沒有 Description 欄位，實際欄位: {actual_columns[:5]}", "red")
                     return
                 
                 # 重新命名欄位為 Description
@@ -366,17 +416,24 @@ class ErrorCodeTool:
             
             # 提取描述並生成推薦
             descriptions = df_result['Description'].fillna('').astype(str).tolist()
-            recommendations = self.ai_engine.generate_recommendations_with_search(descriptions)
+            
+            # 定義進度回調函數
+            def progress_callback(current, total, message):
+                self.ui_manager.update_status(message, "orange")
+                self.ui_manager.update_progress(current, total)
+            
+            recommendations = self.ai_engine.generate_recommendations_with_search(descriptions, progress_callback)
             
             # 更新檔案
             self._update_file_with_recommendations(output_file, df_result, recommendations)
             
             self.ui_manager.update_status(f"AI 推薦分析完成！結果已更新到：{os.path.basename(output_file)}", "green")
-            self.ui_manager.show_info("分析完成", f"AI 推薦分析完成！\n結果已更新到：{os.path.basename(output_file)}")
+            self.ui_manager.show_progress(False)
             
         except Exception as e:
             logger.error(f"執行 AI 推薦時發生錯誤: {str(e)}")
-            self.ui_manager.show_error("推薦失敗", f"執行 AI 推薦時發生錯誤：{str(e)}")
+            self.ui_manager.update_status(f"AI 推薦失敗: {str(e)[:100]}", "red")
+            self.ui_manager.show_progress(False)
 
     def _update_file_with_recommendations(self, file_path, df_result, recommendations):
         """更新檔案並添加 AI 推薦"""
@@ -437,10 +494,7 @@ class ErrorCodeTool:
             
         except Exception as e:
             logger.error(f"顯示 AI PROMPT 時發生錯誤: {str(e)}")
-            self.ui_manager.show_error(
-                self.config_manager.get('ErrorTitle'),
-                f"顯示 AI PROMPT 失敗: {str(e)}"
-            )
+            self.ui_manager.update_status(f"顯示 AI PROMPT 失敗: {str(e)[:100]}", "red")
 
     def _copy_to_clipboard(self, text):
         """複製文字到剪貼簿"""
@@ -450,7 +504,7 @@ class ErrorCodeTool:
             self.ui_manager.show_info("成功", "PROMPT 已複製到剪貼簿")
         except Exception as e:
             logger.error(f"複製到剪貼簿時發生錯誤: {str(e)}")
-            self.ui_manager.show_error("錯誤", "複製到剪貼簿失敗")
+            self.ui_manager.update_status("複製到剪貼簿失敗", "red")
 
     def open_result_files(self):
         """開啟 compare_ERRORCODE.xlsx 檔案"""
@@ -459,10 +513,7 @@ class ErrorCodeTool:
             compare_files = FileFinder.find_compare_files()
             
             if not compare_files:
-                self.ui_manager.show_error(
-                    "未找到結果檔案",
-                    "沒有找到任何 compare_ERRORCODE.xlsx 檔案\n請先執行比對功能"
-                )
+                self.ui_manager.update_status("未找到結果檔案，請先執行比對功能", "red")
                 return
             
             # 顯示找到的檔案資訊
@@ -474,20 +525,14 @@ class ErrorCodeTool:
                 # 只有一個檔案，直接開啟
                 file_path = compare_files[0]
                 self._open_file(file_path)
-                self.ui_manager.show_info(
-                    "檔案已開啟",
-                    f"已開啟結果檔案：\n{os.path.basename(file_path)}\n\n檔案路徑：\n{file_path}"
-                )
+                self.ui_manager.update_status(f"已開啟結果檔案：{os.path.basename(file_path)}", "green")
             else:
                 # 多個檔案，讓使用者選擇
                 self._show_file_selection_dialog(compare_files)
                 
         except Exception as e:
             logger.error(f"開啟結果檔案時發生錯誤: {str(e)}")
-            self.ui_manager.show_error(
-                "開啟檔案失敗",
-                f"開啟結果檔案時發生錯誤：{str(e)}"
-            )
+            self.ui_manager.update_status(f"開啟檔案失敗: {str(e)[:100]}", "red")
 
     def _show_file_selection_dialog(self, files):
         """顯示檔案選擇對話框"""
@@ -537,12 +582,9 @@ class ErrorCodeTool:
                     file_path = files[index]
                     self._open_file(file_path)
                     selection_window.destroy()
-                    self.ui_manager.show_info(
-                        "檔案已開啟",
-                        f"已開啟結果檔案：\n{os.path.basename(file_path)}"
-                    )
+                    self.ui_manager.update_status(f"已開啟結果檔案：{os.path.basename(file_path)}", "green")
                 else:
-                    self.ui_manager.show_error("請選擇檔案", "請先選擇要開啟的檔案")
+                    self.ui_manager.update_status("請先選擇要開啟的檔案", "orange")
             
             open_btn = tk.Button(button_frame, text="開啟", command=open_selected)
             open_btn.pack(side=tk.LEFT, padx=5)
@@ -559,10 +601,7 @@ class ErrorCodeTool:
             
         except Exception as e:
             logger.error(f"顯示檔案選擇對話框時發生錯誤: {str(e)}")
-            self.ui_manager.show_error(
-                "顯示選擇對話框失敗",
-                f"顯示檔案選擇對話框時發生錯誤：{str(e)}"
-            )
+            self.ui_manager.update_status(f"顯示選擇對話框失敗: {str(e)[:100]}", "red")
 
     def _open_file(self, file_path):
         """開啟檔案"""
@@ -587,10 +626,7 @@ class ErrorCodeTool:
             try:
                 subprocess.run(["start", file_path], shell=True, check=True)
             except:
-                self.ui_manager.show_error(
-                    "開啟檔案失敗",
-                    f"無法開啟檔案：{file_path}\n請手動開啟檔案"
-                )
+                self.ui_manager.update_status(f"無法開啟檔案：{os.path.basename(file_path)}，請手動開啟", "red")
 
     def run(self):
         """啟動主視窗事件迴圈"""

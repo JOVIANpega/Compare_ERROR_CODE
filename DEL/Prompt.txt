@@ -1,0 +1,148 @@
+
+
+
+寫一個UI
+第一個按鈕 可以找到excel檔案，並載入sheet 名稱為Test Item All 的所有內容
+這個UI有一個輸入欄位 可以讓我填我想找的字串，例如 BT 例如電壓 不分中英文
+第二個按鈕 執行，可以把這個字串拿去找Test Item All的所有內容
+當找到時 列出所有跟字串有關的 error code 那一整行，全部列出 
+例如
+WUIF014,	Write_NV_To_Phone FAIL	,Write_NV_To_Phone 失敗,	Rev.2.00,	E00IF002049,	R2.00_Sam1 Hsu(許祐銓_Pegatron) add
+你覺得應該用哪一種方式顯示 對於USER來說最清楚呢
+我只是要確認這個字串 該用哪一個error code (ex:WUIF014 ,Write_NV_To_Phone FAIL)
+
+幫我規劃演算法
+
+
+Excel Error Code 查詢工具 — UI 與搜尋演算法
+1. UI 初始化
+建立主視窗（可調整大小）。
+加入三個主要元件：
+「選擇 Excel 檔案」按鈕
+查詢字串輸入欄位
+「搜尋」按鈕
+結果顯示表格（Treeview）
+2. 選擇 Excel 檔案
+按下「選擇 Excel 檔案」按鈕，開啟檔案選擇器。
+取得檔案路徑，讀取 Excel 檔案。
+用 pandas 讀取 sheet 名稱為 Test Item All 的內容，存成 DataFrame。
+3. 輸入查詢字串
+使用者在輸入欄位輸入要查找的字串（支援中英文、模糊搜尋）。
+4. 搜尋流程
+按下「搜尋」按鈕時：
+取得輸入的查詢字串。
+對 DataFrame 的所有欄位做「模糊搜尋」：
+用 str.contains(查詢字串, case=False, na=False)，忽略大小寫。
+對每一 row 檢查是否有任一 cell 包含查詢字串。
+收集所有符合條件的 row。
+5. 顯示搜尋結果
+清空原本的表格內容。
+將所有符合條件的 row 逐行插入 Treeview 表格。
+將 error code 欄位放在最前面，並用 tag 高亮整行（如淡黃色底色）。
+若無結果，顯示「查無資料」。
+6. 進階功能（可選）
+支援複製 error code 或整行內容。
+支援多關鍵字搜尋（如有需要）。
+記憶上次開啟的檔案路徑。
+演算法流程圖（文字版）
+UI 初始化
+[按鈕] 選擇 Excel 檔案 → 讀取 Test Item All → DataFrame
+[輸入] 查詢字串
+[按鈕] 搜尋
+取得查詢字串
+DataFrame 每一 row 是否有 cell 包含查詢字串？
+是 → 收集 row
+顯示所有符合 row（表格，error code 欄位高亮）
+若無結果，顯示「查無資料」
+關鍵函式/步驟
+pandas.read_excel(file_path, sheet_name='Test Item All')
+df.apply(lambda row: row.astype(str).str.contains(query, case=False, na=False).any(), axis=1)
+ttk.Treeview 插入 row，tag 設定高亮
+
+
+同時整合新功能（excel_errorcode_search_ui.py）到 main.py，設計按鍵去啟動工具！再按一下就關閉
+查詢字串提供3個 ，比對的時候不需要三個都填寫 只要針對填寫的內容去做搜尋
+搜尋可以用ENTER去啟動
+例如 我可以輸入 電壓 失敗
+那UI就可以去查詢同時有這兩個字串的ROW 並提供給我
+需要有下拉BAR可以方便下拉
+鍵盤的上下左右要能夠控制UI
+文字大小可以讓USER去控制使用+-的方式
+點選字串 按屬標右鍵 產生備份字串 方便我貼到其他文件上
+做成左右視窗，左邊是控制 右邊是顯示
+
+===========================
+有兩個excel 檔案 
+excel 1:
+一個是error code 的說明文件 ，名稱一般是 Test Item Code XXX.xml ，其中一個sheet =Test Item All ，這邊的內容是包含ERROR CODE 跟對應的文字意思
+例如：
+WUIF019	,GET WLAN Version FAIL,	讀取 WLAN Version 失敗
+WUIF020,	Compare HW version FAIL,	比對 HW version 不一致
+
+excel2:
+這個是我提供的檔案 ，通常在O 行Description ， P 行 TestID 會填上error code 和對應的解釋名詞
+
+我想要做是，當我UI打開來以後，UI 可以顯示 excel 2的 所有SHEET，讓我決定是誰要去跟excel 比對
+例如 excel 2 的Function 的O 行 Description ， P 行 TestID是我要跟excel比對的
+當我按下執行 
+會產生新一個新的excel 檔案－命名的名稱是 excel 2的名稱＿compare ERRORCODE.xml
+這邊會先將O 行 Description ， P 行 TestID 先複製到excel 3的AB行
+然後
+程式就會去去找出excel 1 的檔案 名稱一般是 Test Item Code XXX.xml
+把我的excel 2 的 P行的每一個數值 例如 B7PL025 對應到 excel 1 的 CDE行就是B7PL025,Test program can not running,測試程式無反應
+我要這個UI可以把excel 1 的對應欄位的內容，全部COPY 到新的excel3的欄位CED行
+
+檔案覆蓋詢問：如果產生的檔案已經存在，會詢問是否要覆蓋，否則取消儲存。
+AB 欄位只保留 Description 和 TestID：產生的新檔案，AB 兩欄就是來源的 Description 和 TestID，和您截圖一致。
+
+幫我思考一下演算法要怎麼表達 可以讓AI理解
+ 
+
+
+＝＝＝＝
+
+我來幫您分析這個需求並設計演算法。讓我們將這個問題分解成幾個主要步驟：
+UI 部分:
+需要一個介面來選擇和顯示 Excel 2 的所有工作表
+需要一個按鈕來執行比對操作
+需要一個選擇 Excel 1 (Test Item Code XML) 的功能
+檔案處理流程:
+Apply to error_code_c...
+比對邏輯:
+Apply to error_code_c...
+具體實現步驟:
+Apply to error_code_c...
+錯誤處理:
+Apply to error_code_c...
+輸出格式:
+Apply to error_code_c...
+這個演算法的主要優點是：
+清晰的步驟劃分
+使用字典進行快速查找
+保持原始數據的完整性
+提供清晰的錯誤處理機制
+可擴展性好
+
+
+
+
+
+
+
+
+
+＝＝＝＝＝＝＝＝＝＝＝＝
+promp2
+
+將來源的excel  sheet  "Test Item All" 完整COPY到 xxxcompare.xmls 的 sheet 2 名稱保留為 "Test Item All" 
+按鈕文字設定為12
+
+＝＝＝＝＝＝＝＝＝＝＝＝
+promp3
+
+選擇測試站LABEL旁有一個按鈕改名稱為 "建議分析"的按鈕 
+當我按下時 可以選擇已經產生的compare檔案 (只能選擇compare 檔案)
+程式會去比對AB 欄位的英文 自動跟來源的XML檔案去比對 有沒有相似名稱的並且
+
+
+

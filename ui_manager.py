@@ -34,7 +34,7 @@ class ToolTip:
         tw.wm_geometry(f"+{x}+{y}")
         label = tk.Label(tw, text=self.text, justify='left',
                         background="#ffffe0", relief='solid',
-                        borderwidth=1, font=("Calibri", 10))
+                        borderwidth=1, font=("Calibri", 11))
         label.pack(ipadx=4)
 
     def hide_tip(self, event=None):
@@ -122,11 +122,14 @@ class UIManager:
         self._create_widgets()
         self.font_size = int(self.config_manager.get('FontSize', 11))
         self.set_all_font_size(self.font_size)
+        
+        # 自動載入上次的檔案
+        self._auto_load_last_files()
 
     def _setup_styles(self):
         """設定UI樣式（按鈕顏色、字型等）"""
         self.style.configure("Big.TButton",
-                           font=("Microsoft JhengHei", 16),
+                           font=("Microsoft JhengHei", 11),
                            padding=10,
                            foreground="#fff",
                            background="#3399ff")
@@ -252,7 +255,7 @@ class UIManager:
         status_frame.grid(row=row, column=0, columnspan=3, pady=(10, 0), sticky='ew')
         
         # 狀態標籤
-        status_label = tb.Label(status_frame, text="狀態:", font=("Microsoft JhengHei", 9, "bold"))
+        status_label = tb.Label(status_frame, text="狀態:", font=("Microsoft JhengHei", 11, "bold"))
         status_label.pack(side=tk.LEFT, padx=(0, 5))
         
         # 狀態顯示區域
@@ -260,16 +263,70 @@ class UIManager:
             status_frame, 
             text="就緒", 
             foreground="blue",
-            font=("Microsoft JhengHei", 9),
+            font=("Microsoft JhengHei", 11),
             wraplength=400,
             justify=tk.LEFT
         )
         self.status_label.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        
+        # 進度條
+        self.progress_bar = tb.Progressbar(
+            status_frame,
+            mode='determinate',
+            length=200,
+            bootstyle="info"
+        )
+        self.progress_bar.pack(side=tk.RIGHT, padx=(10, 0))
+
+    def _auto_load_last_files(self):
+        """自動載入上次使用的檔案"""
+        try:
+            # 載入上次的 Error Code 檔案
+            last_xml_file = self.config_manager.get('LastXMLFile')
+            if last_xml_file and os.path.exists(last_xml_file):
+                self.excel1_path = last_xml_file
+                self.excel1_entry.delete(0, 'end')
+                self.excel1_entry.insert(0, last_xml_file)
+                logger.info(f"自動載入 Error Code 檔案: {last_xml_file}")
+                self.update_status(f"已載入 Error Code 檔案: {os.path.basename(last_xml_file)}", "green")
+            
+            # 載入上次的來源 Excel 檔案
+            last_excel_file = self.config_manager.get('LastExcelFile')
+            if last_excel_file and os.path.exists(last_excel_file):
+                self.excel2_path = last_excel_file
+                self.excel2_entry.delete(0, 'end')
+                self.excel2_entry.insert(0, last_excel_file)
+                logger.info(f"自動載入來源 Excel 檔案: {last_excel_file}")
+                self.update_status(f"已載入來源檔案: {os.path.basename(last_excel_file)}", "green")
+                
+                # 自動載入工作表
+                if self.sheet_load_callback:
+                    self.sheet_load_callback(last_excel_file)
+                    
+        except Exception as e:
+            logger.warning(f"自動載入檔案時發生錯誤: {e}")
+            self.update_status("自動載入檔案失敗，請手動選擇", "orange")
 
     def update_status(self, message: str, color: str = "blue"):
         """更新狀態列訊息"""
         if hasattr(self, 'status_label'):
             self.status_label.config(text=message, foreground=color)
+            self.root.update_idletasks()
+
+    def update_progress(self, value: int, max_value: int = 100):
+        """更新進度條"""
+        if hasattr(self, 'progress_bar'):
+            self.progress_bar['maximum'] = max_value
+            self.progress_bar['value'] = value
+            self.root.update_idletasks()
+
+    def show_progress(self, show: bool = True):
+        """顯示或隱藏進度條"""
+        if hasattr(self, 'progress_bar'):
+            if show:
+                self.progress_bar.pack(side=tk.RIGHT, padx=(10, 0))
+            else:
+                self.progress_bar.pack_forget()
             self.root.update_idletasks()
 
     def set_all_font_size(self, size: int):
@@ -312,6 +369,8 @@ class UIManager:
             self.excel1_entry.delete(0, 'end')
             self.excel1_entry.insert(0, filename)
             self.config_manager.update_last_paths(xml_path=os.path.dirname(filename))
+            # 記錄具體的檔案名稱
+            self.config_manager.set('LastXMLFile', filename)
             self.last_dir = os.path.dirname(filename)  # 仍保留給excel2用
             logger.info(f"選擇錯誤碼XML檔案: {filename}")
 
@@ -329,6 +388,8 @@ class UIManager:
             self.excel2_entry.delete(0, 'end')
             self.excel2_entry.insert(0, filename)
             self.config_manager.update_last_paths(excel_path=os.path.dirname(filename))
+            # 記錄具體的檔案名稱
+            self.config_manager.set('LastExcelFile', filename)
             logger.info(f"選擇來源Excel檔案: {filename}")
             if self.sheet_load_callback:
                 self.sheet_load_callback(filename)

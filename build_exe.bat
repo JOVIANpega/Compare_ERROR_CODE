@@ -5,59 +5,24 @@ echo ========================================
 
 REM 設定變數
 set APP_NAME=ErrorCodeComparer
-set BUILD_DIR=build_exe
 set DIST_DIR=dist_exe
 
 echo.
 echo 1. 清理舊的建置檔案...
-if exist %BUILD_DIR% rmdir /s /q %BUILD_DIR%
 if exist %DIST_DIR% rmdir /s /q %DIST_DIR%
+if exist build rmdir /s /q build
+if exist dist rmdir /s /q dist
 
 echo.
-echo 2. 創建建置目錄...
-mkdir %BUILD_DIR%
+echo 2. 創建發佈目錄...
 mkdir %DIST_DIR%
 
 echo.
-echo 3. 複製必要檔案到建置目錄...
-copy "main.py" "%BUILD_DIR%\"
-copy "ui_manager.py" "%BUILD_DIR%\"
-copy "excel_handler.py" "%BUILD_DIR%\"
-copy "ai_recommendation_engine.py" "%BUILD_DIR%\"
-copy "ai_prompt_templates.py" "%BUILD_DIR%\"
-copy "file_finder.py" "%BUILD_DIR%\"
-copy "config_manager.py" "%BUILD_DIR%\"
-copy "error_code_compare.py" "%BUILD_DIR%\"
-copy "excel_errorcode_search_ui.py" "%BUILD_DIR%\"
-copy "VERSION.py" "%BUILD_DIR%\"
-copy "version_tool.py" "%BUILD_DIR%\"
-copy "version_config.py" "%BUILD_DIR%\"
-copy "version_manager.py" "%BUILD_DIR%\"
-copy "update_version.py" "%BUILD_DIR%\"
-copy "requirements.txt" "%BUILD_DIR%\"
-copy "pal.ico" "%BUILD_DIR%\"
-
-echo.
-echo 4. 複製 guide_popup 目錄...
-xcopy "guide_popup" "%BUILD_DIR%\guide_popup\" /E /I
-
-echo.
-echo 5. 複製 EXCEL 目錄（範例檔案）...
-xcopy "EXCEL" "%BUILD_DIR%\EXCEL\" /E /I
-
-echo.
-echo 6. 複製文檔檔案...
-copy "README.md" "%BUILD_DIR%\"
-copy "VERSION_USAGE.md" "%BUILD_DIR%\"
-copy "AI_RECOMMENDATION_USAGE.md" "%BUILD_DIR%\"
-
-echo.
-echo 7. 安裝 PyInstaller（如果尚未安裝）...
+echo 3. 安裝 PyInstaller（如果尚未安裝）...
 pip install pyinstaller
 
 echo.
-echo 8. 使用 PyInstaller 打包...
-cd %BUILD_DIR%
+echo 4. 使用 PyInstaller 打包...
 pyinstaller --onefile ^
     --windowed ^
     --icon=pal.ico ^
@@ -75,12 +40,11 @@ pyinstaller --onefile ^
     main.py
 
 echo.
-echo 9. 複製執行檔到發佈目錄...
-copy "dist\%APP_NAME%.exe" "..\%DIST_DIR%\"
-cd ..
+echo 5. 複製執行檔到發佈目錄...
+copy "dist\%APP_NAME%.exe" "%DIST_DIR%\"
 
 echo.
-echo 10. 複製額外檔案到發佈目錄...
+echo 6. 複製額外檔案到發佈目錄...
 copy "pal.ico" "%DIST_DIR%\"
 copy "README.md" "%DIST_DIR%\"
 copy "VERSION_USAGE.md" "%DIST_DIR%\"
@@ -89,17 +53,23 @@ xcopy "guide_popup" "%DIST_DIR%\guide_popup\" /E /I
 xcopy "EXCEL" "%DIST_DIR%\EXCEL\" /E /I
 
 echo.
-echo 11. 創建啟動腳本...
+echo 7. 創建啟動腳本...
 echo @echo off > "%DIST_DIR%\start.bat"
 echo echo 啟動 Error Code Comparer... >> "%DIST_DIR%\start.bat"
 echo %APP_NAME%.exe >> "%DIST_DIR%\start.bat"
 echo pause >> "%DIST_DIR%\start.bat"
 
 echo.
-echo 12. 創建版本資訊檔案...
+echo 8. 創建版本資訊檔案...
 echo Error Code Comparer v1.5.0 > "%DIST_DIR%\version.txt"
 echo 建置日期: %date% %time% >> "%DIST_DIR%\version.txt"
 echo 建置環境: Windows >> "%DIST_DIR%\version.txt"
+
+echo.
+echo 9. 清理 PyInstaller 臨時檔案...
+if exist build rmdir /s /q build
+if exist dist rmdir /s /q dist
+if exist *.spec del *.spec
 
 echo.
 echo ========================================

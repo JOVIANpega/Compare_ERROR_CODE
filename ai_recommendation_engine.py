@@ -78,25 +78,33 @@ class AIRecommendationEngine:
                 # 使用內建邏輯生成推薦
                 recommendations = self._generate_recommendations_internal(descriptions)
             
+            if progress_callback:
+                progress_callback(total, total, "AI 推薦分析完成")
+            
             logger.info(f"成功生成 {len(recommendations)} 個 AI 推薦")
             return recommendations
         except Exception as e:
             logger.error(f"生成 AI 推薦時發生錯誤: {str(e)}")
             return []
 
-    def generate_recommendations_with_search(self, descriptions: List[str]) -> List[Tuple[str, str]]:
+    def generate_recommendations_with_search(self, descriptions: List[str], progress_callback=None) -> List[Tuple[str, str]]:
         """
         使用錯誤碼查詢邏輯生成推薦
         
         Args:
             descriptions: 描述列表
+            progress_callback: 進度回調函數，格式為 callback(current, total, message)
             
         Returns:
             List[Tuple[str, str]]: 推薦的 Test ID 對
         """
         recommendations = []
+        total = len(descriptions)
         
-        for description in descriptions:
+        for i, description in enumerate(descriptions):
+            if progress_callback:
+                progress_callback(i, total, f"分析描述 {i+1}/{total}: {description[:30]}...")
+            
             if not description or not description.strip():
                 recommendations.append(("", ""))
                 continue

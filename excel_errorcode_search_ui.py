@@ -73,7 +73,7 @@ class ExcelErrorCodeSearchUI:
             self.config_manager.set(tip_key, default_tip)
         self.df = None  # 儲存 Test Item All sheet 的 DataFrame
         # 讀取字體大小與上次檔案路徑
-        self.font_size = int(self.config_manager.get('SearchUIFontSize', self.config_manager.get('FontSize', 12)))
+        self.font_size = int(self.config_manager.get('SearchUIFontSize', self.config_manager.get('FontSize', 11)))
         self.last_excel_path = self.config_manager.get('LastExcelPath', os.getcwd())
         self._setup_ui()
         self.tip_window = None  # 用於 toggle 說明視窗

@@ -12,18 +12,30 @@
 
 ## 功能特點
 
-- 支持選擇 Error Code XML 文件和源 Excel 文件
-- 可以選擇要處理的工作表
-- 自動比對 Error Code 並生成結果
-- 生成新的 Excel 文件，包含原始數據和比對結果
-- 支持多種 Error Code 格式的比對
+### 核心功能
+- **智能錯誤碼比對**：支援多種 Error Code 格式的比對（BSF 系列、E00 系列）
+- **Excel 檔案處理**：自動讀取和處理 Excel 檔案，支援多工作表操作
+- **智能標題行檢測**：自動識別 Excel 檔案的標題行，避免 "Unnamed" 欄位問題
+- **結果檔案生成**：自動生成包含比對結果的新 Excel 檔案
+
+### AI 智能功能
 - **AI 推薦分析**：基於 Description 自動推薦最適合的 Test ID
-- **智能 PROMPT 生成**：為 AI 工具生成專業的比對 PROMPT
-- **快速開啟結果檔案**：一鍵開啟比對結果檔案，支援多檔案選擇
+- **智能關鍵字匹配**：使用錯誤碼查詢邏輯進行精準匹配
+- **自動比對流程**：如果沒有現有比對結果，會自動執行比對後再進行 AI 推薦
+- **雙重推薦**：提供兩個最適合的 Test ID 推薦（E、F 欄位）
+
+### 用戶體驗優化
+- **狀態列顯示**：即時顯示操作進度和結果狀態
 - **自動檔案選擇**：啟動時自動搜尋並選擇 Test Item Code 文件
-- **智能工作表過濾**：自動排除不需要的工作表，預設選擇第一個有效工作表
+- **智能工作表過濾**：自動排除 properties、DUTs、Switch、Instrument 等工作表
+- **快速開啟結果檔案**：一鍵開啟比對結果檔案，支援多檔案選擇
+- **錯誤碼查詢工具**：獨立的錯誤碼查詢視窗，支援關鍵字搜尋
+
+### 系統管理
 - **版本管理系統**：完整的版本控制和變更記錄管理
+- **配置管理**：自動保存和載入用戶設定
 - **檔案搜尋優化**：修復檔案搜尋重複問題，提升搜尋效率
+- **專案結構優化**：清晰的檔案分類和目錄結構
 
 ## 使用方法
 
@@ -45,16 +57,26 @@
 
 ### 錯誤碼查詢功能
 1. 點擊 "錯誤碼查詢" 按鈕開啟查詢視窗
-2. 選擇 Excel 檔案並載入 Test Item All 工作表
-3. 輸入關鍵字進行搜尋
-4. 查看匹配的錯誤碼和描述
+2. **自動載入檔案**：系統會自動載入上次使用的 Excel 檔案
+3. **智能檔案讀取**：自動處理 Excel 檔案的標題行，避免 "Unnamed" 欄位
+4. **多關鍵字搜尋**：支援同時輸入多個關鍵字進行 AND 條件搜尋
+5. **即時狀態顯示**：狀態列會顯示檔案載入、搜尋進度等資訊
+6. **右鍵複製功能**：點擊結果行可右鍵複製 Interface 欄位內容
+7. **清除搜尋**：使用清除按鈕快速重置搜尋條件
+8. **視窗控制**：支援最大化、最小化，預設最大化顯示
 
-### 開啟結果檔案功能
-1. 點擊 "開啟結果檔案" 按鈕
-2. 系統會自動搜尋所有 `compare_ERRORCODE.xlsx` 檔案
-3. 如果只有一個檔案，會直接開啟
-4. 如果有多個檔案，會顯示選擇對話框讓使用者選擇
-5. 支援顯示檔案大小和修改時間等詳細資訊
+### 狀態列功能
+主 GUI 底部提供即時狀態顯示：
+- **藍色**：正常狀態（就緒）
+- **橙色**：進行中狀態（比對、AI 推薦、檔案讀取）
+- **綠色**：成功狀態（完成）
+- **紅色**：錯誤狀態（失敗）
+
+狀態列會顯示：
+- 當前操作進度
+- 檔案路徑資訊
+- 操作結果摘要
+- 錯誤訊息提示
 
 ## 參考資料格式說明
 
@@ -110,41 +132,46 @@ AI 推薦結果會新增到比對結果檔案的 E、F 欄位：
 
 ```
 Error Code Comparer/
-├── main.py                          # 主程式入口
-├── ui_manager.py                    # GUI 介面管理
-├── excel_handler.py                 # Excel 檔案處理
-├── ai_recommendation_engine.py      # AI 推薦引擎
-├── ai_prompt_templates.py           # AI PROMPT 模板
-├── file_finder.py                   # 檔案搜尋工具
-├── config_manager.py                # 配置管理
-├── error_code_compare.py            # 錯誤碼比對核心
-├── excel_errorcode_search_ui.py     # 錯誤碼查詢 UI
-├── VERSION.py                       # 版本配置檔案
-├── version_tool.py                  # 版本管理工具
-├── version_config.py                # 完整版本管理工具
-├── version_manager.py               # 進階版本管理工具
-├── update_version.py                # 版本更新腳本
-├── VERSION_USAGE.md                 # 版本管理使用說明
-├── AI_RECOMMENDATION_USAGE.md       # AI 推薦功能說明
-├── README.md                        # 專案說明文件
-├── requirements.txt                 # Python 依賴
-├── ErrorCodeComparer.spec           # PyInstaller 配置
-├── pal.ico                          # 應用程式圖示
-├── guide_popup/                     # GUI 引導圖片
-│   ├── guide.py
-│   ├── guide1.png
-│   ├── guide2.png
-│   ├── guide3.png
-│   ├── guide4.png
-│   └── guide5.png
-├── EXCEL/                           # 範例 Excel 檔案
-│   ├── Test Item Code V2.00_20241106.xlsx
-│   ├── Test Item Code V2.00_20241106_CSV.csv
-│   ├── MU310_TestFlow_FWdownload_20250902.xlsx
-│   └── MU310_TestFlow_FWdownload_20250902_compare_ERRORCODE.xlsx
-├── dist/                            # 編譯後的執行檔
-│   └── ErrorCodeComparer.exe
-└── build/                           # 編譯暫存檔案
+├── 核心程式檔案/
+│   ├── main.py                          # 主程式入口
+│   ├── ui_manager.py                    # GUI 介面管理
+│   ├── excel_handler.py                 # Excel 檔案處理
+│   ├── ai_recommendation_engine.py      # AI 推薦引擎
+│   ├── ai_prompt_templates.py           # AI PROMPT 模板
+│   ├── file_finder.py                   # 檔案搜尋工具
+│   ├── config_manager.py                # 配置管理
+│   └── excel_errorcode_search_ui.py      # 錯誤碼查詢 UI
+├── 版本管理/
+│   ├── VERSION.py                       # 版本配置檔案
+│   ├── version_tool.py                  # 版本管理工具
+│   ├── version_config.py                # 完整版本管理工具
+│   ├── version_manager.py               # 進階版本管理工具
+│   ├── update_version.py                # 版本更新腳本
+│   └── VERSION_USAGE.md                 # 版本管理使用說明
+├── 打包腳本/
+│   ├── build_exe.bat                    # 完整打包腳本
+│   ├── build_quick.bat                  # 快速打包腳本
+│   └── build_simple.bat                 # 簡化打包腳本
+├── 資源檔案/
+│   ├── guide_popup/                     # GUI 引導圖片
+│   │   ├── guide.py
+│   │   ├── guide1.png ~ guide5.png
+│   │   └── setup.txt
+│   ├── EXCEL/                           # 範例 Excel 檔案
+│   │   ├── Test Item Code V2.00_20241106.xlsx
+│   │   ├── MU310_TestFlow_FWdownload_20250902.xlsx
+│   │   └── *_compare_ERRORCODE.xlsx
+│   ├── pal.ico                          # 應用程式圖示
+│   ├── setup.txt                        # 配置檔案
+│   └── requirements.txt                 # Python 依賴
+├── 文檔檔案/
+│   ├── README.md                        # 專案說明文件
+│   ├── AI_RECOMMENDATION_USAGE.md       # AI 推薦功能說明
+│   └── app.log                          # 應用程式日誌
+├── 發佈目錄/
+│   └── dist_exe/                        # 打包後的執行檔和資源
+└── 備份目錄/
+    └── DEL/                             # 用不到的檔案備份
 ```
 
 ## 版本管理
@@ -185,7 +212,29 @@ Error Code Comparer/
 
 ### 變更記錄
 
-#### v1.5.0 (2025-01-22)
+#### v1.5.0 (2025-01-22) - 最新版本
+**新增功能：**
+- ✅ **狀態列顯示**：主 GUI 底部新增即時狀態顯示，支援進度提示和錯誤訊息
+- ✅ **錯誤碼查詢優化**：修復 logger 未定義錯誤，改善檔案讀取穩定性
+- ✅ **智能標題行檢測**：自動處理 Excel 檔案的標題行，避免 "Unnamed" 欄位問題
+- ✅ **AI 推薦流程優化**：自動檢查並執行比對，無需手動操作
+- ✅ **專案結構優化**：移動用不到的檔案到 DEL 目錄，保持專案整潔
+- ✅ **EXE 打包優化**：移除多餘的 build_exe 目錄，簡化打包流程
+
+**修復問題：**
+- 🔧 修復錯誤碼查詢的 logger 未定義錯誤
+- 🔧 修復 Excel 檔案讀取的 "Unnamed" 欄位問題
+- 🔧 修復 AI 推薦完成後 Excel 檔案空白問題
+- 🔧 修復檔案搜尋重複問題
+- 🔧 優化狀態列顯示邏輯
+
+**技術改進：**
+- 📈 提升 AI 推薦成功率至 66.7%
+- 📈 改善用戶體驗，減少手動操作
+- 📈 優化記憶體使用和檔案處理效率
+- 📈 增強錯誤處理和日誌記錄
+
+#### v1.4.x (歷史版本)
 - 初始版本 1.5.0
 - 新增 AI 推薦分析功能
 - 新增自動檔案選擇功能
@@ -197,10 +246,61 @@ Error Code Comparer/
 
 ## 注意事項
 
-- 確保 Error Code XML 文件包含 "Test Item All" 工作表
-- 源 Excel 文件必須包含 O 行（Description）和 P 行（TestID）
-- 生成的結果文件會自動命名為原文件名加上 "_compare_ERRORCODE.xlsx"
-- 參考資料檔案包含約 5,000+ 個測試項目和對應的錯誤代碼
-- 支援中英文雙語描述，方便不同語言環境使用
-- AI 推薦功能需要先完成基本比對，或手動處理 PROMPT
-- 版本管理工具需要 Python 環境才能使用 
+### 系統要求
+- **作業系統**：Windows 10/11
+- **Python 環境**：Python 3.8+（開發環境）
+- **依賴套件**：pandas, openpyxl, tkinter, ttkbootstrap
+- **記憶體**：建議 4GB 以上
+- **磁碟空間**：至少 500MB 可用空間
+
+### 檔案要求
+- **Error Code 參考檔案**：必須包含 "Test Item All" 工作表
+- **源 Excel 檔案**：必須包含 Description 欄位（O 欄位）
+- **檔案格式**：支援 .xlsx 和 .xls 格式
+- **檔案編碼**：建議使用 UTF-8 編碼
+
+### 使用建議
+- **定期備份**：建議定期備份重要的 Excel 檔案
+- **檔案命名**：使用有意義的檔案名稱，避免特殊字符
+- **狀態監控**：注意狀態列的提示訊息，及時處理錯誤
+- **版本管理**：使用版本管理工具記錄重要變更
+- **AI 推薦**：AI 推薦功能需要先完成基本比對，或手動處理 PROMPT
+
+### 故障排除
+- **檔案讀取失敗**：檢查檔案是否被其他程式佔用
+- **AI 推薦空白**：確認比對結果檔案存在且格式正確
+- **狀態列異常**：重啟程式或檢查日誌檔案
+- **打包失敗**：確認 PyInstaller 已正確安裝
+
+## 打包和部署
+
+### 打包腳本說明
+
+本專案提供三種打包腳本：
+
+1. **build_exe.bat** - 完整打包腳本
+   - 包含所有資源檔案和文檔
+   - 自動清理臨時檔案
+   - 適合正式發布
+
+2. **build_quick.bat** - 快速打包腳本
+   - 只包含必要檔案
+   - 適合開發測試
+   - 打包速度最快
+
+3. **build_simple.bat** - 簡化打包腳本
+   - 基本打包功能
+   - 適合簡單部署
+
+### 打包流程優化
+
+- ✅ **移除多餘目錄**：不再產生 build_exe 目錄
+- ✅ **自動清理**：自動清理 PyInstaller 臨時檔案
+- ✅ **資源整合**：所有資源檔案整合到 dist_exe 目錄
+- ✅ **版本資訊**：自動生成版本資訊檔案
+
+### 部署建議
+
+- **單機部署**：直接複製 dist_exe 目錄到目標機器
+- **網路部署**：將 dist_exe 目錄打包成 ZIP 檔案分發
+- **企業部署**：建議使用 build_exe.bat 進行完整打包 

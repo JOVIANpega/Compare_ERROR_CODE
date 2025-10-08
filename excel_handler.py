@@ -187,43 +187,40 @@ class ExcelHandler:
             bool: 是否成功
         """
         try:
-            # 讀取現有檔案
-            df_existing = pd.read_excel(file_path, sheet_name=0)  # 讀取第一個工作表
+            # 讀取現有檔案，保持原有格式
+            df_existing = pd.read_excel(file_path, sheet_name=0, engine='openpyxl')
             
             logger.info(f"讀取現有檔案，欄位: {list(df_existing.columns)}")
             logger.info(f"現有檔案資料形狀: {df_existing.shape}")
             
+            # 確保 ai_recommendations 長度與 DataFrame 行數一致
+            if len(ai_recommendations) != len(df_existing):
+                logger.warning(f"AI 推薦數量 ({len(ai_recommendations)}) 與 DataFrame 行數 ({len(df_existing)}) 不一致")
+                # 補齊不足的推薦
+                while len(ai_recommendations) < len(df_existing):
+                    ai_recommendations.append(("", ""))
+                # 截斷多餘的推薦
+                ai_recommendations = ai_recommendations[:len(df_existing)]
+            
             # 檢查是否已經有 AI 推薦欄位
             if 'AI推薦 test ID 1' in df_existing.columns and 'AI推薦 test ID 2' in df_existing.columns:
                 logger.info("檔案已包含 AI 推薦欄位，將更新現有欄位")
-                df_existing['AI推薦 test ID 1'] = [rec[0] for rec in ai_recommendations[:len(df_existing)]]
-                df_existing['AI推薦 test ID 2'] = [rec[1] for rec in ai_recommendations[:len(df_existing)]]
+                df_existing['AI推薦 test ID 1'] = [rec[0] for rec in ai_recommendations]
+                df_existing['AI推薦 test ID 2'] = [rec[1] for rec in ai_recommendations]
             else:
-                # 新增 AI 推薦欄位
-                df_existing = self._add_ai_recommendations(df_existing, ai_recommendations)
+                # 新增 AI 推薦欄位到最後
+                logger.info("新增 AI 推薦欄位")
+                df_existing['AI推薦 test ID 1'] = [rec[0] for rec in ai_recommendations]
+                df_existing['AI推薦 test ID 2'] = [rec[1] for rec in ai_recommendations]
             
-            # 嘗試讀取 Test Item All 工作表
-            df_error_codes = None
-            try:
-                df_error_codes = pd.read_excel(file_path, sheet_name='Test Item All')
-                logger.info("成功讀取 Test Item All 工作表")
-            except Exception as e:
-                logger.warning(f"無法讀取 Test Item All 工作表: {e}")
-                # 如果沒有 Test Item All 工作表，創建一個空的
-                df_error_codes = pd.DataFrame()
-            
-            # 儲存更新後的檔案
+            # 使用 openpyxl 引擎保存，保持原有格式
             with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
-                df_existing.to_excel(writer, index=False, sheet_name=0)
-                if df_error_codes is not None and not df_error_codes.empty:
-                    df_error_codes.to_excel(writer, index=False, sheet_name='Test Item All')
-            
-            # 重新格式化檔案
-            highlight_testids = [str(tid).strip() for tid in df_existing['你寫的 Error Code']]
-            self._format_excel(file_path, highlight_testids=highlight_testids)
+                df_existing.to_excel(writer, index=False, sheet_name='Sheet1')
             
             logger.info(f"成功為現有檔案新增 AI 推薦欄位: {file_path}")
             logger.info(f"更新後資料形狀: {df_existing.shape}")
+            logger.info(f"AI 推薦欄位: {list(df_existing.columns)[-2:]}")
+            
             return True
         except Exception as e:
             logger.error(f"為現有檔案新增 AI 推薦欄位時發生錯誤: {str(e)}")
