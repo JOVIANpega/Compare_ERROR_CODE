@@ -178,60 +178,227 @@ class ExcelHandler:
     def add_ai_recommendations_to_existing_file(self, file_path: str, ai_recommendations: list) -> bool:
         """
         為現有的比對結果檔案新增 AI 推薦欄位
+        使用 openpyxl 直接操作，完全保持原有格式（包括字體和行高）
         
         Args:
             file_path: 現有檔案路徑
-            ai_recommendations: AI 推薦列表
+            ai_recommendations: AI 推薦列表，格式為 [(test_id_1, test_id_2, chinese_1, chinese_2), ...]
             
         Returns:
             bool: 是否成功
         """
         try:
-            # 讀取現有檔案，保持原有格式
-            df_existing = pd.read_excel(file_path, sheet_name=0, engine='openpyxl')
+            # 使用 openpyxl 直接載入工作簿，保持所有格式
+            wb = load_workbook(file_path)
+            ws = wb.active  # 使用第一個工作表
             
-            logger.info(f"讀取現有檔案，欄位: {list(df_existing.columns)}")
-            logger.info(f"現有檔案資料形狀: {df_existing.shape}")
+            logger.info(f"使用 openpyxl 載入檔案: {file_path}")
+            logger.info(f"工作表名稱: {ws.title}")
+            logger.info(f"工作表尺寸: {ws.max_row} 行 x {ws.max_column} 列")
             
-            # 確保 ai_recommendations 長度與 DataFrame 行數一致
-            if len(ai_recommendations) != len(df_existing):
-                logger.warning(f"AI 推薦數量 ({len(ai_recommendations)}) 與 DataFrame 行數 ({len(df_existing)}) 不一致")
+            # 確保 ai_recommendations 長度與資料行數一致
+            data_rows = ws.max_row - 1  # 減去標題行
+            if len(ai_recommendations) != data_rows:
+                logger.warning(f"AI 推薦數量 ({len(ai_recommendations)}) 與資料行數 ({data_rows}) 不一致")
                 # 補齊不足的推薦
-                while len(ai_recommendations) < len(df_existing):
-                    ai_recommendations.append(("", ""))
+                while len(ai_recommendations) < data_rows:
+                    ai_recommendations.append(("", "", "", ""))
                 # 截斷多餘的推薦
-                ai_recommendations = ai_recommendations[:len(df_existing)]
+                ai_recommendations = ai_recommendations[:data_rows]
             
             # 檢查是否已經有 AI 推薦欄位
-            if 'AI推薦 test ID 1' in df_existing.columns and 'AI推薦 test ID 2' in df_existing.columns:
-                logger.info("檔案已包含 AI 推薦欄位，將更新現有欄位")
-                df_existing['AI推薦 test ID 1'] = [rec[0] for rec in ai_recommendations]
-                df_existing['AI推薦 test ID 2'] = [rec[1] for rec in ai_recommendations]
-            else:
-                # 新增 AI 推薦欄位到最後
-                logger.info("新增 AI 推薦欄位")
-                df_existing['AI推薦 test ID 1'] = [rec[0] for rec in ai_recommendations]
-                df_existing['AI推薦 test ID 2'] = [rec[1] for rec in ai_recommendations]
+            col_e_exists = False
+            col_f_exists = False
+            col_g_exists = False
+            col_h_exists = False
+            col_e_index = None
+            col_f_index = None
+            col_g_index = None
+            col_h_index = None
             
-            # 使用 openpyxl 引擎保存，保持原有格式
-            with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
-                df_existing.to_excel(writer, index=False, sheet_name='Sheet1')
+            # 檢查 E、F、G、H 列是否已經有 AI 推薦欄位
+            for col_idx in range(1, ws.max_column + 1):
+                cell_value = ws.cell(row=1, column=col_idx).value
+                if cell_value and 'AI推薦 test ID 1' in str(cell_value):
+                    col_e_exists = True
+                    col_e_index = col_idx
+                elif cell_value and 'AI推薦 test ID 2' in str(cell_value):
+                    col_f_exists = True
+                    col_f_index = col_idx
+                elif cell_value and 'AI推薦 中文 1' in str(cell_value):
+                    col_g_exists = True
+                    col_g_index = col_idx
+                elif cell_value and 'AI推薦 中文 2' in str(cell_value):
+                    col_h_exists = True
+                    col_h_index = col_idx
+            
+            # 如果沒有 AI 推薦欄位，新增到 E、F、G、H 列
+            if not col_e_exists:
+                col_e_index = ws.max_column + 1
+                ws.cell(row=1, column=col_e_index, value='AI推薦 test ID 1')
+                logger.info(f"新增 AI推薦 test ID 1 欄位到第 {col_e_index} 列")
+            
+            if not col_f_exists:
+                col_f_index = ws.max_column + 1
+                ws.cell(row=1, column=col_f_index, value='AI推薦 test ID 2')
+                logger.info(f"新增 AI推薦 test ID 2 欄位到第 {col_f_index} 列")
+            
+            if not col_g_exists:
+                col_g_index = ws.max_column + 1
+                ws.cell(row=1, column=col_g_index, value='AI推薦 中文 1')
+                logger.info(f"新增 AI推薦 中文 1 欄位到第 {col_g_index} 列")
+            
+            if not col_h_exists:
+                col_h_index = ws.max_column + 1
+                ws.cell(row=1, column=col_h_index, value='AI推薦 中文 2')
+                logger.info(f"新增 AI推薦 中文 2 欄位到第 {col_h_index} 列")
+            
+            # 寫入 AI 推薦資料，保持原有格式
+            for row_idx, (test_id_1, test_id_2, chinese_1, chinese_2) in enumerate(ai_recommendations, start=2):  # 從第2行開始（跳過標題）
+                if col_e_index:
+                    cell_e = ws.cell(row=row_idx, column=col_e_index, value=test_id_1)
+                    # 保持與其他資料行相同的格式
+                    self._apply_data_cell_format(cell_e)
+                
+                if col_f_index:
+                    cell_f = ws.cell(row=row_idx, column=col_f_index, value=test_id_2)
+                    # 保持與其他資料行相同的格式
+                    self._apply_data_cell_format(cell_f)
+                
+                if col_g_index:
+                    cell_g = ws.cell(row=row_idx, column=col_g_index, value=chinese_1)
+                    # 保持與其他資料行相同的格式
+                    self._apply_data_cell_format(cell_g)
+                
+                if col_h_index:
+                    cell_h = ws.cell(row=row_idx, column=col_h_index, value=chinese_2)
+                    # 保持與其他資料行相同的格式
+                    self._apply_data_cell_format(cell_h)
+            
+            # 如果新增了欄位，需要為標題行應用格式
+            if not col_e_exists or not col_f_exists or not col_g_exists or not col_h_exists:
+                self._apply_header_format(ws, col_e_index if not col_e_exists else None)
+                self._apply_header_format(ws, col_f_index if not col_f_exists else None)
+                self._apply_header_format(ws, col_g_index if not col_g_exists else None)
+                self._apply_header_format(ws, col_h_index if not col_h_exists else None)
+            
+            # 自動調整 AI 推薦欄位的寬度，確保內容完整顯示
+            self._auto_adjust_column_widths(ws, col_e_index, col_f_index, col_g_index, col_h_index)
+            
+            # 保存檔案，保持所有原有格式
+            wb.save(file_path)
+            wb.close()
             
             logger.info(f"成功為現有檔案新增 AI 推薦欄位: {file_path}")
-            logger.info(f"更新後資料形狀: {df_existing.shape}")
-            logger.info(f"AI 推薦欄位: {list(df_existing.columns)[-2:]}")
+            logger.info(f"AI推薦 test ID 1 寫入到第 {col_e_index} 列")
+            logger.info(f"AI推薦 test ID 2 寫入到第 {col_f_index} 列")
+            logger.info(f"AI推薦 中文 1 寫入到第 {col_g_index} 列")
+            logger.info(f"AI推薦 中文 2 寫入到第 {col_h_index} 列")
+            logger.info(f"共寫入 {len(ai_recommendations)} 筆推薦資料")
             
             return True
         except Exception as e:
             logger.error(f"為現有檔案新增 AI 推薦欄位時發生錯誤: {str(e)}")
             return False
+    
+    def _apply_data_cell_format(self, cell):
+        """為資料儲存格應用標準格式（與比對結果一致）"""
+        from openpyxl.styles import Font, Border, Side
+        
+        # 設定字體為 Calibri 12
+        cell.font = Font(name="Calibri", size=12)
+        
+        # 設定邊框
+        thin_border = Border(
+            left=Side(style="thin"),
+            right=Side(style="thin"),
+            top=Side(style="thin"),
+            bottom=Side(style="thin")
+        )
+        cell.border = thin_border
+    
+    def _auto_adjust_column_widths(self, worksheet, col_e_index, col_f_index, col_g_index, col_h_index):
+        """
+        自動調整 AI 推薦欄位的寬度，確保內容完整顯示
+        
+        Args:
+            worksheet: 工作表物件
+            col_e_index: E 欄位索引
+            col_f_index: F 欄位索引
+            col_g_index: G 欄位索引
+            col_h_index: H 欄位索引
+        """
+        try:
+            # 定義各欄位的建議寬度
+            column_widths = {
+                col_e_index: 15,  # AI推薦 test ID 1 - Test ID 通常較短
+                col_f_index: 15,  # AI推薦 test ID 2 - Test ID 通常較短
+                col_g_index: 25,  # AI推薦 中文 1 - 中文描述需要更多空間
+                col_h_index: 30   # AI推薦 中文 2 - 中文描述通常較長
+            }
+            
+            # 為每個欄位設定寬度
+            for col_index, width in column_widths.items():
+                if col_index:
+                    worksheet.column_dimensions[worksheet.cell(row=1, column=col_index).column_letter].width = width
+                    logger.info(f"設定第 {col_index} 欄位寬度為 {width}")
+            
+            # 額外檢查：如果內容超過設定寬度，動態調整
+            for col_index in [col_e_index, col_f_index, col_g_index, col_h_index]:
+                if col_index:
+                    max_length = 0
+                    col_letter = worksheet.cell(row=1, column=col_index).column_letter
+                    
+                    # 檢查標題和所有資料行的長度
+                    for row_idx in range(1, worksheet.max_row + 1):
+                        cell_value = worksheet.cell(row=row_idx, column=col_index).value
+                        if cell_value:
+                            # 計算字串長度（中文字算2個字元）
+                            str_length = len(str(cell_value))
+                            # 中文字符長度調整
+                            chinese_chars = sum(1 for char in str(cell_value) if '\u4e00' <= char <= '\u9fff')
+                            adjusted_length = str_length + chinese_chars
+                            max_length = max(max_length, adjusted_length)
+                    
+                    # 設定最小寬度為 12，最大寬度為 50
+                    optimal_width = max(12, min(50, max_length + 2))
+                    worksheet.column_dimensions[col_letter].width = optimal_width
+                    logger.info(f"動態調整第 {col_index} 欄位寬度為 {optimal_width} (內容最大長度: {max_length})")
+            
+        except Exception as e:
+            logger.error(f"自動調整欄位寬度時發生錯誤: {str(e)}")
+    
+    def _apply_header_format(self, worksheet, col_index):
+        """為標題儲存格應用標準格式（與比對結果一致）"""
+        if col_index is None:
+            return
+            
+        from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+        
+        cell = worksheet.cell(row=1, column=col_index)
+        
+        # 設定標題格式（綠色背景，粗體，置中）
+        green_fill = PatternFill(start_color="00C853", end_color="00C853", fill_type="solid")
+        bold_font = Font(name="Calibri", size=12, bold=True)
+        center_alignment = Alignment(horizontal="center", vertical="center")
+        thin_border = Border(
+            left=Side(style="thin"),
+            right=Side(style="thin"),
+            top=Side(style="thin"),
+            bottom=Side(style="thin")
+        )
+        
+        cell.fill = green_fill
+        cell.font = bold_font
+        cell.alignment = center_alignment
+        cell.border = thin_border
 
     def _format_excel(self, file_path: str, highlight_testids: list = None):
         """格式化Excel檔案，並反白 Test Item All sheet 對應 TestID 行"""
         try:
             wb = load_workbook(file_path)
-            calibri_font = Font(name='Calibri', size=11)
-            bold_font = Font(name='Calibri', size=11, bold=True)
+            calibri_font = Font(name='Calibri', size=12)
+            bold_font = Font(name='Calibri', size=12, bold=True)
             thin = Side(border_style="thin", color="000000")
             border = Border(left=thin, right=thin, top=thin, bottom=thin)
             green_fill = PatternFill("solid", fgColor="00C853")  # 綠色
@@ -254,16 +421,18 @@ class ExcelHandler:
                     column_letter = column[0].column_letter
                     for cell in column:
                         try:
-                            cell_len = len(str(cell.value)) if cell.value else 0
-                            # 若有中文字，寬度再加倍
-                            if any('\u4e00' <= ch <= '\u9fff' for ch in str(cell.value)):
-                                cell_len = int(cell_len * 1.7)
-                            if cell_len > max_length:
-                                max_length = cell_len
+                            if cell.value:
+                                cell_str = str(cell.value)
+                                cell_len = len(cell_str)
+                                # 中文字符長度調整（中文字算2個字元）
+                                chinese_chars = sum(1 for char in cell_str if '\u4e00' <= char <= '\u9fff')
+                                adjusted_len = cell_len + chinese_chars
+                                max_length = max(max_length, adjusted_len)
                         except:
                             pass
-                    adjusted_width = max(max_length + 2, 12)  # 最小寬度12
-                    ws.column_dimensions[column_letter].width = adjusted_width
+                    # 設定最小寬度為 12，最大寬度為 50
+                    optimal_width = max(12, min(50, max_length + 2))
+                    ws.column_dimensions[column_letter].width = optimal_width
                 # 凍結第一列
                 ws.freeze_panes = ws["A2"]
             # 反白 Test Item All sheet 對應 TestID 行

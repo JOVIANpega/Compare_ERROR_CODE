@@ -118,41 +118,62 @@ class ErrorCodeTool:
         """比對檔案（在背景執行緒執行，避免UI卡住）"""
         def do_compare():
             try:
-                # 更新狀態列
+                # 顯示進度條
+                self.ui_manager.show_progress(True)
+                self.ui_manager.update_progress(0, 100)
                 self.ui_manager.update_status("正在進行檔案比對...", "orange")
                 
                 # 檢查必要檔案是否已選擇
+                self.ui_manager.update_status("檢查檔案設定...", "orange")
+                self.ui_manager.update_progress(10, 100)
                 if not all([self.ui_manager.excel1_path, 
                            self.ui_manager.excel2_path, 
                            self.ui_manager.get_selected_sheet()]):
                     self.ui_manager.update_status("請選擇所有必要的檔案和工作表", "red")
+                    self.ui_manager.show_progress(False)
                     return False
 
                 # 載入錯誤碼檔案
+                self.ui_manager.update_status("載入錯誤碼檔案...", "orange")
+                self.ui_manager.update_progress(20, 100)
                 if not self.excel_handler.load_error_codes(self.ui_manager.excel1_path):
                     self.ui_manager.update_status("載入錯誤碼檔案失敗", "red")
+                    self.ui_manager.show_progress(False)
                     return False
 
                 # 載入來源工作表
+                self.ui_manager.update_status("載入來源工作表...", "orange")
+                self.ui_manager.update_progress(40, 100)
                 df_source = self.excel_handler.load_source_sheet(
                     self.ui_manager.excel2_path,
                     self.ui_manager.get_selected_sheet()
                 )
                 if df_source is None:
                     self.ui_manager.update_status("載入來源工作表失敗", "red")
+                    self.ui_manager.show_progress(False)
                     return False
 
                 # 優化比對：用 merge 取代 for 迴圈
+                self.ui_manager.update_status("載入參考資料...", "orange")
+                self.ui_manager.update_progress(60, 100)
                 df_error_codes = pd.read_excel(self.ui_manager.excel1_path, sheet_name="Test Item All")
                 # 取 C欄(TestID)、D欄(Description)、E欄(ChineseDesc)
                 df_error_codes = df_error_codes.iloc[:, [2, 3, 4]]
                 df_error_codes.columns = ['TestID', 'Description', 'ChineseDesc']
+                
                 # 找來源的 Description, TestID 欄位
+                self.ui_manager.update_status("分析資料結構...", "orange")
+                self.ui_manager.update_progress(70, 100)
                 desc_col = self.excel_handler.find_column(df_source, 'Description')
                 testid_col = self.excel_handler.find_column(df_source, 'TestID')
                 if not desc_col or not testid_col:
                     self.ui_manager.update_status(f"找不到 Description 或 TestID 欄位，實際欄位: {df_source.columns.tolist()[:5]}", "red")
+                    self.ui_manager.show_progress(False)
                     return False
+                
+                # 執行比對
+                self.ui_manager.update_status("執行資料比對...", "orange")
+                self.ui_manager.update_progress(80, 100)
                 df_result = df_source[[desc_col, testid_col]].copy()
                 df_result.columns = ['你的 description', '你寫的 Error Code']
                 # merge
@@ -166,40 +187,58 @@ class ErrorCodeTool:
                 df_merge['Test Item 文件的 description'] = df_merge['Description'].fillna(self.config_manager.get('NotFound'))
                 df_merge['Test Item 的 Error Code'] = df_merge['ChineseDesc'].fillna(self.config_manager.get('NotFoundCN'))
                 df_merge = df_merge[['你的 description', '你寫的 Error Code', 'Test Item 文件的 description', 'Test Item 的 Error Code']]
+                
                 # 準備輸出路徑
+                self.ui_manager.update_status("準備儲存檔案...", "orange")
+                self.ui_manager.update_progress(85, 100)
                 output_path = str(Path(self.ui_manager.excel2_path).with_name(
                     f"{Path(self.ui_manager.excel2_path).stem}_compare_ERRORCODE.xlsx"
                 ))
+                
                 # 檢查檔案是否存在
                 if Path(output_path).exists():
-                    if not self.ui_manager.ask_yes_no(
-                        self.config_manager.get('FileExistsTitle'),
-                        self.config_manager.get('FileExistsMsg').format(output_path=output_path)
-                    ):
-                        self.ui_manager.show_info(
-                            self.config_manager.get('CancelTitle'),
-                            self.config_manager.get('CancelMsg')
-                        )
-                        return False
+                    # 檢查是否要覆蓋檔案
+                    if not self.ui_manager.get_overwrite_option():
+                        # 如果沒有勾選覆蓋選項，顯示確認對話框
+                        if not self.ui_manager.ask_yes_no(
+                            self.config_manager.get('FileExistsTitle'),
+                            self.config_manager.get('FileExistsMsg').format(output_path=output_path)
+                        ):
+                            self.ui_manager.show_info(
+                                self.config_manager.get('CancelTitle'),
+                                self.config_manager.get('CancelMsg')
+                            )
+                            self.ui_manager.show_progress(False)
+                            return False
+                    else:
+                        # 如果勾選了覆蓋選項，直接覆蓋，不顯示對話框
+                        self.ui_manager.update_status("檔案已存在，將直接覆蓋...", "orange")
+                
                 # 儲存結果（含反白）
+                self.ui_manager.update_status("儲存比對結果...", "orange")
+                self.ui_manager.update_progress(90, 100)
                 if self.excel_handler.save_result(
                     df_merge,
                     pd.read_excel(self.ui_manager.excel1_path, sheet_name="Test Item All"),
                     output_path,
                     self.ui_manager.get_selected_sheet()
                 ):
+                    self.ui_manager.update_progress(100, 100)
                     self.ui_manager.update_status(f"比對完成！結果已儲存於：{os.path.basename(output_path)}", "green")
                     # 更新最後使用的輸出目錄
                     self.config_manager.update_last_paths(
                         output_dir=str(Path(output_path).parent)
                     )
+                    self.ui_manager.show_progress(False)
                     return True
                 else:
                     self.ui_manager.update_status("儲存結果失敗", "red")
+                    self.ui_manager.show_progress(False)
                     return False
             except Exception as e:
                 logger.error(f"比對檔案時發生錯誤: {str(e)}")
                 self.ui_manager.update_status(f"比對失敗: {str(e)[:100]}", "red")
+                self.ui_manager.show_progress(False)
                 return False
             finally:
                 self.root.config(cursor="")
@@ -328,15 +367,21 @@ class ErrorCodeTool:
             
             # 檢查檔案是否已存在
             if os.path.exists(output_path):
-                if not self.ui_manager.ask_yes_no(
-                    self.config_manager.get('FileExistsTitle'),
-                    self.config_manager.get('FileExistsMsg').format(output_path=output_path)
-                ):
-                    self.ui_manager.show_info(
-                        self.config_manager.get('CancelTitle'),
-                        self.config_manager.get('CancelMsg')
-                    )
-                    return False
+                # 檢查是否要覆蓋檔案
+                if not self.ui_manager.get_overwrite_option():
+                    # 如果沒有勾選覆蓋選項，顯示確認對話框
+                    if not self.ui_manager.ask_yes_no(
+                        self.config_manager.get('FileExistsTitle'),
+                        self.config_manager.get('FileExistsMsg').format(output_path=output_path)
+                    ):
+                        self.ui_manager.show_info(
+                            self.config_manager.get('CancelTitle'),
+                            self.config_manager.get('CancelMsg')
+                        )
+                        return False
+                else:
+                    # 如果勾選了覆蓋選項，直接覆蓋，不顯示對話框
+                    logger.info(f"檔案已存在，將直接覆蓋: {output_path}")
             # 儲存結果（含反白）
             if self.excel_handler.save_result(
                 df_merge,

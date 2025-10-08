@@ -73,7 +73,7 @@ class ExcelErrorCodeSearchUI:
             self.config_manager.set(tip_key, default_tip)
         self.df = None  # 儲存 Test Item All sheet 的 DataFrame
         # 讀取字體大小與上次檔案路徑
-        self.font_size = int(self.config_manager.get('SearchUIFontSize', self.config_manager.get('FontSize', 11)))
+        self.font_size = int(self.config_manager.get('SearchUIFontSize', self.config_manager.get('FontSize', 12)))
         self.last_excel_path = self.config_manager.get('LastExcelPath', os.getcwd())
         self._setup_ui()
         self.tip_window = None  # 用於 toggle 說明視窗
@@ -516,7 +516,7 @@ class ExcelErrorCodeSearchUI:
         text_frame = tk.Frame(win)
         text_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
-        text_widget = tk.Text(text_frame, font=("Microsoft JhengHei", 11), 
+        text_widget = tk.Text(text_frame, font=("Microsoft JhengHei", 12), 
                              wrap=tk.WORD, state=tk.DISABLED, bg="#f8f9fa")
         text_widget.pack(side=tk.LEFT, fill="both", expand=True)
         

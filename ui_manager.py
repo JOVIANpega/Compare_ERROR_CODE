@@ -246,6 +246,15 @@ class UIManager:
         )
         self.open_result_btn.grid(row=0, column=3, sticky='ew', padx=(2, 0))
         
+        # 添加覆蓋檔案選項的 checkbox
+        self.overwrite_checkbox = tb.Checkbutton(
+            btn_frame,
+            text="覆蓋比對檔案（已存在時直接覆蓋，不提醒）",
+            bootstyle="success-round-toggle",
+            variable=tk.BooleanVar(value=True)  # 預設打勾
+        )
+        self.overwrite_checkbox.grid(row=1, column=0, columnspan=4, pady=(10, 0), sticky='w')
+        
         # 添加狀態列
         self._create_status_bar(row + 1)
 
@@ -319,6 +328,12 @@ class UIManager:
             self.progress_bar['maximum'] = max_value
             self.progress_bar['value'] = value
             self.root.update_idletasks()
+
+    def get_overwrite_option(self) -> bool:
+        """獲取覆蓋檔案選項的狀態"""
+        if hasattr(self, 'overwrite_checkbox'):
+            return self.overwrite_checkbox.instate(['selected'])
+        return True  # 預設為 True（覆蓋）
 
     def show_progress(self, show: bool = True):
         """顯示或隱藏進度條"""
@@ -434,11 +449,11 @@ class UIManager:
         self.open_result_callback = command
         self.open_result_btn.config(command=command)
 
-    def show_info(self, title, message, path=None, font_size=11, info=True, parent=None):
+    def show_info(self, title, message, path=None, font_size=12, info=True, parent=None):
         # 恢復為原生 messagebox
         messagebox.showinfo(title, message, parent=parent or self.root)
 
-    def show_error(self, title, message, path=None, font_size=11, info=True, parent=None):
+    def show_error(self, title, message, path=None, font_size=12, info=True, parent=None):
         # 恢復為原生 messagebox
         messagebox.showerror(title, message, parent=parent or self.root)
 

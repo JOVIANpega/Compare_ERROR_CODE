@@ -87,7 +87,7 @@ class AIRecommendationEngine:
             logger.error(f"生成 AI 推薦時發生錯誤: {str(e)}")
             return []
 
-    def generate_recommendations_with_search(self, descriptions: List[str], progress_callback=None) -> List[Tuple[str, str]]:
+    def generate_recommendations_with_search(self, descriptions: List[str], progress_callback=None) -> List[Tuple[str, str, str, str]]:
         """
         使用錯誤碼查詢邏輯生成推薦
         
@@ -96,7 +96,7 @@ class AIRecommendationEngine:
             progress_callback: 進度回調函數，格式為 callback(current, total, message)
             
         Returns:
-            List[Tuple[str, str]]: 推薦的 Test ID 對
+            List[Tuple[str, str, str, str]]: 推薦的 (Test ID 1, Test ID 2, 中文描述 1, 中文描述 2)
         """
         recommendations = []
         total = len(descriptions)
@@ -106,28 +106,28 @@ class AIRecommendationEngine:
                 progress_callback(i, total, f"分析描述 {i+1}/{total}: {description[:30]}...")
             
             if not description or not description.strip():
-                recommendations.append(("", ""))
+                recommendations.append(("", "", "", ""))
                 continue
                 
             # 提取關鍵字
             keywords = self._extract_keywords(description)
             
             if not keywords:
-                recommendations.append(("", ""))
+                recommendations.append(("", "", "", ""))
                 continue
             
             # 使用錯誤碼查詢邏輯搜尋
             matches = self._search_with_keywords(keywords)
             
-            # 從搜尋結果中提取 Test ID
-            test_ids = self._extract_test_ids_from_matches(matches)
+            # 從搜尋結果中提取 Test ID 和中文描述
+            test_data = self._extract_test_data_from_matches(matches)
             
-            if len(test_ids) >= 2:
-                recommendations.append((test_ids[0], test_ids[1]))
-            elif len(test_ids) == 1:
-                recommendations.append((test_ids[0], ""))
+            if len(test_data) >= 2:
+                recommendations.append((test_data[0][0], test_data[1][0], test_data[0][1], test_data[1][1]))
+            elif len(test_data) == 1:
+                recommendations.append((test_data[0][0], "", test_data[0][1], ""))
             else:
-                recommendations.append(("", ""))
+                recommendations.append(("", "", "", ""))
         
         logger.info(f"使用搜尋邏輯生成 {len(recommendations)} 個推薦")
         return recommendations
@@ -230,9 +230,32 @@ class AIRecommendationEngine:
         
         return result
 
+    def _extract_test_data_from_matches(self, matches: pd.DataFrame) -> List[Tuple[str, str]]:
+        """
+        從搜尋結果中提取 Test ID 和中文描述
+        
+        Args:
+            matches: 搜尋結果
+            
+        Returns:
+            List[Tuple[str, str]]: (Test ID, 中文描述) 列表
+        """
+        test_data = []
+        
+        for _, row in matches.iterrows():
+            test_id = self._get_test_id_from_row(row)
+            chinese_desc = self._get_chinese_desc_from_row(row)
+            
+            if test_id and test_id not in [data[0] for data in test_data]:
+                test_data.append((test_id, chinese_desc))
+                if len(test_data) >= 2:
+                    break
+        
+        return test_data
+    
     def _extract_test_ids_from_matches(self, matches: pd.DataFrame) -> List[str]:
         """
-        從搜尋結果中提取 Test ID
+        從搜尋結果中提取 Test ID（保留向後相容性）
         
         Args:
             matches: 搜尋結果
@@ -385,6 +408,29 @@ class AIRecommendationEngine:
                     return test_id
         
         return None
+    
+    def _get_chinese_desc_from_row(self, row) -> str:
+        """
+        從資料行中提取中文描述
+        
+        Args:
+            row: 資料行
+            
+        Returns:
+            str: 中文描述，如果沒有則返回空字串
+        """
+        # 根據實際 Excel 結構提取中文描述
+        # Excel 結構：Main Function, Interface, Interenal Error Code, Description, Chinese, Version, Error Code, Note
+        # 我們需要的是 "Chinese" 欄位（E 欄位）
+        
+        if 'Chinese' in self.reference_data.columns:
+            if pd.notna(row['Chinese']) and str(row['Chinese']).strip():
+                chinese_desc = str(row['Chinese']).strip()
+                if chinese_desc and chinese_desc != 'nan' and chinese_desc != 'Chinese':
+                    logger.info(f"找到中文描述: {chinese_desc}")
+                    return chinese_desc
+        
+        return ""
     
     def get_prompt_for_descriptions(self, descriptions: List[str], prompt_type: str = "basic") -> str:
         """
