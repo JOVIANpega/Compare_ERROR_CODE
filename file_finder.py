@@ -35,6 +35,9 @@ class FileFinder:
                 "output",  # output 目錄
             ]
         
+        # 使用 set 來避免重複路徑
+        found_files = set()
+        
         for search_dir in search_dirs:
             if not os.path.exists(search_dir):
                 continue
@@ -45,15 +48,25 @@ class FileFinder:
             
             # 將相對路徑轉換為絕對路徑，避免重複
             abs_files = [os.path.abspath(f) for f in files]
-            compare_files.extend(abs_files)
+            found_files.update(abs_files)
             
             logger.info(f"在 {search_dir} 中找到 {len(files)} 個 compare 檔案")
         
-        # 去重並排序（使用絕對路徑去重）
-        compare_files = sorted(list(set(compare_files)))
-        logger.info(f"總共找到 {len(compare_files)} 個 compare 檔案")
+        # 轉換為排序的列表
+        compare_files = sorted(list(found_files))
         
-        return compare_files
+        # 只返回 EXCEL 目錄中的檔案，過濾掉 build 和 dist 目錄中的重複檔案
+        excel_files = []
+        
+        for file_path in compare_files:
+            # 檢查是否在 EXCEL 目錄中且不在 build 或 dist 目錄中
+            if ("\\EXCEL\\" in file_path or "/EXCEL/" in file_path) and \
+               "build_exe" not in file_path and "dist_exe" not in file_path:
+                excel_files.append(file_path)
+        
+        logger.info(f"總共找到 {len(compare_files)} 個檔案，EXCEL 目錄檔案: {len(excel_files)} 個")
+        
+        return excel_files
     
     @staticmethod
     def get_file_info(file_path: str) -> dict:

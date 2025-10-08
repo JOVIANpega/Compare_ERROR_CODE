@@ -118,6 +118,9 @@ class ErrorCodeTool:
         """比對檔案（在背景執行緒執行，避免UI卡住）"""
         def do_compare():
             try:
+                # 更新狀態列
+                self.ui_manager.update_status("正在進行檔案比對...", "orange")
+                
                 # 檢查必要檔案是否已選擇
                 if not all([self.ui_manager.excel1_path, 
                            self.ui_manager.excel2_path, 
@@ -197,6 +200,7 @@ class ErrorCodeTool:
                     output_path,
                     self.ui_manager.get_selected_sheet()
                 ):
+                    self.ui_manager.update_status(f"比對完成！結果已儲存於：{os.path.basename(output_path)}", "green")
                     self.ui_manager.show_info(
                         self.config_manager.get('SuccessTitle'),
                         f"{self.config_manager.get('SuccessMsg')}\n{output_path}"
@@ -206,12 +210,14 @@ class ErrorCodeTool:
                         output_dir=str(Path(output_path).parent)
                     )
                 else:
+                    self.ui_manager.update_status("儲存結果失敗", "red")
                     self.ui_manager.show_error(
                         self.config_manager.get('ErrorTitle'),
                         "儲存結果失敗"
                     )
             except Exception as e:
                 logger.error(f"比對檔案時發生錯誤: {str(e)}")
+                self.ui_manager.update_status(f"比對失敗: {str(e)[:100]}", "red")
                 self.ui_manager.show_error(
                     self.config_manager.get('ErrorTitle'),
                     f"{self.config_manager.get('CompareError').format(error=str(e))}"
@@ -243,106 +249,143 @@ class ErrorCodeTool:
             )
 
     def ai_recommend_analysis(self):
-        """AI 推薦分析功能"""
+        """AI 推薦分析功能 - 自動檢查並執行比對"""
         def do_ai_analysis():
             try:
-                # 檢查必要檔案是否已選擇
-                if not all([self.ui_manager.excel1_path, 
-                           self.ui_manager.excel2_path, 
-                           self.ui_manager.get_selected_sheet()]):
-                    self.ui_manager.show_error(
-                        self.config_manager.get('ErrorTitle'),
-                        "請先完成比對，再進行 AI 推薦分析"
-                    )
-                    return
-
-                # 載入參考資料
-                if not self.ai_engine.load_reference_data(self.ui_manager.excel1_path):
-                    self.ui_manager.show_error(
-                        self.config_manager.get('ErrorTitle'),
-                        "載入參考資料失敗"
-                    )
-                    return
-
-                # 載入來源工作表
-                df_source = self.excel_handler.load_source_sheet(
-                    self.ui_manager.excel2_path,
-                    self.ui_manager.get_selected_sheet()
-                )
-                if df_source is None:
-                    self.ui_manager.show_error(
-                        self.config_manager.get('ErrorTitle'),
-                        "載入來源工作表失敗"
-                    )
-                    return
-
-                # 找到 Description 欄位
-                desc_col = self.excel_handler.find_column(df_source, 'Description')
-                if not desc_col:
-                    self.ui_manager.show_error(
-                        self.config_manager.get('ErrorTitle'),
-                        f"找不到 Description 欄位，實際欄位: {df_source.columns.tolist()}"
-                    )
-                    return
-
-                # 提取 Description 列表
-                descriptions = df_source[desc_col].dropna().astype(str).tolist()
-                if not descriptions:
-                    self.ui_manager.show_error(
-                        self.config_manager.get('ErrorTitle'),
-                        "沒有找到有效的 Description 資料"
-                    )
-                    return
-
-                # 生成 AI 推薦
-                recommendations = self.ai_engine.generate_recommendations(descriptions)
+                # 更新狀態列
+                self.ui_manager.update_status("正在進行 AI 推薦分析，請稍候...", "orange")
                 
-                if not recommendations:
-                    self.ui_manager.show_error(
-                        self.config_manager.get('ErrorTitle'),
-                        "AI 推薦生成失敗"
-                    )
+                # 檢查檔案設定
+                if not self.ui_manager.excel1_path or not os.path.exists(self.ui_manager.excel1_path):
+                    self.ui_manager.show_error("檔案錯誤", "請先選擇 Error Code 參考檔案")
                     return
-
-                # 檢查是否有現有的比對結果檔案
-                output_path = str(Path(self.ui_manager.excel2_path).with_name(
-                    f"{Path(self.ui_manager.excel2_path).stem}_compare_ERRORCODE.xlsx"
-                ))
-
-                if Path(output_path).exists():
-                    # 為現有檔案新增 AI 推薦欄位
-                    if self.excel_handler.add_ai_recommendations_to_existing_file(output_path, recommendations):
-                        self.ui_manager.show_info(
-                            "AI 推薦分析完成",
-                            f"已為現有檔案新增 AI 推薦欄位\n{output_path}"
-                        )
-                    else:
-                        self.ui_manager.show_error(
-                            self.config_manager.get('ErrorTitle'),
-                            "為現有檔案新增 AI 推薦欄位失敗"
-                        )
-                else:
-                    # 先進行比對，再新增 AI 推薦
-                    self.ui_manager.show_info(
-                        "提示",
-                        "未找到比對結果檔案，將先進行比對再新增 AI 推薦"
-                    )
-                    # 這裡可以調用 compare_files 方法，但需要修改以支援 AI 推薦
-                    # 暫時顯示 PROMPT 供使用者手動處理
-                    self._show_ai_prompt(descriptions)
+                
+                if not self.ui_manager.excel2_path or not os.path.exists(self.ui_manager.excel2_path):
+                    self.ui_manager.show_error("檔案錯誤", "請先選擇要分析的 Excel 檔案")
+                    return
+                
+                # 檢查是否已有比對結果檔案
+                output_file = self._get_expected_output_file()
+                
+                if not os.path.exists(output_file):
+                    # 如果沒有比對結果檔案，先執行比對
+                    self.ui_manager.update_status("未找到比對結果檔案，正在自動執行比對...", "orange")
                     
+                    # 執行比對功能
+                    success = self._perform_comparison()
+                    if not success:
+                        self.ui_manager.update_status("自動比對失敗，無法進行 AI 推薦分析", "red")
+                        self.ui_manager.show_error("比對失敗", "自動比對失敗，無法進行 AI 推薦分析")
+                        return
+                
+                # 現在進行 AI 推薦分析
+                self._perform_ai_recommendation(output_file)
+                
             except Exception as e:
                 logger.error(f"AI 推薦分析時發生錯誤: {str(e)}")
-                self.ui_manager.show_error(
-                    self.config_manager.get('ErrorTitle'),
-                    f"AI 推薦分析失敗: {str(e)}"
-                )
+                self.ui_manager.update_status(f"AI 推薦分析失敗: {str(e)[:100]}", "red")
+                self.ui_manager.show_error("分析失敗", f"AI 推薦分析時發生錯誤：{str(e)}")
             finally:
                 self.root.config(cursor="")
-
-        # 執行時顯示處理中游標
+        
         self.root.config(cursor="wait")
         threading.Thread(target=do_ai_analysis, daemon=True).start()
+
+    def _get_expected_output_file(self):
+        """取得預期的輸出檔案路徑"""
+        base_name = os.path.splitext(os.path.basename(self.ui_manager.excel2_path))[0]
+        return os.path.join("EXCEL", f"{base_name}_compare_ERRORCODE.xlsx")
+
+    def _perform_comparison(self):
+        """執行比對功能"""
+        try:
+            # 使用現有的比對邏輯
+            return self.compare_files()
+        except Exception as e:
+            logger.error(f"執行比對時發生錯誤: {str(e)}")
+            return False
+
+    def _perform_ai_recommendation(self, output_file):
+        """執行 AI 推薦分析"""
+        try:
+            # 載入參考資料
+            if not self.ai_engine.load_reference_data(self.ui_manager.excel1_path):
+                self.ui_manager.show_error("載入失敗", "無法載入 Error Code 參考資料")
+                return
+            
+            # 讀取比對結果檔案
+            # 先檢查檔案有哪些工作表
+            try:
+                excel_file = pd.ExcelFile(output_file)
+                available_sheets = excel_file.sheet_names
+                logger.info(f"比對結果檔案的工作表: {available_sheets}")
+                
+                # 嘗試使用原始工作表名稱，如果沒有則使用第一個工作表
+                if self.ui_manager.selected_sheet in available_sheets:
+                    sheet_name = self.ui_manager.selected_sheet
+                else:
+                    sheet_name = available_sheets[0] if available_sheets else None
+                
+                if not sheet_name:
+                    self.ui_manager.show_error("檔案錯誤", "比對結果檔案沒有可用的工作表")
+                    return
+                
+                df_result = pd.read_excel(output_file, sheet_name=sheet_name)
+                logger.info(f"使用工作表: {sheet_name}")
+                
+            except Exception as e:
+                logger.error(f"讀取比對結果檔案時發生錯誤: {str(e)}")
+                self.ui_manager.show_error("讀取失敗", f"讀取比對結果檔案時發生錯誤：{str(e)}")
+                return
+            
+            if 'Description' not in df_result.columns:
+                # 檢查可能的欄位名稱變體
+                possible_desc_columns = [
+                    'Description', 'description', 'DESCRIPTION', 'O', 'O欄位',
+                    '你的 description', 'Description', '描述', 'desc'
+                ]
+                desc_column = None
+                
+                for col in possible_desc_columns:
+                    if col in df_result.columns:
+                        desc_column = col
+                        break
+                
+                if not desc_column:
+                    # 顯示實際的欄位名稱
+                    actual_columns = list(df_result.columns)
+                    self.ui_manager.show_error("欄位錯誤", 
+                        f"比對結果檔案沒有 Description 欄位\n"
+                        f"實際欄位: {actual_columns}\n"
+                        f"請檢查比對結果檔案是否正確")
+                    return
+                
+                # 重新命名欄位為 Description
+                df_result = df_result.rename(columns={desc_column: 'Description'})
+                logger.info(f"找到描述欄位: {desc_column}，已重新命名為 Description")
+            
+            # 提取描述並生成推薦
+            descriptions = df_result['Description'].fillna('').astype(str).tolist()
+            recommendations = self.ai_engine.generate_recommendations_with_search(descriptions)
+            
+            # 更新檔案
+            self._update_file_with_recommendations(output_file, df_result, recommendations)
+            
+            self.ui_manager.update_status(f"AI 推薦分析完成！結果已更新到：{os.path.basename(output_file)}", "green")
+            self.ui_manager.show_info("分析完成", f"AI 推薦分析完成！\n結果已更新到：{os.path.basename(output_file)}")
+            
+        except Exception as e:
+            logger.error(f"執行 AI 推薦時發生錯誤: {str(e)}")
+            self.ui_manager.show_error("推薦失敗", f"執行 AI 推薦時發生錯誤：{str(e)}")
+
+    def _update_file_with_recommendations(self, file_path, df_result, recommendations):
+        """更新檔案並添加 AI 推薦"""
+        try:
+            # 使用 excel_handler 的現有功能
+            self.excel_handler.add_ai_recommendations_to_existing_file(file_path, recommendations)
+        except Exception as e:
+            logger.error(f"更新檔案時發生錯誤: {str(e)}")
+            raise
 
     def _show_ai_prompt(self, descriptions):
         """顯示 AI PROMPT 供使用者手動處理"""
@@ -422,13 +465,18 @@ class ErrorCodeTool:
                 )
                 return
             
+            # 顯示找到的檔案資訊
+            logger.info(f"找到 {len(compare_files)} 個 compare 檔案:")
+            for i, file_path in enumerate(compare_files, 1):
+                logger.info(f"  {i}. {file_path}")
+            
             if len(compare_files) == 1:
                 # 只有一個檔案，直接開啟
                 file_path = compare_files[0]
                 self._open_file(file_path)
                 self.ui_manager.show_info(
                     "檔案已開啟",
-                    f"已開啟結果檔案：\n{os.path.basename(file_path)}"
+                    f"已開啟結果檔案：\n{os.path.basename(file_path)}\n\n檔案路徑：\n{file_path}"
                 )
             else:
                 # 多個檔案，讓使用者選擇

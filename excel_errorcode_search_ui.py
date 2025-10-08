@@ -13,7 +13,11 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import pandas as pd
 import os
+import logging
 from config_manager import ConfigManager
+
+# 設定 logger
+logger = logging.getLogger(__name__)
 
 class ExcelErrorCodeSearchUI:
     def __init__(self, parent=None, offset_x=0, offset_y=0):
@@ -74,6 +78,15 @@ class ExcelErrorCodeSearchUI:
         self._setup_ui()
         self.tip_window = None  # 用於 toggle 說明視窗
         self.center_window(offset_x, offset_y)
+        
+        # 初始化狀態列
+        self.update_status("就緒")
+
+    def update_status(self, message, color="blue"):
+        """更新狀態列訊息"""
+        if hasattr(self, 'status_label'):
+            self.status_label.config(text=message, foreground=color)
+            self.root.update_idletasks()
 
     def center_window(self, offset_x=0, offset_y=0):
         self.root.update_idletasks()
@@ -107,6 +120,10 @@ class ExcelErrorCodeSearchUI:
         # 顯示檔案路徑（初始顯示提示文字）
         self.file_label = ttk.Label(control_frame, text="請選擇 Excel 檔案", anchor="w", foreground="gray")
         self.file_label.pack(fill=tk.X, pady=5)
+
+        # 狀態列
+        self.status_label = ttk.Label(control_frame, text="就緒", anchor="w", foreground="blue", font=("Microsoft JhengHei", 9))
+        self.status_label.pack(fill=tk.X, pady=2)
 
         # 查詢欄位標題
         ttk.Label(control_frame, text="關鍵字搜尋", font=("Microsoft JhengHei", self.font_size, "bold")).pack(pady=(10, 5))
@@ -237,9 +254,48 @@ class ExcelErrorCodeSearchUI:
         )
         if not file_path:
             return
+        
+        # 更新狀態
+        self.update_status("正在讀取檔案...", "orange")
+        
         try:
-            # 讀取 Excel 檔案，跳過前3行空行，第4行是標題
-            df = pd.read_excel(file_path, sheet_name="Test Item All", skiprows=3)
+            # 使用智能讀取方式來處理標題行
+            try:
+                # 首先嘗試正常讀取
+                df = pd.read_excel(file_path, sheet_name="Test Item All", skiprows=3)
+                
+                # 檢查是否有 "Unnamed" 欄位
+                if any('Unnamed' in str(col) for col in df.columns):
+                    logger.info("檢測到 Unnamed 欄位，嘗試跳過更多行")
+                    df = pd.read_excel(file_path, sheet_name="Test Item All", skiprows=4)
+                
+                # 如果還是有 Unnamed，嘗試使用 header=None 並手動設定欄位名稱
+                if any('Unnamed' in str(col) for col in df.columns):
+                    logger.info("仍有 Unnamed 欄位，嘗試使用 header=None")
+                    df = pd.read_excel(file_path, sheet_name="Test Item All", header=None)
+                    # 尋找包含 "Main Function" 的行作為標題行
+                    header_row = None
+                    for i, row in df.iterrows():
+                        if 'Main Function' in str(row.values):
+                            header_row = i
+                            break
+                    
+                    if header_row is not None:
+                        logger.info(f"找到標題行在第 {header_row + 1} 行")
+                        df.columns = df.iloc[header_row]
+                        df = df.drop(df.index[:header_row + 1]).reset_index(drop=True)
+                    else:
+                        # 如果找不到標題行，使用第一行
+                        df.columns = df.iloc[0]
+                        df = df.drop(df.index[0]).reset_index(drop=True)
+                
+                # 清理欄位名稱
+                df.columns = [str(col).strip() for col in df.columns]
+                
+            except Exception as e:
+                logger.warning(f"特殊讀取方式失敗，使用預設方式: {e}")
+                df = pd.read_excel(file_path, sheet_name="Test Item All", skiprows=3)
+            
             # 重新命名欄位
             if len(df.columns) >= 8:
                 df.columns = [
@@ -251,13 +307,23 @@ class ExcelErrorCodeSearchUI:
                 df = df.iloc[:, 1:5]
                 # 重新命名為正確的欄位名稱
                 df.columns = ['Interface', 'Interenal Error Code', 'Description', 'Chinese']
+            
+            # 清理欄位名稱，移除多餘的空白
+            df.columns = [str(col).strip() for col in df.columns]
+            
             self.df = df
             self.file_label.config(text=os.path.basename(file_path))
             self._show_table(self.df)
             # 更新設定檔
             self.last_excel_path = file_path
             self.config_manager.update_last_paths(excel_path=file_path)
+            
+            # 更新狀態 - 顯示檔案路徑
+            file_path_display = file_path if len(file_path) <= 150 else "..." + file_path[-(150-3):]
+            self.update_status(f"檔案已載入: {file_path_display}", "green")
+            
         except Exception as e:
+            self.update_status(f"讀取失敗: {str(e)[:100]}", "red")
             messagebox.showerror("讀取失敗", f"無法讀取 Test Item All：\n{e}")
             self.df = None
             self.file_label.config(text="尚未選擇檔案")
@@ -268,6 +334,9 @@ class ExcelErrorCodeSearchUI:
         if self.df is None:
             messagebox.showwarning("請先選擇檔案", "請先選擇 Excel 檔案並成功載入 Test Item All sheet！")
             return
+        
+        # 更新狀態
+        self.update_status("正在搜尋...", "orange")
         queries = [e.get().strip() for e in self.query_entries if e.get().strip()]
         if not queries:
             self._show_table(self.df)
@@ -275,8 +344,13 @@ class ExcelErrorCodeSearchUI:
         mask = self.df.apply(lambda row: all(row.astype(str).str.contains(q, case=False, na=False).any() for q in queries), axis=1)
         result_df = self.df[mask]
         self._show_table(result_df)
+        
+        # 更新狀態
         if result_df.empty:
+            self.update_status(f"搜尋完成 - 查無資料", "red")
             messagebox.showinfo("查無資料", f"找不到同時包含「{'、'.join(queries)}」的資料。")
+        else:
+            self.update_status(f"搜尋完成 - 找到 {len(result_df)} 筆資料", "green")
 
     def clear_search(self):
         """清除搜尋關鍵字並顯示所有資料"""

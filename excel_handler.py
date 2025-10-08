@@ -35,9 +35,51 @@ class ExcelHandler:
     def load_source_sheet(self, file_path: str, sheet_name: str) -> Optional[pd.DataFrame]:
         """載入來源Excel檔案的指定工作表"""
         try:
-            df_source = pd.read_excel(file_path, sheet_name=sheet_name)
+            # 嘗試不同的讀取方式來處理標題行
+            try:
+                # 首先嘗試正常讀取
+                df_source = pd.read_excel(file_path, sheet_name=sheet_name)
+                
+                # 檢查是否有 "Unnamed" 欄位，如果有則嘗試跳過第一行
+                if any('Unnamed' in str(col) for col in df_source.columns):
+                    logger.info("檢測到 Unnamed 欄位，嘗試跳過第一行重新讀取")
+                    df_source = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=1)
+                    
+                    # 如果還是有 Unnamed，嘗試跳過更多行
+                    if any('Unnamed' in str(col) for col in df_source.columns):
+                        logger.info("仍有 Unnamed 欄位，嘗試跳過前兩行")
+                        df_source = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=2)
+                
+                # 如果還是有 Unnamed，嘗試使用 header=None 並手動設定欄位名稱
+                if any('Unnamed' in str(col) for col in df_source.columns):
+                    logger.info("仍有 Unnamed 欄位，嘗試使用 header=None")
+                    df_source = pd.read_excel(file_path, sheet_name=sheet_name, header=None)
+                    # 尋找包含 "Main Function" 的行作為標題行
+                    header_row = None
+                    for i, row in df_source.iterrows():
+                        if 'Main Function' in str(row.values):
+                            header_row = i
+                            break
+                    
+                    if header_row is not None:
+                        logger.info(f"找到標題行在第 {header_row + 1} 行")
+                        df_source.columns = df_source.iloc[header_row]
+                        df_source = df_source.drop(df_source.index[:header_row + 1]).reset_index(drop=True)
+                    else:
+                        # 如果找不到標題行，使用第一行
+                        df_source.columns = df_source.iloc[0]
+                        df_source = df_source.drop(df_source.index[0]).reset_index(drop=True)
+                
+                # 清理欄位名稱
+                df_source.columns = [str(col).strip() for col in df_source.columns]
+                
+            except Exception as e:
+                logger.warning(f"特殊讀取方式失敗，使用預設方式: {e}")
+                df_source = pd.read_excel(file_path, sheet_name=sheet_name)
+            
             self.current_sheet = sheet_name
             logger.info(f"成功載入來源工作表: {sheet_name}")
+            logger.info(f"欄位名稱: {list(df_source.columns)}")
             return df_source
         except Exception as e:
             logger.error(f"載入來源工作表時發生錯誤: {str(e)}")
@@ -148,6 +190,9 @@ class ExcelHandler:
             # 讀取現有檔案
             df_existing = pd.read_excel(file_path, sheet_name=0)  # 讀取第一個工作表
             
+            logger.info(f"讀取現有檔案，欄位: {list(df_existing.columns)}")
+            logger.info(f"現有檔案資料形狀: {df_existing.shape}")
+            
             # 檢查是否已經有 AI 推薦欄位
             if 'AI推薦 test ID 1' in df_existing.columns and 'AI推薦 test ID 2' in df_existing.columns:
                 logger.info("檔案已包含 AI 推薦欄位，將更新現有欄位")
@@ -157,19 +202,28 @@ class ExcelHandler:
                 # 新增 AI 推薦欄位
                 df_existing = self._add_ai_recommendations(df_existing, ai_recommendations)
             
-            # 讀取 Test Item All 工作表
-            df_error_codes = pd.read_excel(file_path, sheet_name='Test Item All')
+            # 嘗試讀取 Test Item All 工作表
+            df_error_codes = None
+            try:
+                df_error_codes = pd.read_excel(file_path, sheet_name='Test Item All')
+                logger.info("成功讀取 Test Item All 工作表")
+            except Exception as e:
+                logger.warning(f"無法讀取 Test Item All 工作表: {e}")
+                # 如果沒有 Test Item All 工作表，創建一個空的
+                df_error_codes = pd.DataFrame()
             
             # 儲存更新後的檔案
             with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
                 df_existing.to_excel(writer, index=False, sheet_name=0)
-                df_error_codes.to_excel(writer, index=False, sheet_name='Test Item All')
+                if df_error_codes is not None and not df_error_codes.empty:
+                    df_error_codes.to_excel(writer, index=False, sheet_name='Test Item All')
             
             # 重新格式化檔案
             highlight_testids = [str(tid).strip() for tid in df_existing['你寫的 Error Code']]
             self._format_excel(file_path, highlight_testids=highlight_testids)
             
             logger.info(f"成功為現有檔案新增 AI 推薦欄位: {file_path}")
+            logger.info(f"更新後資料形狀: {df_existing.shape}")
             return True
         except Exception as e:
             logger.error(f"為現有檔案新增 AI 推薦欄位時發生錯誤: {str(e)}")

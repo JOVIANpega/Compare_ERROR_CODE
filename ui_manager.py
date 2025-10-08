@@ -242,6 +242,35 @@ class UIManager:
             command=getattr(self, 'open_result_callback', None)
         )
         self.open_result_btn.grid(row=0, column=3, sticky='ew', padx=(2, 0))
+        
+        # 添加狀態列
+        self._create_status_bar(row + 1)
+
+    def _create_status_bar(self, row: int):
+        """建立狀態列"""
+        status_frame = tb.Frame(self.main_frame)
+        status_frame.grid(row=row, column=0, columnspan=3, pady=(10, 0), sticky='ew')
+        
+        # 狀態標籤
+        status_label = tb.Label(status_frame, text="狀態:", font=("Microsoft JhengHei", 9, "bold"))
+        status_label.pack(side=tk.LEFT, padx=(0, 5))
+        
+        # 狀態顯示區域
+        self.status_label = tb.Label(
+            status_frame, 
+            text="就緒", 
+            foreground="blue",
+            font=("Microsoft JhengHei", 9),
+            wraplength=400,
+            justify=tk.LEFT
+        )
+        self.status_label.pack(side=tk.LEFT, fill=tk.X, expand=True)
+
+    def update_status(self, message: str, color: str = "blue"):
+        """更新狀態列訊息"""
+        if hasattr(self, 'status_label'):
+            self.status_label.config(text=message, foreground=color)
+            self.root.update_idletasks()
 
     def set_all_font_size(self, size: int):
         """設定所有元件的字體大小"""

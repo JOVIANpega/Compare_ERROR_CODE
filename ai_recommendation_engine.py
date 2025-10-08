@@ -83,6 +83,165 @@ class AIRecommendationEngine:
         except Exception as e:
             logger.error(f"生成 AI 推薦時發生錯誤: {str(e)}")
             return []
+
+    def generate_recommendations_with_search(self, descriptions: List[str]) -> List[Tuple[str, str]]:
+        """
+        使用錯誤碼查詢邏輯生成推薦
+        
+        Args:
+            descriptions: 描述列表
+            
+        Returns:
+            List[Tuple[str, str]]: 推薦的 Test ID 對
+        """
+        recommendations = []
+        
+        for description in descriptions:
+            if not description or not description.strip():
+                recommendations.append(("", ""))
+                continue
+                
+            # 提取關鍵字
+            keywords = self._extract_keywords(description)
+            
+            if not keywords:
+                recommendations.append(("", ""))
+                continue
+            
+            # 使用錯誤碼查詢邏輯搜尋
+            matches = self._search_with_keywords(keywords)
+            
+            # 從搜尋結果中提取 Test ID
+            test_ids = self._extract_test_ids_from_matches(matches)
+            
+            if len(test_ids) >= 2:
+                recommendations.append((test_ids[0], test_ids[1]))
+            elif len(test_ids) == 1:
+                recommendations.append((test_ids[0], ""))
+            else:
+                recommendations.append(("", ""))
+        
+        logger.info(f"使用搜尋邏輯生成 {len(recommendations)} 個推薦")
+        return recommendations
+
+    def _extract_keywords(self, description: str) -> List[str]:
+        """
+        從描述中提取關鍵字
+        
+        Args:
+            description: 描述文字
+            
+        Returns:
+            List[str]: 關鍵字列表
+        """
+        import re
+        
+        # 清理描述
+        description = description.strip()
+        if not description:
+            return []
+        
+        # 移除特殊字符
+        cleaned = re.sub(r'[^\w\s#-]', ' ', description)
+        words = cleaned.lower().split()
+        
+        # 停用詞
+        stop_words = {
+            'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 
+            'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+            'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
+            'should', 'may', 'might', 'can', 'must', 'shall', 'this', 'that',
+            'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they'
+        }
+        
+        # 過濾停用詞和短詞
+        keywords = [
+            word.strip('.,!?()[]{}') 
+            for word in words 
+            if word not in stop_words and len(word) > 2
+        ]
+        
+        # 如果沒有找到關鍵字，嘗試更寬鬆的條件
+        if not keywords:
+            keywords = [
+                word.strip('.,!?()[]{}') 
+                for word in words 
+                if len(word) > 1  # 降低長度要求
+            ]
+        
+        # 如果還是沒有，嘗試分割特殊字符
+        if not keywords and description:
+            # 處理像 "PC#-#Show SSN to UI" 這樣的描述
+            import re
+            # 分割特殊字符但保留重要部分
+            parts = re.split(r'[#\-_]+', description.lower())
+            keywords = [part.strip() for part in parts if part.strip() and len(part.strip()) > 1]
+        
+        return keywords[:3]  # 最多3個關鍵字
+
+    def _search_with_keywords(self, keywords: List[str]) -> pd.DataFrame:
+        """
+        使用關鍵字搜尋參考資料
+        
+        Args:
+            keywords: 關鍵字列表
+            
+        Returns:
+            pd.DataFrame: 搜尋結果
+        """
+        if self.reference_data is None or self.reference_data.empty:
+            return pd.DataFrame()
+        
+        # 如果沒有關鍵字，返回空結果
+        if not keywords:
+            return pd.DataFrame()
+        
+        # 使用 OR 條件搜尋（包含任一關鍵字即可）
+        mask = self.reference_data.apply(
+            lambda row: any(
+                row.astype(str).str.contains(keyword, case=False, na=False).any() 
+                for keyword in keywords
+            ), axis=1
+        )
+        
+        result = self.reference_data[mask]
+        
+        # 如果 OR 條件沒有結果，嘗試更寬鬆的搜尋
+        if result.empty:
+            # 嘗試部分匹配
+            for keyword in keywords:
+                partial_mask = self.reference_data.apply(
+                    lambda row: any(
+                        str(cell).lower().find(keyword.lower()) != -1
+                        for cell in row if pd.notna(cell)
+                    ), axis=1
+                )
+                if partial_mask.any():
+                    result = self.reference_data[partial_mask]
+                    break
+        
+        return result
+
+    def _extract_test_ids_from_matches(self, matches: pd.DataFrame) -> List[str]:
+        """
+        從搜尋結果中提取 Test ID
+        
+        Args:
+            matches: 搜尋結果
+            
+        Returns:
+            List[str]: Test ID 列表
+        """
+        test_ids = []
+        
+        for _, row in matches.iterrows():
+            test_id = self._get_test_id_from_row(row)
+            if test_id and test_id not in test_ids:
+                test_ids.append(test_id)
+                if len(test_ids) >= 2:
+                    break
+        
+        return test_ids
     
     def _generate_recommendations_internal(self, descriptions: List[str]) -> List[Tuple[str, str]]:
         """
@@ -205,7 +364,7 @@ class AIRecommendationEngine:
         if 'Interenal Error Code' in self.reference_data.columns:
             if pd.notna(row['Interenal Error Code']) and str(row['Interenal Error Code']).strip():
                 test_id = str(row['Interenal Error Code']).strip()
-                if test_id and test_id != 'nan':
+                if test_id and test_id != 'nan' and test_id != 'Interenal Error Code':
                     logger.info(f"找到內部錯誤代碼: {test_id}")
                     return test_id
         
@@ -213,7 +372,7 @@ class AIRecommendationEngine:
         if 'Error Code' in self.reference_data.columns:
             if pd.notna(row['Error Code']) and str(row['Error Code']).strip():
                 test_id = str(row['Error Code']).strip()
-                if test_id and test_id != 'nan':
+                if test_id and test_id != 'nan' and test_id != 'Error Code':
                     logger.info(f"找到錯誤代碼: {test_id}")
                     return test_id
         
