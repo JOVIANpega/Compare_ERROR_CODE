@@ -46,7 +46,9 @@ class ExcelErrorCodeSearchUI:
             "   • 多個關鍵字會以 AND 條件搜尋（必須同時包含所有關鍵字）\n"
             "   • 按 Enter 鍵或點選「搜尋」按鈕執行搜尋\n\n"
             "3. 結果操作：\n"
-            "   • 右鍵點選或雙擊表格行可複製 Error Code\n"
+            "   • 右鍵點選、雙擊或按 Ctrl+C 可複製 Error Code\n"
+            "   • 只複製內部錯誤代碼（第二欄位）\n"
+            "   • 選中的行會以藍色高亮顯示\n"
             "   • 搜尋結果以藍色字體顯示，方便辨識\n"
             "   • 支援鍵盤上下左右移動瀏覽結果\n\n"
             "4. 字體調整：\n"
@@ -159,6 +161,8 @@ class ExcelErrorCodeSearchUI:
         self.tree.bind("<Button-3>", self.copy_row_popup)  # 右鍵複製
         self.tree.bind("<Key>", self.on_tree_key)
         self.tree.bind("<Double-1>", self.copy_row_popup)  # 雙擊也可複製
+        # 添加 Ctrl+C 快捷鍵複製
+        self.tree.bind("<Control-c>", self.copy_row_popup)
 
         # 垂直捲軸（加大寬度，緊貼表格右側）
         yscroll = ttk.Scrollbar(display_frame, orient="vertical", command=self.tree.yview, style="Vertical.TScrollbar")
@@ -176,7 +180,9 @@ class ExcelErrorCodeSearchUI:
         style.layout("Custom.Treeview", [
             ("Treeview.treearea", {'sticky': 'nswe'})
         ])
-        style.map("Custom.Treeview", background=[('selected', '#3399FF')])
+        style.map("Custom.Treeview", 
+                 background=[('selected', '#0078D4')],  # 更明顯的藍色
+                 foreground=[('selected', 'white')])    # 選中時文字變白色
         style.configure("Custom.Treeview.Heading", borderwidth=1, relief="solid", font=("Microsoft JhengHei", self.font_size, "bold"))
         # 設定捲軸樣式
         style.configure("Vertical.TScrollbar", width=24)  # 加大垂直捲軸寬度
@@ -349,10 +355,31 @@ class ExcelErrorCodeSearchUI:
         iid = self.tree.identify_row(event.y)
         if iid:
             row_values = self.tree.item(iid, "values")
-            error_code = row_values[0] if row_values else ""
-            self.root.clipboard_clear()
-            self.root.clipboard_append(str(error_code))
-            # 不彈窗，直接複製
+            # 複製第二個欄位（Interenal Error Code）
+            error_code = row_values[1] if len(row_values) > 1 else ""
+            if error_code and error_code.strip():
+                self.root.clipboard_clear()
+                self.root.clipboard_append(str(error_code))
+                # 顯示複製成功的提示
+                self._show_copy_tooltip(event.x_root, event.y_root, f"已複製: {error_code}")
+            else:
+                self._show_copy_tooltip(event.x_root, event.y_root, "無 Error Code 可複製")
+    
+    def _show_copy_tooltip(self, x, y, message):
+        """顯示複製提示"""
+        tooltip = tk.Toplevel(self.root)
+        tooltip.wm_overrideredirect(True)
+        tooltip.wm_geometry(f"+{x+10}+{y+10}")
+        
+        label = tk.Label(tooltip, text=message, 
+                        font=("Microsoft JhengHei", 9),
+                        bg="#333333", fg="white", 
+                        padx=8, pady=4,
+                        relief="solid", borderwidth=1)
+        label.pack()
+        
+        # 2秒後自動關閉
+        tooltip.after(2000, tooltip.destroy)
 
     def on_tree_key(self, event):
         # 支援鍵盤上下左右移動與字體調整
