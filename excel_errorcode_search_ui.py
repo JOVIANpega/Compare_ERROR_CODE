@@ -29,6 +29,8 @@ class ExcelErrorCodeSearchUI:
         self.root.geometry("1400x800")
         self.root.minsize(1200, 600)
         self.root.resizable(True, True)
+        # 確保視窗有完整的控制按鈕
+        self.root.wm_attributes('-topmost', False)
         # 預設最大化視窗
         self.root.state('zoomed')  # Windows 最大化
         # 初始化設定管理
@@ -46,8 +48,8 @@ class ExcelErrorCodeSearchUI:
             "   • 多個關鍵字會以 AND 條件搜尋（必須同時包含所有關鍵字）\n"
             "   • 按 Enter 鍵或點選「搜尋」按鈕執行搜尋\n\n"
             "3. 結果操作：\n"
-            "   • 右鍵點選、雙擊或按 Ctrl+C 可複製 Error Code\n"
-            "   • 只複製內部錯誤代碼（第二欄位）\n"
+            "   • 右鍵點選、雙擊或按 Ctrl+C 可複製 Interenal Error Code\n"
+            "   • 只複製內部錯誤代碼（第三欄位）\n"
             "   • 選中的行會以藍色高亮顯示\n"
             "   • 搜尋結果以藍色字體顯示，方便辨識\n"
             "   • 支援鍵盤上下左右移動瀏覽結果\n\n"
@@ -202,6 +204,8 @@ class ExcelErrorCodeSearchUI:
                 # 只取 BCDE 欄（Interface, Interenal Error Code, Description, Chinese）
                 if df.shape[1] >= 5:
                     df = df.iloc[:, 1:5]
+                    # 重新命名為正確的欄位名稱
+                    df.columns = ['Interface', 'Interenal Error Code', 'Description', 'Chinese']
                 self.df = df
                 self._show_table(self.df)
             except Exception:
@@ -236,6 +240,8 @@ class ExcelErrorCodeSearchUI:
             # 只取 BCDE 欄（Interface, Interenal Error Code, Description, Chinese）
             if df.shape[1] >= 5:
                 df = df.iloc[:, 1:5]
+                # 重新命名為正確的欄位名稱
+                df.columns = ['Interface', 'Interenal Error Code', 'Description', 'Chinese']
             self.df = df
             self.file_label.config(text=os.path.basename(file_path))
             self._show_table(self.df)
@@ -351,12 +357,12 @@ class ExcelErrorCodeSearchUI:
             self._set_all_fontsize()
 
     def copy_row_popup(self, event):
-        # 右鍵選單複製 error code 欄位
+        # 右鍵選單複製 Interenal Error Code 欄位
         iid = self.tree.identify_row(event.y)
         if iid:
             row_values = self.tree.item(iid, "values")
-            # 複製第二個欄位（Interenal Error Code）
-            error_code = row_values[1] if len(row_values) > 1 else ""
+            # 複製第三個欄位（Interenal Error Code）
+            error_code = row_values[2] if len(row_values) > 2 else ""
             if error_code and error_code.strip():
                 self.root.clipboard_clear()
                 self.root.clipboard_append(str(error_code))
