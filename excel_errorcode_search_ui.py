@@ -29,10 +29,14 @@ class ExcelErrorCodeSearchUI:
         self.root.geometry("1400x800")
         self.root.minsize(1200, 600)
         self.root.resizable(True, True)
-        # 確保視窗有完整的控制按鈕
+        # 確保視窗有完整的控制按鈕（最小化、最大化、關閉）
+        # 先設定為正常視窗，再最大化
+        self.root.wm_attributes('-toolwindow', False)
         self.root.wm_attributes('-topmost', False)
-        # 預設最大化視窗
+        # 預設最大化視窗（但保持控制按鈕）
         self.root.state('zoomed')  # Windows 最大化
+        # 確保最大化後仍有控制按鈕
+        self.root.wm_attributes('-toolwindow', False)
         # 初始化設定管理
         self.config_manager = ConfigManager()
         # 檢查 setup.txt 是否有 ExcelErrorCodeSearch_TIP，若無則自動寫入
@@ -126,6 +130,11 @@ class ExcelErrorCodeSearchUI:
         self.search_btn = ttk.Button(control_frame, text="搜尋", command=self.search, style="Custom.TButton")
         self.search_btn.pack(fill=tk.X, pady=8)
         self._add_hand_over(self.search_btn)
+
+        # 清除按鈕
+        self.clear_btn = ttk.Button(control_frame, text="清除", command=self.clear_search, style="Custom.TButton")
+        self.clear_btn.pack(fill=tk.X, pady=(0, 8))
+        self._add_hand_over(self.clear_btn)
 
         # 字體大小調整
         fontsize_frame = ttk.Frame(control_frame)
@@ -268,6 +277,20 @@ class ExcelErrorCodeSearchUI:
         self._show_table(result_df)
         if result_df.empty:
             messagebox.showinfo("查無資料", f"找不到同時包含「{'、'.join(queries)}」的資料。")
+
+    def clear_search(self):
+        """清除搜尋關鍵字並顯示所有資料"""
+        # 清除所有搜尋框
+        for entry in self.query_entries:
+            entry.delete(0, tk.END)
+        
+        # 顯示所有資料
+        if self.df is not None:
+            self._show_table(self.df)
+        
+        # 將焦點設回第一個搜尋框
+        if self.query_entries:
+            self.query_entries[0].focus_set()
 
     def _show_table(self, df):
         # 清空表格

@@ -116,3 +116,5 @@
 2025-10-07 18:06:05,041 - excel_handler - INFO - 成功載入來源工作表: 4cam stitching1 test
 2025-10-07 18:06:10,748 - excel_handler - INFO - 成功格式化Excel檔案
 2025-10-07 18:06:10,748 - excel_handler - INFO - 成功儲存比對結果: D:\((NOKIA_ER\ER2.2\4CAM_reasign\System\VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_251007_FIXerrCode_compare_ERRORCODE.xlsx
+2025-10-08 13:56:22,956 - ui_manager - INFO - UI初始化完成
+2025-10-08 13:56:23,365 - __main__ - INFO - 程式初始化完成

@@ -1,0 +1,53 @@
+ErrorCodeXMLLabel=錯誤碼 XML 檔案：
+SourceExcelLabel=來源 Excel 檔案：
+SelectSheetLabel=選擇工作表：
+BrowseButton=瀏覽
+CompareButton=比對
+SuccessTitle=成功
+SuccessMsg=比對完成，結果已儲存於：
+CancelTitle=取消
+CancelMsg=已取消操作。
+FileExistsTitle=檔案已存在
+FileExistsMsg=檔案 {output_path} 已存在，是否要覆蓋？
+ErrorTitle=錯誤
+SheetLoadError=載入工作表時發生錯誤：{error}
+CompareError=比對時發生錯誤：{error}
+NotFound=查無說明
+NotFoundCN=查無中文說明
+WindowWidth=540
+WindowHeight=340
+FontSize=11
+BrowseXMLTooltip=選擇錯誤碼XML檔案
+BrowseExcelTooltip=選擇來源Excel檔案
+BrowseSheetTooltip=選擇工作表
+LastExcelPath=D:/((Python TOOL/compare_errorcode_ver1/VER3/dist_exe/EXCEL/Test Item Code V2.00_20241106.xlsx
+LastXMLPath=
+LastOutputDir=
+ExcelErrorCodeSearch_TIP=錯誤碼查詢工具使用說明：
+
+1. 檔案載入：
+   • 點選「選擇 Excel 檔案」載入包含 Test Item All 工作表的 Excel 檔案
+   • 系統會自動讀取 BCDE 欄位的資料（介面、內部錯誤代碼、描述、中文描述）
+
+2. 關鍵字搜尋：
+   • 可同時輸入 1-3 個關鍵字進行搜尋
+   • 支援中英文模糊搜尋，不區分大小寫
+   • 多個關鍵字會以 AND 條件搜尋（必須同時包含所有關鍵字）
+   • 按 Enter 鍵或點選「搜尋」按鈕執行搜尋
+
+3. 結果操作：
+   • 右鍵點選、雙擊或按 Ctrl+C 可複製 Interface
+   • 只複製介面欄位（第一欄位）
+   • 選中的行會以藍色高亮顯示
+   • 搜尋結果以藍色字體顯示，方便辨識
+   • 支援鍵盤上下左右移動瀏覽結果
+
+4. 字體調整：
+   • 使用 + - 按鈕調整字體大小（8-20）
+   • 字體大小會自動儲存，下次開啟時保持設定
+
+5. 其他功能：
+   • 「總計」顯示目前資料筆數
+   • 視窗可調整大小，支援最大化
+   • 表格支援水平和垂直捲軸
+SearchUIFontSize=11
