@@ -185,7 +185,15 @@ class ExcelErrorCodeSearchUI:
         # 若有上次檔案路徑自動載入
         if self.last_excel_path and os.path.exists(self.last_excel_path):
             try:
-                df = pd.read_excel(self.last_excel_path, sheet_name="Test Item All")
+                # 讀取 Excel 檔案，跳過前3行空行，第4行是標題
+                df = pd.read_excel(self.last_excel_path, sheet_name="Test Item All", skiprows=3)
+                # 重新命名欄位
+                if len(df.columns) >= 8:
+                    df.columns = [
+                        'Main Function', 'Interface', 'Interenal Error Code', 
+                        'Description', 'Chinese', 'Version', 'Error Code', 'Note'
+                    ]
+                # 只取 BCDE 欄（Interface, Interenal Error Code, Description, Chinese）
                 if df.shape[1] >= 5:
                     df = df.iloc[:, 1:5]
                 self.df = df
@@ -211,8 +219,15 @@ class ExcelErrorCodeSearchUI:
         if not file_path:
             return
         try:
-            df = pd.read_excel(file_path, sheet_name="Test Item All", header=0)
-            # 只取 BCDE 欄（index 1~4）
+            # 讀取 Excel 檔案，跳過前3行空行，第4行是標題
+            df = pd.read_excel(file_path, sheet_name="Test Item All", skiprows=3)
+            # 重新命名欄位
+            if len(df.columns) >= 8:
+                df.columns = [
+                    'Main Function', 'Interface', 'Interenal Error Code', 
+                    'Description', 'Chinese', 'Version', 'Error Code', 'Note'
+                ]
+            # 只取 BCDE 欄（Interface, Interenal Error Code, Description, Chinese）
             if df.shape[1] >= 5:
                 df = df.iloc[:, 1:5]
             self.df = df
