@@ -26,3 +26,93 @@
 2025-05-28 18:44:22,446 - excel_handler - INFO - 成功載入來源工作表: Final
 2025-05-28 18:44:30,328 - excel_handler - INFO - 成功格式化Excel檔案
 2025-05-28 18:44:30,328 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER2\EXCEL\VALO360_TestFlow_20250326_Final_compare_ERRORCODE.xlsx
+2025-09-04 12:37:49,758 - ui_manager - INFO - UI初始化完成
+2025-09-04 12:37:55,019 - __main__ - INFO - 程式初始化完成
+2025-09-04 12:38:03,289 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-09-04 12:38:09,585 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/MU310_TestFlow_FWdownload_20250902.xlsx
+2025-09-04 12:38:09,637 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'FWDL', 'TEMP']
+2025-09-04 12:38:18,729 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-09-04 12:38:18,865 - excel_handler - INFO - 成功載入來源工作表: FWDL
+2025-09-04 12:38:25,985 - excel_handler - INFO - 成功格式化Excel檔案
+2025-09-04 12:38:25,985 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\MU310_TestFlow_FWdownload_20250902_compare_ERRORCODE.xlsx
+2025-09-04 13:57:11,641 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-09-04 13:57:11,772 - excel_handler - INFO - 成功載入來源工作表: FWDL
+2025-09-04 13:57:14,844 - excel_handler - ERROR - 儲存比對結果時發生錯誤: [Errno 13] Permission denied: 'D:\\((Python TOOL\\compare_errorcode_ver1\\VER3\\EXCEL\\MU310_TestFlow_FWdownload_20250902_compare_ERRORCODE.xlsx'
+2025-09-04 13:57:27,508 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-09-04 13:57:27,657 - excel_handler - INFO - 成功載入來源工作表: FWDL
+2025-09-04 13:57:30,746 - excel_handler - ERROR - 儲存比對結果時發生錯誤: [Errno 13] Permission denied: 'D:\\((Python TOOL\\compare_errorcode_ver1\\VER3\\EXCEL\\MU310_TestFlow_FWdownload_20250902_compare_ERRORCODE.xlsx'
+2025-09-04 13:58:01,111 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-09-04 13:58:01,267 - excel_handler - INFO - 成功載入來源工作表: FWDL
+2025-09-04 13:58:09,323 - excel_handler - INFO - 成功格式化Excel檔案
+2025-09-04 13:58:09,323 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\MU310_TestFlow_FWdownload_20250902_compare_ERRORCODE.xlsx
+2025-09-04 14:06:13,389 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-09-04 14:06:13,526 - excel_handler - INFO - 成功載入來源工作表: FWDL
+2025-09-04 14:06:21,911 - excel_handler - INFO - 成功格式化Excel檔案
+2025-09-04 14:06:21,911 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\MU310_TestFlow_FWdownload_20250902_compare_ERRORCODE.xlsx
+2025-09-04 14:13:27,726 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/MU310_TestFlow_FWdownload_20250902.xlsx
+2025-09-04 14:13:33,350 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-09-04 14:13:37,085 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/MU310_TestFlow_FWdownload_20250902.xlsx
+2025-09-04 14:13:37,134 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'FWDL', 'TEMP']
+2025-09-04 14:13:40,647 - ui_manager - INFO - 選擇來源Excel檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/MU310_TestFlow_FWdownload_20250902.xlsx
+2025-09-04 14:13:40,701 - ui_manager - INFO - 更新工作表列表: ['Properties', 'DUTs', 'Switch', 'Instrument', 'FWDL', 'TEMP']
+2025-09-04 14:13:46,088 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-09-04 14:13:46,225 - excel_handler - INFO - 成功載入來源工作表: FWDL
+2025-09-04 14:13:54,633 - excel_handler - ERROR - 格式化Excel檔案時發生錯誤: [Errno 13] Permission denied: 'D:\\((Python TOOL\\compare_errorcode_ver1\\VER3\\EXCEL\\MU310_TestFlow_FWdownload_20250902_compare_ERRORCODE.xlsx'
+2025-09-04 14:13:54,633 - excel_handler - INFO - 成功儲存比對結果: D:\((Python TOOL\compare_errorcode_ver1\VER3\EXCEL\MU310_TestFlow_FWdownload_20250902_compare_ERRORCODE.xlsx
+2025-10-07 15:18:47,588 - ui_manager - INFO - UI初始化完成
+2025-10-07 15:18:49,882 - __main__ - INFO - 程式初始化完成
+2025-10-07 15:21:52,781 - ui_manager - INFO - UI初始化完成
+2025-10-07 15:21:55,099 - __main__ - INFO - 程式初始化完成
+2025-10-07 15:22:08,452 - ui_manager - INFO - 選擇錯誤碼XML檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-10-07 15:22:43,014 - ui_manager - INFO - 選擇來源Excel檔案: D:/((NOKIA_ER/ER2.2/4CAM_reasign/System/VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_250924B.xlsx
+2025-10-07 15:22:43,115 - ui_manager - INFO - 更新工作表列表: ['Properties', 'Switch', 'Instrument', 'DUTs', '4cam stitching1 test']
+2025-10-07 15:22:50,332 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-10-07 15:22:50,559 - excel_handler - INFO - 成功載入來源工作表: 4cam stitching1 test
+2025-10-07 15:22:56,381 - excel_handler - INFO - 成功格式化Excel檔案
+2025-10-07 15:22:56,381 - excel_handler - INFO - 成功儲存比對結果: D:\((NOKIA_ER\ER2.2\4CAM_reasign\System\VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_250924B_compare_ERRORCODE.xlsx
+2025-10-07 17:23:27,936 - ui_manager - INFO - 選擇來源Excel檔案: D:/((NOKIA_ER/ER2.2/4CAM_reasign/System/VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_251003.xlsx
+2025-10-07 17:23:28,058 - ui_manager - INFO - 更新工作表列表: ['Properties', 'Switch', 'Instrument', 'DUTs', '4cam stitching1 test']
+2025-10-07 17:23:34,570 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-10-07 17:23:34,808 - excel_handler - INFO - 成功載入來源工作表: 4cam stitching1 test
+2025-10-07 17:23:40,695 - excel_handler - INFO - 成功格式化Excel檔案
+2025-10-07 17:23:40,695 - excel_handler - INFO - 成功儲存比對結果: D:\((NOKIA_ER\ER2.2\4CAM_reasign\System\VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_251003_compare_ERRORCODE.xlsx
+2025-10-07 17:24:32,936 - ui_manager - INFO - 選擇來源Excel檔案: D:/((NOKIA_ER/ER2.2/4CAM_reasign/System/VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_250924B.xlsx
+2025-10-07 17:24:33,027 - ui_manager - INFO - 更新工作表列表: ['Properties', 'Switch', 'Instrument', 'DUTs', '4cam stitching1 test']
+2025-10-07 17:24:39,984 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-10-07 17:24:40,261 - excel_handler - INFO - 成功載入來源工作表: 4cam stitching1 test
+2025-10-07 17:24:48,549 - excel_handler - INFO - 成功格式化Excel檔案
+2025-10-07 17:24:48,549 - excel_handler - INFO - 成功儲存比對結果: D:\((NOKIA_ER\ER2.2\4CAM_reasign\System\VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_250924B_compare_ERRORCODE.xlsx
+2025-10-07 17:29:47,945 - ui_manager - INFO - 選擇來源Excel檔案: D:/((NOKIA_ER/ER2.2/4CAM_reasign/System/VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_251007_FIXerrCode.xlsx
+2025-10-07 17:29:48,046 - ui_manager - INFO - 更新工作表列表: ['Properties', 'Switch', 'Instrument', 'DUTs', '4cam stitching1 test']
+2025-10-07 17:29:53,604 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-10-07 17:29:53,843 - excel_handler - INFO - 成功載入來源工作表: 4cam stitching1 test
+2025-10-07 17:29:59,615 - excel_handler - INFO - 成功格式化Excel檔案
+2025-10-07 17:29:59,615 - excel_handler - INFO - 成功儲存比對結果: D:\((NOKIA_ER\ER2.2\4CAM_reasign\System\VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_251007_FIXerrCode_compare_ERRORCODE.xlsx
+2025-10-07 17:38:03,795 - ui_manager - INFO - 選擇來源Excel檔案: D:/((NOKIA_ER/ER2.2/4CAM_reasign/System/VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_251007_FIXerrCode.xlsx
+2025-10-07 17:38:03,903 - ui_manager - INFO - 更新工作表列表: ['Properties', 'Switch', 'Instrument', 'DUTs', '4cam stitching1 test']
+2025-10-07 17:38:10,404 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-10-07 17:38:10,657 - excel_handler - INFO - 成功載入來源工作表: 4cam stitching1 test
+2025-10-07 17:38:16,360 - excel_handler - INFO - 成功格式化Excel檔案
+2025-10-07 17:38:16,360 - excel_handler - INFO - 成功儲存比對結果: D:\((NOKIA_ER\ER2.2\4CAM_reasign\System\VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_251007_FIXerrCode_compare_ERRORCODE.xlsx
+2025-10-07 17:47:36,737 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-10-07 17:47:36,963 - excel_handler - INFO - 成功載入來源工作表: 4cam stitching1 test
+2025-10-07 17:47:42,715 - excel_handler - INFO - 成功格式化Excel檔案
+2025-10-07 17:47:42,715 - excel_handler - INFO - 成功儲存比對結果: D:\((NOKIA_ER\ER2.2\4CAM_reasign\System\VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_251007_FIXerrCode_compare_ERRORCODE.xlsx
+2025-10-07 17:54:11,023 - ui_manager - INFO - 選擇來源Excel檔案: D:/((NOKIA_ER/ER2.2/4CAM_reasign/System/VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_251007_FIXerrCode.xlsx
+2025-10-07 17:54:11,196 - ui_manager - INFO - 更新工作表列表: ['Properties', 'Switch', 'Instrument', 'DUTs', '4cam stitching1 test']
+2025-10-07 17:54:15,489 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-10-07 17:54:15,735 - excel_handler - INFO - 成功載入來源工作表: 4cam stitching1 test
+2025-10-07 17:54:21,737 - excel_handler - INFO - 成功格式化Excel檔案
+2025-10-07 17:54:21,737 - excel_handler - INFO - 成功儲存比對結果: D:\((NOKIA_ER\ER2.2\4CAM_reasign\System\VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_251007_FIXerrCode_compare_ERRORCODE.xlsx
+2025-10-07 17:56:12,791 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-10-07 17:56:13,032 - excel_handler - INFO - 成功載入來源工作表: 4cam stitching1 test
+2025-10-07 17:56:18,701 - excel_handler - INFO - 成功格式化Excel檔案
+2025-10-07 17:56:18,701 - excel_handler - INFO - 成功儲存比對結果: D:\((NOKIA_ER\ER2.2\4CAM_reasign\System\VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_251007_FIXerrCode_compare_ERRORCODE.xlsx
+2025-10-07 17:58:12,545 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-10-07 17:58:12,768 - excel_handler - INFO - 成功載入來源工作表: 4cam stitching1 test
+2025-10-07 17:58:18,572 - excel_handler - INFO - 成功格式化Excel檔案
+2025-10-07 17:58:18,572 - excel_handler - INFO - 成功儲存比對結果: D:\((NOKIA_ER\ER2.2\4CAM_reasign\System\VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_251007_FIXerrCode_compare_ERRORCODE.xlsx
+2025-10-07 18:06:04,797 - excel_handler - INFO - 成功載入錯誤碼檔案: D:/((Python TOOL/compare_errorcode_ver1/VER3/EXCEL/Test Item Code V2.00_20241106.xlsx
+2025-10-07 18:06:05,041 - excel_handler - INFO - 成功載入來源工作表: 4cam stitching1 test
+2025-10-07 18:06:10,748 - excel_handler - INFO - 成功格式化Excel檔案
+2025-10-07 18:06:10,748 - excel_handler - INFO - 成功儲存比對結果: D:\((NOKIA_ER\ER2.2\4CAM_reasign\System\VALO360_TestFlow_AOCI_4Cam_Stitching_test1_FATP_251007_FIXerrCode_compare_ERRORCODE.xlsx

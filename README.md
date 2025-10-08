@@ -1,6 +1,14 @@
-# Error Code Comparer
+# Error Code Comparer v1.5.0 (Build 1)
 
 這是一個用於比對 Error Code 的工具，可以將 Excel 文件中的 Error Code 與參考文件進行比對，並生成新的比對結果文件。
+
+## 版本資訊
+
+- **當前版本**：v1.5.0 (Build 1)
+- **發布日期**：2025-01-22
+- **作者**：JOVIANpega
+- **倉庫**：[https://github.com/JOVIANpega/Compare_ERROR_CODE](https://github.com/JOVIANpega/Compare_ERROR_CODE)
+- **描述**：智能錯誤碼比對工具，支援 AI 推薦分析
 
 ## 功能特點
 
@@ -14,6 +22,8 @@
 - **快速開啟結果檔案**：一鍵開啟比對結果檔案，支援多檔案選擇
 - **自動檔案選擇**：啟動時自動搜尋並選擇 Test Item Code 文件
 - **智能工作表過濾**：自動排除不需要的工作表，預設選擇第一個有效工作表
+- **版本管理系統**：完整的版本控制和變更記錄管理
+- **檔案搜尋優化**：修復檔案搜尋重複問題，提升搜尋效率
 
 ## 使用方法
 
@@ -96,11 +106,101 @@ AI 推薦結果會新增到比對結果檔案的 E、F 欄位：
 - **批量分析**：適用於多個 Description 的批量處理
 - **Excel 整合**：適用於直接填入 Excel 欄位
 
+## 專案結構
+
+```
+Error Code Comparer/
+├── main.py                          # 主程式入口
+├── ui_manager.py                    # GUI 介面管理
+├── excel_handler.py                 # Excel 檔案處理
+├── ai_recommendation_engine.py      # AI 推薦引擎
+├── ai_prompt_templates.py           # AI PROMPT 模板
+├── file_finder.py                   # 檔案搜尋工具
+├── config_manager.py                # 配置管理
+├── error_code_compare.py            # 錯誤碼比對核心
+├── excel_errorcode_search_ui.py     # 錯誤碼查詢 UI
+├── VERSION.py                       # 版本配置檔案
+├── version_tool.py                  # 版本管理工具
+├── version_config.py                # 完整版本管理工具
+├── version_manager.py               # 進階版本管理工具
+├── update_version.py                # 版本更新腳本
+├── VERSION_USAGE.md                 # 版本管理使用說明
+├── AI_RECOMMENDATION_USAGE.md       # AI 推薦功能說明
+├── README.md                        # 專案說明文件
+├── requirements.txt                 # Python 依賴
+├── ErrorCodeComparer.spec           # PyInstaller 配置
+├── pal.ico                          # 應用程式圖示
+├── guide_popup/                     # GUI 引導圖片
+│   ├── guide.py
+│   ├── guide1.png
+│   ├── guide2.png
+│   ├── guide3.png
+│   ├── guide4.png
+│   └── guide5.png
+├── EXCEL/                           # 範例 Excel 檔案
+│   ├── Test Item Code V2.00_20241106.xlsx
+│   ├── Test Item Code V2.00_20241106_CSV.csv
+│   ├── MU310_TestFlow_FWdownload_20250902.xlsx
+│   └── MU310_TestFlow_FWdownload_20250902_compare_ERRORCODE.xlsx
+├── dist/                            # 編譯後的執行檔
+│   └── ErrorCodeComparer.exe
+└── build/                           # 編譯暫存檔案
+```
+
+## 版本管理
+
+### 版本控制工具
+
+本專案提供多種版本管理工具：
+
+1. **VERSION.py** - 主要版本配置檔案
+   - 包含版本號、建置編號、發布日期等資訊
+   - 功能開關控制
+   - 變更記錄管理
+
+2. **version_tool.py** - 簡單版本管理工具
+   ```bash
+   # 顯示當前版本資訊
+   python version_tool.py show
+   
+   # 設定版本號
+   python version_tool.py set 1.6.0
+   
+   # 新增變更記錄
+   python version_tool.py add "修復 AI 推薦分析問題"
+   
+   # 自動遞增修訂版本
+   python version_tool.py bump
+   ```
+
+3. **version_config.py** - 完整版本管理工具
+   - 提供互動式版本管理介面
+   - 支援功能開關管理
+   - 變更記錄編輯
+
+4. **VERSION_USAGE.md** - 版本管理使用說明
+   - 詳細的使用指南
+   - 最佳實踐建議
+   - 範例工作流程
+
+### 變更記錄
+
+#### v1.5.0 (2025-01-22)
+- 初始版本 1.5.0
+- 新增 AI 推薦分析功能
+- 新增自動檔案選擇功能
+- 新增智能工作表過濾功能
+- 新增快速開啟結果檔案功能
+- 修復檔案搜尋重複問題
+- 優化 GUI 用戶體驗
+- 新增版本管理系統
+
 ## 注意事項
 
 - 確保 Error Code XML 文件包含 "Test Item All" 工作表
 - 源 Excel 文件必須包含 O 行（Description）和 P 行（TestID）
-- 生成的結果文件會自動命名為原文件名加上 "_compare ERRORCODE.xml"
+- 生成的結果文件會自動命名為原文件名加上 "_compare_ERRORCODE.xlsx"
 - 參考資料檔案包含約 5,000+ 個測試項目和對應的錯誤代碼
 - 支援中英文雙語描述，方便不同語言環境使用
-- AI 推薦功能需要先完成基本比對，或手動處理 PROMPT 
+- AI 推薦功能需要先完成基本比對，或手動處理 PROMPT
+- 版本管理工具需要 Python 環境才能使用 

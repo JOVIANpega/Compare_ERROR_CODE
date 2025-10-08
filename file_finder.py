@@ -42,11 +42,14 @@ class FileFinder:
             # 搜尋模式：包含 compare_ERRORCODE.xlsx 的檔案
             pattern = os.path.join(search_dir, "**", "*compare_ERRORCODE.xlsx")
             files = glob.glob(pattern, recursive=True)
-            compare_files.extend(files)
+            
+            # 將相對路徑轉換為絕對路徑，避免重複
+            abs_files = [os.path.abspath(f) for f in files]
+            compare_files.extend(abs_files)
             
             logger.info(f"在 {search_dir} 中找到 {len(files)} 個 compare 檔案")
         
-        # 去重並排序
+        # 去重並排序（使用絕對路徑去重）
         compare_files = sorted(list(set(compare_files)))
         logger.info(f"總共找到 {len(compare_files)} 個 compare 檔案")
         
