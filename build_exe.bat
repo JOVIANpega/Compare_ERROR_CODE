@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 > nul
 echo ========================================
 echo Error Code Comparer 打包工具
 echo ========================================
@@ -47,6 +48,7 @@ echo.
 echo 6. 複製額外檔案到發佈目錄...
 copy "pal.ico" "%DIST_DIR%\"
 copy "README.md" "%DIST_DIR%\"
+copy "setup.txt" "%DIST_DIR%\"
 copy "VERSION_USAGE.md" "%DIST_DIR%\"
 copy "AI_RECOMMENDATION_USAGE.md" "%DIST_DIR%\"
 xcopy "guide_popup" "%DIST_DIR%\guide_popup\" /E /I

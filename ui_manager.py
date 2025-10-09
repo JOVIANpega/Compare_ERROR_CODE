@@ -61,6 +61,32 @@ class UIManager:
         self._auto_select_error_code_file()
         logger.info("UI初始化完成")
 
+    def _format_path_display(self, file_path: str, max_length: int = 100) -> str:
+        """格式化檔案路徑顯示，最多顯示指定字元數"""
+        if not file_path:
+            return ""
+        
+        if len(file_path) <= max_length:
+            return file_path
+        
+        # 如果路徑太長，顯示前面部分和後面部分
+        file_name = os.path.basename(file_path)
+        parent_dir = os.path.dirname(file_path)
+        
+        # 計算可用空間（減去 "..." 的3個字元）
+        available_length = max_length - 3
+        
+        # 如果文件名本身就很長，優先顯示文件名
+        if len(file_name) > available_length:
+            return "..." + file_name[-(available_length):]
+        
+        # 否則顯示父目錄 + 文件名
+        remaining_length = available_length - len(file_name)
+        if len(parent_dir) > remaining_length:
+            return "..." + parent_dir[-(remaining_length-1):] + os.sep + file_name
+        else:
+            return parent_dir + os.sep + file_name
+
     def get_exe_dir(self):
         """取得 EXE 或 py 檔案所在目錄"""
         if getattr(sys, 'frozen', False):
@@ -80,7 +106,7 @@ class UIManager:
                 self.excel1_path = selected_file
                 # 更新標籤文字（如果標籤已存在）
                 if hasattr(self, 'excel1_label'):
-                    self.excel1_label.config(text=f"已選擇: {os.path.basename(selected_file)}")
+                    self.excel1_label.config(text=f"已選擇: {self._format_path_display(selected_file)}")
                 logger.info(f"自動選擇 Error Code 檔案: {selected_file}")
             else:
                 logger.info("未找到 Test Item Code 檔案")
@@ -119,6 +145,14 @@ class UIManager:
         self._setup_styles()
         self.main_frame = tb.Frame(self.root, padding=10, style="Main.TFrame")
         self.main_frame.pack(fill=BOTH, expand=YES)
+        
+        # 設定 grid 權重，讓元件能夠響應式調整
+        self.main_frame.grid_columnconfigure(1, weight=1)  # 讓輸入框列可以擴展
+        self.main_frame.grid_rowconfigure(0, weight=0)      # 固定行
+        self.main_frame.grid_rowconfigure(1, weight=0)      # 固定行
+        self.main_frame.grid_rowconfigure(2, weight=0)      # 固定行
+        self.main_frame.grid_rowconfigure(3, weight=0)      # 固定行
+        
         self._create_widgets()
         self.font_size = int(self.config_manager.get('FontSize', 11))
         self.set_all_font_size(self.font_size)
@@ -179,7 +213,7 @@ class UIManager:
         lbl = tb.Label(self.main_frame, text=self.config_manager.get(label_key))
         lbl.grid(row=row, column=0, sticky=W, pady=10)
         entry = tb.Entry(self.main_frame, width=45)
-        entry.grid(row=row, column=1, padx=5, pady=10)
+        entry.grid(row=row, column=1, padx=5, pady=10, sticky="ew")
         btn = tb.Button(self.main_frame,
                        text=self.config_manager.get('BrowseButton'),
                        bootstyle="outline-primary",
@@ -200,7 +234,7 @@ class UIManager:
         lbl = tb.Label(self.main_frame, text=self.config_manager.get('SelectSheetLabel'))
         lbl.grid(row=row, column=0, sticky=W, pady=10)
         self.sheet_combobox = tb.Combobox(self.main_frame, width=42)
-        self.sheet_combobox.grid(row=row, column=1, padx=5, pady=10)
+        self.sheet_combobox.grid(row=row, column=1, padx=5, pady=10, sticky="ew")
 
     def _create_compare_button(self, row: int):
         """建立比對按鈕、查詢按鈕和開啟結果按鈕（三欄分割）"""
@@ -287,7 +321,7 @@ class UIManager:
                 self.excel1_entry.delete(0, 'end')
                 self.excel1_entry.insert(0, last_xml_file)
                 logger.info(f"自動載入 Error Code 檔案: {last_xml_file}")
-                self.update_status(f"已載入 Error Code 檔案: {os.path.basename(last_xml_file)}", "green")
+                self.update_status(f"已載入 Error Code 檔案: {self._format_path_display(last_xml_file)}", "green")
             
             # 載入上次的來源 Excel 檔案
             last_excel_file = self.config_manager.get('LastExcelFile')
@@ -296,7 +330,7 @@ class UIManager:
                 self.excel2_entry.delete(0, 'end')
                 self.excel2_entry.insert(0, last_excel_file)
                 logger.info(f"自動載入來源 Excel 檔案: {last_excel_file}")
-                self.update_status(f"已載入來源檔案: {os.path.basename(last_excel_file)}", "green")
+                self.update_status(f"已載入來源檔案: {self._format_path_display(last_excel_file)}", "green")
                 
                 # 自動載入工作表
                 if self.sheet_load_callback:

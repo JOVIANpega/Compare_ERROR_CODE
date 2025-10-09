@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 > nul
 echo 打包 Error Code Comparer...
 
 REM 清理舊檔案
@@ -18,6 +19,7 @@ xcopy guide_popup dist\guide_popup\ /E /I
 xcopy EXCEL dist\EXCEL\ /E /I
 copy VERSION.py dist\
 copy README.md dist\
+copy setup.txt dist\
 
 echo 打包完成！執行檔在 dist 目錄中
 pause

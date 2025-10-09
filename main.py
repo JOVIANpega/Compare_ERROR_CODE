@@ -545,29 +545,84 @@ class ErrorCodeTool:
         except Exception as e:
             logger.error(f"詢問打開文件時發生錯誤: {str(e)}")
     
-    def _open_file(self, file_path: str):
-        """打開指定的文件"""
+    def _ask_open_file(self, file_path: str):
+        """詢問用戶是否要打開生成的文件"""
         try:
             import os
             import subprocess
             import platform
             
+            # 顯示文件路徑（縮短顯示）
+            display_path = file_path
+            if len(file_path) > 80:
+                # 如果路徑太長，只顯示文件名和部分路徑
+                file_name = os.path.basename(file_path)
+                parent_dir = os.path.basename(os.path.dirname(file_path))
+                display_path = f"...{os.sep}{parent_dir}{os.sep}{file_name}"
+            
+            # 創建彈出視窗
+            result = self.ui_manager.ask_yes_no(
+                "比對和 AI 推薦完成！", 
+                f"文件已成功生成：\n\n{display_path}\n\n是否要立即打開此文件？\n\n（如果開啟失敗，請手動開啟文件）"
+            )
+            
+            if result:
+                # 嘗試開啟文件，但不顯示錯誤對話框
+                self._open_file_silent(file_path)
+                
+        except Exception as e:
+            logger.error(f"詢問打開文件時發生錯誤: {str(e)}")
+    
+    def _open_file_silent(self, file_path: str):
+        """靜默開啟文件（不顯示錯誤對話框）"""
+        try:
+            # 確保文件路徑存在
+            if not os.path.exists(file_path):
+                logger.error(f"文件不存在: {file_path}")
+                self.ui_manager.update_status(f"文件不存在: {os.path.basename(file_path)}", "red")
+                return
+            
+            # 轉換為絕對路徑
+            abs_file_path = os.path.abspath(file_path)
+            logger.info(f"靜默嘗試開啟文件: {abs_file_path}")
+            
             system = platform.system()
             
             if system == "Windows":
-                os.startfile(file_path)
-            elif system == "Darwin":  # macOS
-                subprocess.run(["open", file_path])
-            else:  # Linux
-                subprocess.run(["xdg-open", file_path])
+                # Windows 系統 - 多種方式嘗試
+                try:
+                    os.startfile(abs_file_path)
+                    logger.info("os.startfile 成功")
+                    self.ui_manager.update_status(f"已開啟文件: {os.path.basename(file_path)}", "green")
+                except Exception as e:
+                    logger.warning(f"os.startfile 失敗: {str(e)}")
+                    try:
+                        # 備用方式1：cmd start
+                        subprocess.run(f'cmd /c start "" "{abs_file_path}"', shell=True, check=True)
+                        logger.info("cmd start 成功")
+                        self.ui_manager.update_status(f"已開啟文件: {os.path.basename(file_path)}", "green")
+                    except Exception as e2:
+                        logger.warning(f"cmd start 失敗: {str(e2)}")
+                        try:
+                            # 備用方式2：explorer
+                            subprocess.run(f'explorer "{abs_file_path}"', shell=True, check=True)
+                            logger.info("explorer 成功")
+                            self.ui_manager.update_status(f"已開啟文件: {os.path.basename(file_path)}", "green")
+                        except Exception as e3:
+                            logger.error(f"所有方式都失敗: {str(e3)}")
+                            self.ui_manager.update_status(f"無法自動開啟，請手動開啟: {os.path.basename(file_path)}", "orange")
+            elif system == "Darwin":
+                # macOS 系統
+                subprocess.run(["open", abs_file_path])
+                self.ui_manager.update_status(f"已開啟文件: {os.path.basename(file_path)}", "green")
+            else:
+                # Linux 系統
+                subprocess.run(["xdg-open", abs_file_path])
+                self.ui_manager.update_status(f"已開啟文件: {os.path.basename(file_path)}", "green")
                 
-            logger.info(f"成功打開文件: {file_path}")
-            
         except Exception as e:
-            logger.error(f"打開文件時發生錯誤: {str(e)}")
-            self.ui_manager.update_status(f"無法打開文件: {str(e)[:50]}", "red")
-
-    def _show_ai_prompt(self, descriptions):
+            logger.error(f"靜默開啟文件失敗: {str(e)}")
+            self.ui_manager.update_status(f"無法自動開啟，請手動開啟: {os.path.basename(file_path)}", "orange")
         """顯示 AI PROMPT 供使用者手動處理"""
         try:
             # 生成 PROMPT
@@ -729,27 +784,60 @@ class ErrorCodeTool:
     def _open_file(self, file_path):
         """開啟檔案"""
         try:
+            # 確保文件路徑存在
+            if not os.path.exists(file_path):
+                logger.error(f"文件不存在: {file_path}")
+                self.ui_manager.update_status(f"文件不存在: {os.path.basename(file_path)}", "red")
+                return
+            
+            # 轉換為絕對路徑並處理特殊字符
+            abs_file_path = os.path.abspath(file_path)
+            logger.info(f"嘗試開啟文件: {abs_file_path}")
+            
+            # 檢查路徑是否包含特殊字符
+            if '(' in abs_file_path or ')' in abs_file_path:
+                logger.warning(f"文件路徑包含特殊字符: {abs_file_path}")
+                # 嘗試用引號包圍路徑
+                quoted_path = f'"{abs_file_path}"'
+            else:
+                quoted_path = abs_file_path
+            
             system = platform.system()
             
             if system == "Windows":
-                # Windows 系統
-                os.startfile(file_path)
+                # Windows 系統 - 使用引號處理特殊字符
+                try:
+                    os.startfile(abs_file_path)
+                    logger.info(f"成功開啟檔案: {abs_file_path}")
+                except Exception as e:
+                    logger.warning(f"os.startfile 失敗，嘗試備用方式: {str(e)}")
+                    # 備用方式：使用 cmd 命令
+                    subprocess.run(f'cmd /c start "" "{abs_file_path}"', shell=True, check=True)
+                    logger.info("備用方式開啟成功")
             elif system == "Darwin":
                 # macOS 系統
-                subprocess.run(["open", file_path])
+                subprocess.run(["open", abs_file_path])
+                logger.info(f"成功開啟檔案: {abs_file_path}")
             else:
                 # Linux 系統
-                subprocess.run(["xdg-open", file_path])
+                subprocess.run(["xdg-open", abs_file_path])
+                logger.info(f"成功開啟檔案: {abs_file_path}")
                 
-            logger.info(f"成功開啟檔案: {file_path}")
-            
         except Exception as e:
             logger.error(f"開啟檔案失敗: {str(e)}")
-            # 如果系統開啟失敗，嘗試用預設程式開啟
+            # 最終備用方式
             try:
-                subprocess.run(["start", file_path], shell=True, check=True)
-            except:
-                self.ui_manager.update_status(f"無法開啟檔案：{os.path.basename(file_path)}，請手動開啟", "red")
+                logger.info("嘗試最終備用方式...")
+                # 使用 explorer 命令（Windows）
+                if platform.system() == "Windows":
+                    subprocess.run(f'explorer "{abs_file_path}"', shell=True, check=True)
+                else:
+                    subprocess.run(["start", abs_file_path], shell=True, check=True)
+                logger.info("最終備用方式成功")
+            except Exception as e2:
+                logger.error(f"所有開啟方式都失敗: {str(e2)}")
+                # 不顯示錯誤對話框，只在狀態列提示
+                self.ui_manager.update_status(f"無法自動開啟檔案，請手動開啟: {os.path.basename(file_path)}", "orange")
 
     def run(self):
         """啟動主視窗事件迴圈"""

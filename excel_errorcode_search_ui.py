@@ -30,19 +30,27 @@ class ExcelErrorCodeSearchUI:
         else:
             self.root = tk.Tk()
         self.root.title("錯誤碼查詢工具 v1.5.0")
-        self.root.geometry("1400x800")
+        
+        # 初始化設定管理（必須在使用前初始化）
+        self.config_manager = ConfigManager()
+        
+        # 讀取上次的視窗大小設定
+        saved_geometry = self.config_manager.get('SearchWindowGeometry', '1400x800')
+        self.root.geometry(saved_geometry)
         self.root.minsize(1200, 600)
         self.root.resizable(True, True)
+        
         # 確保視窗有完整的控制按鈕（最小化、最大化、關閉）
         # 先設定為正常視窗，再最大化
         self.root.wm_attributes('-toolwindow', False)
         self.root.wm_attributes('-topmost', False)
-        # 預設最大化視窗（但保持控制按鈕）
-        self.root.state('zoomed')  # Windows 最大化
+        
+        # 檢查是否要最大化（如果上次是最大化狀態）
+        saved_state = self.config_manager.get('SearchWindowState', 'normal')
+        if saved_state == 'zoomed':
+            self.root.state('zoomed')  # Windows 最大化
         # 確保最大化後仍有控制按鈕
         self.root.wm_attributes('-toolwindow', False)
-        # 初始化設定管理
-        self.config_manager = ConfigManager()
         # 檢查 setup.txt 是否有 ExcelErrorCodeSearch_TIP，若無則自動寫入
         tip_key = 'ExcelErrorCodeSearch_TIP'
         default_tip = (
@@ -79,8 +87,56 @@ class ExcelErrorCodeSearchUI:
         self.tip_window = None  # 用於 toggle 說明視窗
         self.center_window(offset_x, offset_y)
         
+        # 設定視窗關閉事件處理器
+        self.root.protocol("WM_DELETE_WINDOW", self._on_closing)
+        
         # 初始化狀態列
         self.update_status("就緒")
+
+    def _on_closing(self):
+        """視窗關閉時的事件處理"""
+        try:
+            # 保存視窗大小和狀態
+            current_geometry = self.root.geometry()
+            current_state = self.root.state()
+            
+            # 保存到設定檔
+            self.config_manager.set('SearchWindowGeometry', current_geometry)
+            self.config_manager.set('SearchWindowState', current_state)
+            
+            logger.info(f"保存錯誤碼查詢視窗設定 - 大小: {current_geometry}, 狀態: {current_state}")
+            
+        except Exception as e:
+            logger.error(f"保存視窗設定時發生錯誤: {str(e)}")
+        
+        # 關閉視窗
+        self.root.destroy()
+
+    def _format_path_display(self, file_path: str, max_length: int = 100) -> str:
+        """格式化檔案路徑顯示，最多顯示指定字元數"""
+        if not file_path:
+            return ""
+        
+        if len(file_path) <= max_length:
+            return file_path
+        
+        # 如果路徑太長，顯示前面部分和後面部分
+        file_name = os.path.basename(file_path)
+        parent_dir = os.path.dirname(file_path)
+        
+        # 計算可用空間（減去 "..." 的3個字元）
+        available_length = max_length - 3
+        
+        # 如果文件名本身就很長，優先顯示文件名
+        if len(file_name) > available_length:
+            return "..." + file_name[-(available_length):]
+        
+        # 否則顯示父目錄 + 文件名
+        remaining_length = available_length - len(file_name)
+        if len(parent_dir) > remaining_length:
+            return "..." + parent_dir[-(remaining_length-1):] + os.sep + file_name
+        else:
+            return parent_dir + os.sep + file_name
 
     def update_status(self, message, color="blue"):
         """更新狀態列訊息"""
@@ -89,14 +145,26 @@ class ExcelErrorCodeSearchUI:
             self.root.update_idletasks()
 
     def center_window(self, offset_x=0, offset_y=0):
-        self.root.update_idletasks()
-        w = self.root.winfo_width()
-        h = self.root.winfo_height()
-        sw = self.root.winfo_screenwidth()
-        sh = self.root.winfo_screenheight()
-        x = (sw - w) // 2 + offset_x
-        y = (sh - h) // 2 + offset_y
-        self.root.geometry(f"{w}x{h}+{x}+{y}")
+        """居中視窗（只在非最大化狀態時執行）"""
+        try:
+            # 檢查視窗狀態
+            current_state = self.root.state()
+            if current_state == 'zoomed':
+                # 如果是最大化狀態，不執行居中
+                logger.info("視窗已最大化，跳過居中處理")
+                return
+            
+            self.root.update_idletasks()
+            w = self.root.winfo_width()
+            h = self.root.winfo_height()
+            sw = self.root.winfo_screenwidth()
+            sh = self.root.winfo_screenheight()
+            x = (sw - w) // 2 + offset_x
+            y = (sh - h) // 2 + offset_y
+            self.root.geometry(f"{w}x{h}+{x}+{y}")
+            logger.info(f"視窗已居中: {w}x{h}+{x}+{y}")
+        except Exception as e:
+            logger.error(f"居中視窗時發生錯誤: {str(e)}")
 
     def _setup_ui(self):
         # 主分割區
@@ -236,10 +304,10 @@ class ExcelErrorCodeSearchUI:
                 self._show_table(self.df)
                 
                 # 更新文件標籤
-                self.file_label.config(text=os.path.basename(self.last_excel_path))
+                self.file_label.config(text=self._format_path_display(self.last_excel_path))
                 
                 # 更新狀態
-                file_path_display = self.last_excel_path if len(self.last_excel_path) <= 150 else "..." + self.last_excel_path[-(150-3):]
+                file_path_display = self._format_path_display(self.last_excel_path, 100)
                 self.update_status(f"自動載入上次文件: {file_path_display}", "green")
                 
                 logger.info(f"自動載入 Test Item 文件: {self.last_excel_path}")
@@ -322,14 +390,14 @@ class ExcelErrorCodeSearchUI:
             df.columns = [str(col).strip() for col in df.columns]
             
             self.df = df
-            self.file_label.config(text=os.path.basename(file_path))
+            self.file_label.config(text=self._format_path_display(file_path))
             self._show_table(self.df)
             # 更新設定檔
             self.last_excel_path = file_path
             self.config_manager.update_last_paths(excel_path=file_path)
             
             # 更新狀態 - 顯示檔案路徑
-            file_path_display = file_path if len(file_path) <= 150 else "..." + file_path[-(150-3):]
+            file_path_display = self._format_path_display(file_path, 100)
             self.update_status(f"檔案已載入: {file_path_display}", "green")
             
         except Exception as e:

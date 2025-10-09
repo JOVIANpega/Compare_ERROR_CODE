@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 > nul
 echo ========================================
 echo Error Code Comparer 快速打包工具
 echo ========================================
@@ -27,6 +28,7 @@ echo 4. 複製執行檔和必要檔案...
 copy "dist\%APP_NAME%.exe" "%DIST_DIR%\"
 copy "pal.ico" "%DIST_DIR%\"
 copy "README.md" "%DIST_DIR%\"
+copy "setup.txt" "%DIST_DIR%\"
 xcopy "guide_popup" "%DIST_DIR%\guide_popup\" /E /I
 xcopy "EXCEL" "%DIST_DIR%\EXCEL\" /E /I
 
