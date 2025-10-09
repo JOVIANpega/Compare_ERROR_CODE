@@ -134,13 +134,13 @@ class AIRecommendationEngine:
 
     def _extract_keywords(self, description: str) -> List[str]:
         """
-        從描述中提取關鍵字
+        智能擷取關鍵詞，支援多種格式和多層搜尋策略
         
         Args:
             description: 描述文字
             
         Returns:
-            List[str]: 關鍵字列表
+            List[str]: 關鍵字列表（按優先級排序）
         """
         import re
         
@@ -149,42 +149,62 @@ class AIRecommendationEngine:
         if not description:
             return []
         
-        # 移除特殊字符
-        cleaned = re.sub(r'[^\w\s#-]', ' ', description)
-        words = cleaned.lower().split()
+        keywords = []
         
-        # 停用詞
-        stop_words = {
-            'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 
-            'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
-            'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
-            'should', 'may', 'might', 'can', 'must', 'shall', 'this', 'that',
-            'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they'
-        }
+        # 1. 處理 PC#-# 格式（忽略前綴，只取主要描述）
+        if '#' in description:
+            # 找到最後一個 '#' 後面的內容
+            last_hash_index = description.rfind('#')
+            if last_hash_index != -1:
+                main_description = description[last_hash_index + 1:].strip()
+                if main_description:
+                    keywords.append(main_description)
         
-        # 過濾停用詞和短詞
-        keywords = [
-            word.strip('.,!?()[]{}') 
-            for word in words 
-            if word not in stop_words and len(word) > 2
-        ]
-        
-        # 如果沒有找到關鍵字，嘗試更寬鬆的條件
+        # 2. 如果沒有 PC#-# 格式，才處理一般描述
         if not keywords:
-            keywords = [
+            # 移除特殊字符但保留重要部分
+            cleaned = re.sub(r'[^\w\s#-]', ' ', description)
+            words = cleaned.lower().split()
+            
+            # 3. 過濾停用詞
+            stop_words = {
+                'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 
+                'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+                'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
+                'should', 'may', 'might', 'can', 'must', 'shall', 'this', 'that',
+                'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they',
+                'version', 'check', 'show', 'test', 'error', 'fail', 'success'
+            }
+            
+            # 4. 提取有意義的詞
+            meaningful_words = [
                 word.strip('.,!?()[]{}') 
                 for word in words 
-                if len(word) > 1  # 降低長度要求
+                if word not in stop_words and len(word) > 2
             ]
+            
+            # 5. 如果沒有找到關鍵字，嘗試更寬鬆的條件
+            if not meaningful_words:
+                meaningful_words = [
+                    word.strip('.,!?()[]{}') 
+                    for word in words 
+                    if len(word) > 1
+                ]
+            
+            # 6. 如果還是沒有，嘗試分割特殊字符
+            if not meaningful_words and description:
+                # 處理像 "PC#-#Show SSN to UI" 這樣的描述
+                parts = re.split(r'[#\-_]+', description.lower())
+                meaningful_words = [part.strip() for part in parts if part.strip() and len(part.strip()) > 1]
+            
+            # 7. 組合關鍵詞
+            keywords.extend(meaningful_words)
         
-        # 如果還是沒有，嘗試分割特殊字符
-        if not keywords and description:
-            # 處理像 "PC#-#Show SSN to UI" 這樣的描述
-            import re
-            # 分割特殊字符但保留重要部分
-            parts = re.split(r'[#\-_]+', description.lower())
-            keywords = [part.strip() for part in parts if part.strip() and len(part.strip()) > 1]
+        # 8. 去重並排序（長度優先，長詞通常更精確）
+        keywords = list(set(keywords))
+        keywords.sort(key=len, reverse=True)
         
+        logger.info(f"從 '{description}' 提取關鍵詞: {keywords[:3]}")
         return keywords[:3]  # 最多3個關鍵字
 
     def _search_with_keywords(self, keywords: List[str]) -> pd.DataFrame:

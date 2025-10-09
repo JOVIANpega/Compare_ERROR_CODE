@@ -127,6 +127,31 @@ class ExcelHandler:
                    output_path: str, sheet_name: str, ai_recommendations: list = None) -> bool:
         """儲存比對結果，並反白來源TestID對應Test Item All行"""
         try:
+            # 檢查輸出檔案是否被佔用
+            if os.path.exists(output_path):
+                try:
+                    # 嘗試開啟檔案檢查是否被佔用
+                    with open(output_path, 'a'):
+                        pass
+                except PermissionError:
+                    logger.warning(f"檔案被佔用，嘗試重新命名: {output_path}")
+                    # 生成備用檔名
+                    base_name = os.path.splitext(output_path)[0]
+                    extension = os.path.splitext(output_path)[1]
+                    counter = 1
+                    while True:
+                        new_path = f"{base_name}_backup_{counter}{extension}"
+                        try:
+                            with open(new_path, 'a'):
+                                pass
+                            output_path = new_path
+                            logger.info(f"使用備用檔名: {output_path}")
+                            break
+                        except PermissionError:
+                            counter += 1
+                            if counter > 10:  # 避免無限循環
+                                raise Exception(f"無法找到可用的檔名，檔案可能被多個程式佔用")
+            
             # 如果有 AI 推薦，新增 E、F 欄位
             if ai_recommendations and len(ai_recommendations) > 0:
                 df_result = self._add_ai_recommendations(df_result, ai_recommendations)
