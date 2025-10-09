@@ -87,7 +87,7 @@ class AIRecommendationEngine:
             logger.error(f"生成 AI 推薦時發生錯誤: {str(e)}")
             return []
 
-    def generate_recommendations_with_search(self, descriptions: List[str], progress_callback=None) -> List[Tuple[str, str, str, str]]:
+    def generate_recommendations_with_search(self, descriptions: List[str], progress_callback=None) -> List[Tuple[str, str]]:
         """
         使用錯誤碼查詢邏輯生成推薦
         
@@ -96,7 +96,7 @@ class AIRecommendationEngine:
             progress_callback: 進度回調函數，格式為 callback(current, total, message)
             
         Returns:
-            List[Tuple[str, str, str, str]]: 推薦的 (Test ID 1, Test ID 2, 中文描述 1, 中文描述 2)
+            List[Tuple[str, str]]: 推薦的 (Test ID, 中文描述)
         """
         recommendations = []
         total = len(descriptions)
@@ -106,14 +106,14 @@ class AIRecommendationEngine:
                 progress_callback(i, total, f"分析描述 {i+1}/{total}: {description[:30]}...")
             
             if not description or not description.strip():
-                recommendations.append(("", "", "", ""))
+                recommendations.append(("", ""))
                 continue
                 
             # 提取關鍵字
             keywords = self._extract_keywords(description)
             
             if not keywords:
-                recommendations.append(("", "", "", ""))
+                recommendations.append(("", ""))
                 continue
             
             # 使用錯誤碼查詢邏輯搜尋
@@ -122,19 +122,17 @@ class AIRecommendationEngine:
             # 從搜尋結果中提取 Test ID 和中文描述
             test_data = self._extract_test_data_from_matches(matches)
             
-            if len(test_data) >= 2:
-                recommendations.append((test_data[0][0], test_data[1][0], test_data[0][1], test_data[1][1]))
-            elif len(test_data) == 1:
-                recommendations.append((test_data[0][0], "", test_data[0][1], ""))
+            if len(test_data) >= 1:
+                recommendations.append((test_data[0][0], test_data[0][1]))
             else:
-                recommendations.append(("", "", "", ""))
+                recommendations.append(("", ""))
         
         logger.info(f"使用搜尋邏輯生成 {len(recommendations)} 個推薦")
         return recommendations
 
     def _extract_keywords(self, description: str) -> List[str]:
         """
-        智能擷取關鍵詞，支援多種格式和多層搜尋策略
+        智能擷取關鍵詞，支援特定模式匹配和同義詞搜尋
         
         Args:
             description: 描述文字
@@ -151,68 +149,131 @@ class AIRecommendationEngine:
         
         keywords = []
         
-        # 1. 處理 PC#-# 格式（忽略前綴，只取主要描述）
+        # 1. 處理 PC#-# 和 DUT#-# 格式（忽略前綴）
         if '#' in description:
-            # 找到最後一個 '#' 後面的內容
-            last_hash_index = description.rfind('#')
-            if last_hash_index != -1:
-                main_description = description[last_hash_index + 1:].strip()
-                if main_description:
-                    keywords.append(main_description)
+            # 找到 'PC#-#' 或 'DUT#-#' 後面的內容
+            if 'PC#-#' in description:
+                main_description = description.split('PC#-#', 1)[1].strip()
+            elif 'DUT#-#' in description:
+                main_description = description.split('DUT#-#', 1)[1].strip()
+            else:
+                # 如果沒有找到標準格式，直接使用原描述（不處理 # 字符）
+                main_description = description
+            if main_description:
+                description = main_description
+        else:
+            # 如果沒有 '#' 字符，直接使用原描述
+            pass
         
-        # 2. 如果沒有 PC#-# 格式，才處理一般描述
-        if not keywords:
-            # 移除特殊字符但保留重要部分
-            cleaned = re.sub(r'[^\w\s#-]', ' ', description)
-            words = cleaned.lower().split()
+        # 2. 移除特殊字符，但保留空格和下劃線
+        cleaned = re.sub(r'[@#$]+', '', description)
+        cleaned = cleaned.strip()
+        
+        # 3. 智能關鍵詞提取（按優先級排序）
+        keywords = self._extract_smart_keywords(cleaned)
+        
+        logger.info(f"從 '{description}' 提取智能關鍵詞: {keywords}")
+        return keywords[:3]  # 最多3個關鍵字
+    
+    def _extract_smart_keywords(self, cleaned_description: str) -> List[str]:
+        """
+        根據特定模式提取智能關鍵詞
+        
+        Args:
+            cleaned_description: 清理後的描述
             
-            # 3. 過濾停用詞
-            stop_words = {
-                'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 
-                'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
-                'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
-                'should', 'may', 'might', 'can', 'must', 'shall', 'this', 'that',
-                'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they',
-                'version', 'check', 'show', 'test', 'error', 'fail', 'success'
-            }
+        Returns:
+            List[str]: 按優先級排序的關鍵詞列表
+        """
+        keywords = []
+        description_lower = cleaned_description.lower()
+        
+        # 特定模式匹配（按優先級排序）
+        if 'ssn' in description_lower:
+            keywords.append('SSN')
+        elif 'check route' in description_lower or 'checkroute' in description_lower:
+            keywords.append('Check Route')
+        elif 'sfis enabled' in description_lower or 'sfis_enabled' in description_lower:
+            keywords.extend(['SFIS Enabled', 'SFIS'])
+        elif 'sfis get mo' in description_lower or 'sfis_get_mo' in description_lower:
+            keywords.extend(['SFIS Get MO', 'SFIS', 'MO'])
+        elif 'check mo' in description_lower or 'check_mo' in description_lower:
+            keywords.append('Check MO')
+        elif 'wait time' in description_lower or 'waittime' in description_lower:
+            keywords.extend(['Wait time', 'time'])
+        elif 'sfis 69pn' in description_lower:
+            keywords.extend(['SFIS 69PN', 'SFIS'])
+        elif 'sf69pn' in description_lower:
+            keywords.extend(['sf69PN', 'SFIS'])
+        elif 'set model name' in description_lower or 'setmodelname' in description_lower:
+            keywords.append('Set Model Name')
+        elif 'get model name' in description_lower or 'getmodelname' in description_lower:
+            keywords.append('Get Model Name')
+        elif 'wait' in description_lower:
+            keywords.extend(['Wait', 'delay', 'time'])
+        elif 'sfis' in description_lower:
+            keywords.append('SFIS')
+        elif 'mo' in description_lower:
+            keywords.append('MO')
+        else:
+            # 如果沒有匹配到特定模式，使用一般處理
+            keywords = self._extract_general_keywords(cleaned_description)
+        
+        return keywords
+    
+    def _extract_general_keywords(self, description: str) -> List[str]:
+        """
+        一般關鍵詞提取（備用方案）
+        
+        Args:
+            description: 描述文字
             
-            # 4. 提取有意義的詞
+        Returns:
+            List[str]: 關鍵詞列表
+        """
+        import re
+        
+        # 移除特殊字符但保留重要部分
+        cleaned = re.sub(r'[^\w\s#-]', ' ', description)
+        words = cleaned.lower().split()
+        
+        # 停用詞
+        stop_words = {
+            'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 
+            'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+            'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
+            'should', 'may', 'might', 'can', 'must', 'shall', 'this', 'that',
+            'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they',
+            'version', 'check', 'show', 'test', 'error', 'fail', 'success'
+        }
+        
+        # 提取有意義的詞
+        meaningful_words = [
+            word.strip('.,!?()[]{}') 
+            for word in words 
+            if word not in stop_words and len(word) > 2
+        ]
+        
+        # 如果沒有找到關鍵字，嘗試更寬鬆的條件
+        if not meaningful_words:
             meaningful_words = [
                 word.strip('.,!?()[]{}') 
                 for word in words 
-                if word not in stop_words and len(word) > 2
+                if len(word) > 1
             ]
-            
-            # 5. 如果沒有找到關鍵字，嘗試更寬鬆的條件
-            if not meaningful_words:
-                meaningful_words = [
-                    word.strip('.,!?()[]{}') 
-                    for word in words 
-                    if len(word) > 1
-                ]
-            
-            # 6. 如果還是沒有，嘗試分割特殊字符
-            if not meaningful_words and description:
-                # 處理像 "PC#-#Show SSN to UI" 這樣的描述
-                parts = re.split(r'[#\-_]+', description.lower())
-                meaningful_words = [part.strip() for part in parts if part.strip() and len(part.strip()) > 1]
-            
-            # 7. 組合關鍵詞
-            keywords.extend(meaningful_words)
         
-        # 8. 去重並排序（長度優先，長詞通常更精確）
-        keywords = list(set(keywords))
-        keywords.sort(key=len, reverse=True)
+        # 去重並排序（長度優先，長詞通常更精確）
+        meaningful_words = list(set(meaningful_words))
+        meaningful_words.sort(key=len, reverse=True)
         
-        logger.info(f"從 '{description}' 提取關鍵詞: {keywords[:3]}")
-        return keywords[:3]  # 最多3個關鍵字
+        return meaningful_words
 
     def _search_with_keywords(self, keywords: List[str]) -> pd.DataFrame:
         """
-        使用關鍵字搜尋參考資料
+        使用優先級關鍵字搜尋參考資料
         
         Args:
-            keywords: 關鍵字列表
+            keywords: 關鍵字列表（按優先級排序）
             
         Returns:
             pd.DataFrame: 搜尋結果
@@ -224,31 +285,70 @@ class AIRecommendationEngine:
         if not keywords:
             return pd.DataFrame()
         
-        # 使用 OR 條件搜尋（包含任一關鍵字即可）
-        mask = self.reference_data.apply(
-            lambda row: any(
-                row.astype(str).str.contains(keyword, case=False, na=False).any() 
-                for keyword in keywords
-            ), axis=1
-        )
+        # 按優先級順序搜尋關鍵字
+        for keyword in keywords:
+            logger.info(f"嘗試搜尋關鍵字: {keyword}")
+            
+            # 第一層：精確匹配
+            exact_matches = self._search_exact(keyword)
+            if not exact_matches.empty:
+                logger.info(f"找到精確匹配: {keyword}")
+                return exact_matches
+            
+            # 第二層：部分匹配
+            partial_matches = self._search_partial(keyword)
+            if not partial_matches.empty:
+                logger.info(f"找到部分匹配: {keyword}")
+                return partial_matches
         
-        result = self.reference_data[mask]
+        logger.info(f"所有關鍵字都沒有找到匹配: {keywords}")
+        return pd.DataFrame()
+    
+    def _search_exact(self, keyword: str) -> pd.DataFrame:
+        """
+        精確匹配搜尋
         
-        # 如果 OR 條件沒有結果，嘗試更寬鬆的搜尋
-        if result.empty:
-            # 嘗試部分匹配
-            for keyword in keywords:
-                partial_mask = self.reference_data.apply(
-                    lambda row: any(
-                        str(cell).lower().find(keyword.lower()) != -1
-                        for cell in row if pd.notna(cell)
-                    ), axis=1
-                )
-                if partial_mask.any():
-                    result = self.reference_data[partial_mask]
-                    break
+        Args:
+            keyword: 搜尋關鍵字
+            
+        Returns:
+            pd.DataFrame: 精確匹配結果
+        """
+        try:
+            # 在所有欄位中搜尋精確匹配
+            mask = self.reference_data.apply(
+                lambda row: any(
+                    str(cell).lower() == keyword.lower()
+                    for cell in row if pd.notna(cell)
+                ), axis=1
+            )
+            return self.reference_data[mask]
+        except Exception as e:
+            logger.error(f"精確搜尋時發生錯誤: {str(e)}")
+            return pd.DataFrame()
+    
+    def _search_partial(self, keyword: str) -> pd.DataFrame:
+        """
+        部分匹配搜尋
         
-        return result
+        Args:
+            keyword: 搜尋關鍵字
+            
+        Returns:
+            pd.DataFrame: 部分匹配結果
+        """
+        try:
+            # 在所有欄位中搜尋部分匹配
+            mask = self.reference_data.apply(
+                lambda row: any(
+                    keyword.lower() in str(cell).lower()
+                    for cell in row if pd.notna(cell)
+                ), axis=1
+            )
+            return self.reference_data[mask]
+        except Exception as e:
+            logger.error(f"部分搜尋時發生錯誤: {str(e)}")
+            return pd.DataFrame()
 
     def _extract_test_data_from_matches(self, matches: pd.DataFrame) -> List[Tuple[str, str]]:
         """
@@ -258,7 +358,7 @@ class AIRecommendationEngine:
             matches: 搜尋結果
             
         Returns:
-            List[Tuple[str, str]]: (Test ID, 中文描述) 列表
+            List[Tuple[str, str]]: (Test ID, 中文描述) 列表（只返回第一個）
         """
         test_data = []
         
@@ -268,8 +368,7 @@ class AIRecommendationEngine:
             
             if test_id and test_id not in [data[0] for data in test_data]:
                 test_data.append((test_id, chinese_desc))
-                if len(test_data) >= 2:
-                    break
+                break  # 只返回第一個結果
         
         return test_data
     

@@ -207,7 +207,7 @@ class ExcelHandler:
         
         Args:
             file_path: 現有檔案路徑
-            ai_recommendations: AI 推薦列表，格式為 [(test_id_1, test_id_2, chinese_1, chinese_2), ...]
+            ai_recommendations: AI 推薦列表，格式為 [(test_id, chinese_desc), ...]
             
         Returns:
             bool: 是否成功
@@ -227,98 +227,64 @@ class ExcelHandler:
                 logger.warning(f"AI 推薦數量 ({len(ai_recommendations)}) 與資料行數 ({data_rows}) 不一致")
                 # 補齊不足的推薦
                 while len(ai_recommendations) < data_rows:
-                    ai_recommendations.append(("", "", "", ""))
+                    ai_recommendations.append(("", ""))
                 # 截斷多餘的推薦
                 ai_recommendations = ai_recommendations[:data_rows]
             
             # 檢查是否已經有 AI 推薦欄位
             col_e_exists = False
-            col_f_exists = False
             col_g_exists = False
-            col_h_exists = False
             col_e_index = None
-            col_f_index = None
             col_g_index = None
-            col_h_index = None
             
-            # 檢查 E、F、G、H 列是否已經有 AI 推薦欄位
+            # 檢查 E 和 G 列是否已經有 AI 推薦欄位
             for col_idx in range(1, ws.max_column + 1):
                 cell_value = ws.cell(row=1, column=col_idx).value
-                if cell_value and 'AI推薦 test ID 1' in str(cell_value):
+                if cell_value and 'AI推薦 test ID' in str(cell_value):
                     col_e_exists = True
                     col_e_index = col_idx
-                elif cell_value and 'AI推薦 test ID 2' in str(cell_value):
-                    col_f_exists = True
-                    col_f_index = col_idx
-                elif cell_value and 'AI推薦 中文 1' in str(cell_value):
+                elif cell_value and 'AI推薦 中文' in str(cell_value):
                     col_g_exists = True
                     col_g_index = col_idx
-                elif cell_value and 'AI推薦 中文 2' in str(cell_value):
-                    col_h_exists = True
-                    col_h_index = col_idx
             
-            # 如果沒有 AI 推薦欄位，新增到 E、F、G、H 列
+            # 如果沒有 AI 推薦欄位，新增到 E 和 G 列
             if not col_e_exists:
                 col_e_index = ws.max_column + 1
-                ws.cell(row=1, column=col_e_index, value='AI推薦 test ID 1')
-                logger.info(f"新增 AI推薦 test ID 1 欄位到第 {col_e_index} 列")
-            
-            if not col_f_exists:
-                col_f_index = ws.max_column + 1
-                ws.cell(row=1, column=col_f_index, value='AI推薦 test ID 2')
-                logger.info(f"新增 AI推薦 test ID 2 欄位到第 {col_f_index} 列")
+                ws.cell(row=1, column=col_e_index, value='AI推薦 test ID')
+                logger.info(f"新增 AI推薦 test ID 欄位到第 {col_e_index} 列")
             
             if not col_g_exists:
                 col_g_index = ws.max_column + 1
-                ws.cell(row=1, column=col_g_index, value='AI推薦 中文 1')
-                logger.info(f"新增 AI推薦 中文 1 欄位到第 {col_g_index} 列")
-            
-            if not col_h_exists:
-                col_h_index = ws.max_column + 1
-                ws.cell(row=1, column=col_h_index, value='AI推薦 中文 2')
-                logger.info(f"新增 AI推薦 中文 2 欄位到第 {col_h_index} 列")
+                ws.cell(row=1, column=col_g_index, value='AI推薦 中文')
+                logger.info(f"新增 AI推薦 中文 欄位到第 {col_g_index} 列")
             
             # 寫入 AI 推薦資料，保持原有格式
-            for row_idx, (test_id_1, test_id_2, chinese_1, chinese_2) in enumerate(ai_recommendations, start=2):  # 從第2行開始（跳過標題）
+            for row_idx, (test_id, chinese_desc) in enumerate(ai_recommendations, start=2):  # 從第2行開始（跳過標題）
                 if col_e_index:
-                    cell_e = ws.cell(row=row_idx, column=col_e_index, value=test_id_1)
+                    cell_e = ws.cell(row=row_idx, column=col_e_index, value=test_id)
                     # 保持與其他資料行相同的格式
                     self._apply_data_cell_format(cell_e)
                 
-                if col_f_index:
-                    cell_f = ws.cell(row=row_idx, column=col_f_index, value=test_id_2)
-                    # 保持與其他資料行相同的格式
-                    self._apply_data_cell_format(cell_f)
-                
                 if col_g_index:
-                    cell_g = ws.cell(row=row_idx, column=col_g_index, value=chinese_1)
+                    cell_g = ws.cell(row=row_idx, column=col_g_index, value=chinese_desc)
                     # 保持與其他資料行相同的格式
                     self._apply_data_cell_format(cell_g)
-                
-                if col_h_index:
-                    cell_h = ws.cell(row=row_idx, column=col_h_index, value=chinese_2)
-                    # 保持與其他資料行相同的格式
-                    self._apply_data_cell_format(cell_h)
             
             # 如果新增了欄位，需要為標題行應用格式
-            if not col_e_exists or not col_f_exists or not col_g_exists or not col_h_exists:
+            if not col_e_exists or not col_g_exists:
                 self._apply_header_format(ws, col_e_index if not col_e_exists else None)
-                self._apply_header_format(ws, col_f_index if not col_f_exists else None)
                 self._apply_header_format(ws, col_g_index if not col_g_exists else None)
-                self._apply_header_format(ws, col_h_index if not col_h_exists else None)
             
             # 自動調整 AI 推薦欄位的寬度，確保內容完整顯示
-            self._auto_adjust_column_widths(ws, col_e_index, col_f_index, col_g_index, col_h_index)
+            self._auto_adjust_column_widths(ws, col_e_index, col_g_index)
             
             # 保存檔案，保持所有原有格式
             wb.save(file_path)
             wb.close()
             
             logger.info(f"成功為現有檔案新增 AI 推薦欄位: {file_path}")
-            logger.info(f"AI推薦 test ID 1 寫入到第 {col_e_index} 列")
-            logger.info(f"AI推薦 test ID 2 寫入到第 {col_f_index} 列")
-            logger.info(f"AI推薦 中文 1 寫入到第 {col_g_index} 列")
-            logger.info(f"AI推薦 中文 2 寫入到第 {col_h_index} 列")
+            logger.info(f"AI推薦 test ID 寫入到第 {col_e_index} 列")
+            logger.info(f"AI推薦 中文 寫入到第 {col_g_index} 列")
             logger.info(f"共寫入 {len(ai_recommendations)} 筆推薦資料")
             
             return True
@@ -342,24 +308,20 @@ class ExcelHandler:
         )
         cell.border = thin_border
     
-    def _auto_adjust_column_widths(self, worksheet, col_e_index, col_f_index, col_g_index, col_h_index):
+    def _auto_adjust_column_widths(self, worksheet, col_e_index, col_g_index):
         """
         自動調整 AI 推薦欄位的寬度，確保內容完整顯示
         
         Args:
             worksheet: 工作表物件
             col_e_index: E 欄位索引
-            col_f_index: F 欄位索引
             col_g_index: G 欄位索引
-            col_h_index: H 欄位索引
         """
         try:
             # 定義各欄位的建議寬度
             column_widths = {
-                col_e_index: 15,  # AI推薦 test ID 1 - Test ID 通常較短
-                col_f_index: 15,  # AI推薦 test ID 2 - Test ID 通常較短
-                col_g_index: 25,  # AI推薦 中文 1 - 中文描述需要更多空間
-                col_h_index: 30   # AI推薦 中文 2 - 中文描述通常較長
+                col_e_index: 15,  # AI推薦 test ID - Test ID 通常較短
+                col_g_index: 25   # AI推薦 中文 - 中文描述需要更多空間
             }
             
             # 為每個欄位設定寬度
@@ -369,7 +331,7 @@ class ExcelHandler:
                     logger.info(f"設定第 {col_index} 欄位寬度為 {width}")
             
             # 額外檢查：如果內容超過設定寬度，動態調整
-            for col_index in [col_e_index, col_f_index, col_g_index, col_h_index]:
+            for col_index in [col_e_index, col_g_index]:
                 if col_index:
                     max_length = 0
                     col_letter = worksheet.cell(row=1, column=col_index).column_letter
