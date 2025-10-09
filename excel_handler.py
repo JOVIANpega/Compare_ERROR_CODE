@@ -320,8 +320,8 @@ class ExcelHandler:
         try:
             # 定義各欄位的建議寬度
             column_widths = {
-                col_e_index: 15,  # AI推薦 test ID - Test ID 通常較短
-                col_g_index: 25   # AI推薦 中文 - 中文描述需要更多空間
+                col_e_index: 20,  # AI推薦 test ID - 增加寬度
+                col_g_index: 40   # AI推薦 中文 - 大幅增加寬度
             }
             
             # 為每個欄位設定寬度
@@ -340,15 +340,15 @@ class ExcelHandler:
                     for row_idx in range(1, worksheet.max_row + 1):
                         cell_value = worksheet.cell(row=row_idx, column=col_index).value
                         if cell_value:
-                            # 計算字串長度（中文字算2個字元）
+                            # 計算字串長度（中文字算2.5個字元）
                             str_length = len(str(cell_value))
                             # 中文字符長度調整
                             chinese_chars = sum(1 for char in str(cell_value) if '\u4e00' <= char <= '\u9fff')
-                            adjusted_length = str_length + chinese_chars
+                            adjusted_length = str_length + (chinese_chars * 1.5)
                             max_length = max(max_length, adjusted_length)
                     
-                    # 設定最小寬度為 12，最大寬度為 50
-                    optimal_width = max(12, min(50, max_length + 2))
+                    # 設定最小寬度為 15，最大寬度為 80（增加最大寬度）
+                    optimal_width = max(15, min(80, max_length + 3))
                     worksheet.column_dimensions[col_letter].width = optimal_width
                     logger.info(f"動態調整第 {col_index} 欄位寬度為 {optimal_width} (內容最大長度: {max_length})")
             
@@ -411,14 +411,14 @@ class ExcelHandler:
                             if cell.value:
                                 cell_str = str(cell.value)
                                 cell_len = len(cell_str)
-                                # 中文字符長度調整（中文字算2個字元）
+                                # 中文字符長度調整（中文字算2.5個字元，更準確）
                                 chinese_chars = sum(1 for char in cell_str if '\u4e00' <= char <= '\u9fff')
-                                adjusted_len = cell_len + chinese_chars
+                                adjusted_len = cell_len + (chinese_chars * 1.5)  # 中文字更寬
                                 max_length = max(max_length, adjusted_len)
                         except:
                             pass
-                    # 設定最小寬度為 12，最大寬度為 50
-                    optimal_width = max(12, min(50, max_length + 2))
+                    # 設定最小寬度為 15，最大寬度為 80（增加最大寬度）
+                    optimal_width = max(15, min(80, max_length + 3))  # 增加邊距
                     ws.column_dimensions[column_letter].width = optimal_width
                 # 凍結第一列
                 ws.freeze_panes = ws["A2"]

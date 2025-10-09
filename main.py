@@ -69,9 +69,6 @@ class ErrorCodeTool:
         # 設定比對按鈕的命令
         self.ui_manager.set_compare_command(self.compare_files)
         
-        # 設定AI推薦按鈕的命令
-        self.ui_manager.set_ai_recommend_callback(self.ai_recommend_analysis)
-        
         # 設定開啟結果檔案按鈕的命令
         self.ui_manager.set_open_result_callback(self.open_result_files)
         
@@ -82,9 +79,22 @@ class ErrorCodeTool:
         self.root.deiconify()
         show_guide(self.root, 'setup.txt', "錯誤碼工具集導覽")
         
-        self.root.protocol("WM_DELETE_WINDOW", self.root.destroy)
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         
         logger.info("程式初始化完成")
+
+    def on_closing(self):
+        """主視窗關閉時的事件處理"""
+        try:
+            # 保存 Test Item 文件路徑
+            if hasattr(self.search_ui, 'last_excel_path') and self.search_ui.last_excel_path:
+                self.config_manager.set('LastExcelPath', self.search_ui.last_excel_path)
+                logger.info(f"主視窗關閉時保存 Test Item 文件路徑: {self.search_ui.last_excel_path}")
+        except Exception as e:
+            logger.error(f"主視窗關閉時保存 Test Item 文件路徑發生錯誤: {str(e)}")
+        
+        # 關閉主視窗
+        self.root.destroy()
 
     def toggle_search_ui(self):
         """切換查詢 UI 浮動視窗顯示/隱藏，若視窗已被關閉則重建"""
@@ -111,6 +121,15 @@ class ErrorCodeTool:
             self.search_ui_visible = True
 
     def hide_search_ui(self):
+        """隱藏查詢視窗並保存 Test Item 文件路徑"""
+        try:
+            # 保存 Test Item 文件路徑
+            if hasattr(self.search_ui, 'last_excel_path') and self.search_ui.last_excel_path:
+                self.config_manager.set('LastExcelPath', self.search_ui.last_excel_path)
+                logger.info(f"保存 Test Item 文件路徑: {self.search_ui.last_excel_path}")
+        except Exception as e:
+            logger.error(f"保存 Test Item 文件路徑時發生錯誤: {str(e)}")
+        
         self.search_ui.root.withdraw()
         self.search_ui_visible = False
 
@@ -223,13 +242,17 @@ class ErrorCodeTool:
                     output_path,
                     self.ui_manager.get_selected_sheet()
                 ):
-                    self.ui_manager.update_progress(100, 100)
-                    self.ui_manager.update_status(f"比對完成！結果已儲存於：{os.path.basename(output_path)}", "green")
+                    self.ui_manager.update_progress(90, 100)
+                    self.ui_manager.update_status("比對完成！正在進行 AI 推薦分析...", "green")
+                    
                     # 更新最後使用的輸出目錄
                     self.config_manager.update_last_paths(
                         output_dir=str(Path(output_path).parent)
                     )
-                    self.ui_manager.show_progress(False)
+                    
+                    # 自動執行 AI 推薦分析
+                    self._perform_ai_recommendation(output_path)
+                    
                     return True
                 else:
                     self.ui_manager.update_status("儲存結果失敗", "red")
@@ -462,18 +485,24 @@ class ErrorCodeTool:
             # 提取描述並生成推薦
             descriptions = df_result['Description'].fillna('').astype(str).tolist()
             
-            # 定義進度回調函數
+            # 定義進度回調函數（從 90% 開始更新到 100%）
             def progress_callback(current, total, message):
+                # 將 AI 推薦的進度映射到 90%-100% 範圍
+                ai_progress = int(90 + (current / total) * 10)
                 self.ui_manager.update_status(message, "orange")
-                self.ui_manager.update_progress(current, total)
+                self.ui_manager.update_progress(ai_progress, 100)
             
             recommendations = self.ai_engine.generate_recommendations_with_search(descriptions, progress_callback)
             
             # 更新檔案
             self._update_file_with_recommendations(output_file, df_result, recommendations)
             
+            self.ui_manager.update_progress(100, 100)
             self.ui_manager.update_status(f"AI 推薦分析完成！結果已更新到：{os.path.basename(output_file)}", "green")
             self.ui_manager.show_progress(False)
+            
+            # 詢問是否要打開文件
+            self._ask_open_file(output_file)
             
         except Exception as e:
             logger.error(f"執行 AI 推薦時發生錯誤: {str(e)}")
@@ -488,6 +517,55 @@ class ErrorCodeTool:
         except Exception as e:
             logger.error(f"更新檔案時發生錯誤: {str(e)}")
             raise
+
+    def _ask_open_file(self, file_path: str):
+        """詢問用戶是否要打開生成的文件"""
+        try:
+            import os
+            import subprocess
+            import platform
+            
+            # 顯示文件路徑（縮短顯示）
+            display_path = file_path
+            if len(file_path) > 80:
+                # 如果路徑太長，只顯示文件名和部分路徑
+                file_name = os.path.basename(file_path)
+                parent_dir = os.path.basename(os.path.dirname(file_path))
+                display_path = f"...{os.sep}{parent_dir}{os.sep}{file_name}"
+            
+            # 創建彈出視窗
+            result = self.ui_manager.ask_yes_no(
+                "比對和 AI 推薦完成！",
+                f"文件已成功生成：\n\n{display_path}\n\n是否要立即打開此文件？"
+            )
+            
+            if result:
+                self._open_file(file_path)
+                
+        except Exception as e:
+            logger.error(f"詢問打開文件時發生錯誤: {str(e)}")
+    
+    def _open_file(self, file_path: str):
+        """打開指定的文件"""
+        try:
+            import os
+            import subprocess
+            import platform
+            
+            system = platform.system()
+            
+            if system == "Windows":
+                os.startfile(file_path)
+            elif system == "Darwin":  # macOS
+                subprocess.run(["open", file_path])
+            else:  # Linux
+                subprocess.run(["xdg-open", file_path])
+                
+            logger.info(f"成功打開文件: {file_path}")
+            
+        except Exception as e:
+            logger.error(f"打開文件時發生錯誤: {str(e)}")
+            self.ui_manager.update_status(f"無法打開文件: {str(e)[:50]}", "red")
 
     def _show_ai_prompt(self, descriptions):
         """顯示 AI PROMPT 供使用者手動處理"""

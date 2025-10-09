@@ -203,13 +203,12 @@ class UIManager:
         self.sheet_combobox.grid(row=row, column=1, padx=5, pady=10)
 
     def _create_compare_button(self, row: int):
-        """建立比對按鈕、查詢按鈕、AI推薦按鈕和開啟結果按鈕（四欄分割）"""
+        """建立比對按鈕、查詢按鈕和開啟結果按鈕（三欄分割）"""
         btn_frame = tb.Frame(self.main_frame)
         btn_frame.grid(row=row, column=0, columnspan=3, pady=25, sticky='ew')
         btn_frame.columnconfigure(0, weight=1)
         btn_frame.columnconfigure(1, weight=1)
         btn_frame.columnconfigure(2, weight=1)
-        btn_frame.columnconfigure(3, weight=1)
 
         self.compare_btn = tb.Button(
             btn_frame,
@@ -228,15 +227,6 @@ class UIManager:
         )
         self.search_btn.grid(row=0, column=1, sticky='ew', padx=(2, 2))
 
-        self.ai_recommend_btn = tb.Button(
-            btn_frame,
-            text="AI推薦分析",
-            bootstyle="outline-warning",
-            style="Big.TButton",
-            command=getattr(self, 'ai_recommend_callback', None)
-        )
-        self.ai_recommend_btn.grid(row=0, column=2, sticky='ew', padx=(2, 2))
-
         self.open_result_btn = tb.Button(
             btn_frame,
             text="開啟結果檔案",
@@ -244,7 +234,7 @@ class UIManager:
             style="Big.TButton",
             command=getattr(self, 'open_result_callback', None)
         )
-        self.open_result_btn.grid(row=0, column=3, sticky='ew', padx=(2, 0))
+        self.open_result_btn.grid(row=0, column=2, sticky='ew', padx=(2, 0))
         
         # 添加覆蓋檔案選項的 checkbox
         self.overwrite_checkbox = tb.Checkbutton(
@@ -253,7 +243,7 @@ class UIManager:
             bootstyle="success-round-toggle",
             variable=tk.BooleanVar(value=True)  # 預設打勾
         )
-        self.overwrite_checkbox.grid(row=1, column=0, columnspan=4, pady=(10, 0), sticky='w')
+        self.overwrite_checkbox.grid(row=1, column=0, columnspan=3, pady=(10, 0), sticky='w')
         
         # 添加狀態列
         self._create_status_bar(row + 1)

@@ -234,8 +234,18 @@ class ExcelErrorCodeSearchUI:
                     df.columns = ['Interface', 'Interenal Error Code', 'Description', 'Chinese']
                 self.df = df
                 self._show_table(self.df)
-            except Exception:
-                pass
+                
+                # 更新文件標籤
+                self.file_label.config(text=os.path.basename(self.last_excel_path))
+                
+                # 更新狀態
+                file_path_display = self.last_excel_path if len(self.last_excel_path) <= 150 else "..." + self.last_excel_path[-(150-3):]
+                self.update_status(f"自動載入上次文件: {file_path_display}", "green")
+                
+                logger.info(f"自動載入 Test Item 文件: {self.last_excel_path}")
+            except Exception as e:
+                logger.error(f"自動載入 Test Item 文件失敗: {str(e)}")
+                self.update_status("自動載入文件失敗", "red")
 
     def _add_hand_over(self, btn):
         # hand over style: 預設灰色，滑鼠經過變綠
